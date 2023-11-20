@@ -1,4 +1,22 @@
 phpunit.xml
 lando
+
+# Composer directories.
 docroot/vendor
-docroot/web
+
+# Drupal core web directories.
+docroot/web/*.md
+docroot/web/*.txt
+docroot/web/*.php
+docroot/web/*.gitignore
+docroot/web/core
+docroot/web/modules/contrib
+docroot/web/web.config
+
+.csslintrc
+.eslint*
+.ht.*
+.htaccess
+
+# Sites directories
+docroot/web/sites/default/files
