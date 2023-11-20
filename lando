@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# Location of the .lando.yml file.
+LANDO_PROJECT=~/WWW/sparkling-shirley/Boilerplates-for-Lando/drupal/d10-ee
+
+cd $LANDO_PROJECT
+lando "${@}"
