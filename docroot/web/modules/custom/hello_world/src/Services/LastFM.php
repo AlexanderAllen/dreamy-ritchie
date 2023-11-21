@@ -57,15 +57,9 @@ class LastFM {
   }
 
   /**
-   * Step 4- Fetch  web service session token.
-   *
-   * @return array
-   *   Render array.
+   * Step 4- Fetch  web service session key.
    */
-  public function fetchSessionToken(string $request_token) {
-
-    // TODO: need a persistent storage for the request token, so it can be grabbed
-    // on a second visit and used for the session request.
+  public function fetchSessionKey(string $request_token) {
     $session_request = [
       'api_key' => $this->apiKey,
       'method' => 'auth.getSession',
@@ -73,18 +67,15 @@ class LastFM {
     ];
     $session_response = $this->request($session_request);
 
-    return [
-      '#type' => 'markup',
-      '#markup' => $content,
-    ];
+    // See https://wiki.php.net/rfc/nullsafe_operator.
+    return $session_response?->session?->key;
   }
 
   /**
    * Generic reqeuest method.
    *
    * @param array $parameters
-   *
-   * @return mixed
+   *   Parameters argument.
    */
   protected function request(array $parameters = []) {
     $parameters['api_sig'] = $this->sign($parameters);

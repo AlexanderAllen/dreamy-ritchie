@@ -18,6 +18,13 @@ use Drupal\hello_world\Services\LastFM;
 class AuthLastFMForm extends FormBase {
 
   /**
+   * Last FM Auth Service.
+   *
+   * @var Drupal\hello_world\Services\LastFM
+   */
+  protected LastFM $lfmService;
+
+  /**
    * {@inheritdoc}
    */
   public function getFormId() {
@@ -28,105 +35,133 @@ class AuthLastFMForm extends FormBase {
    * {@inheritdoc}
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
-    if (!$form_state->getValue('auth_confirmation')) {
-      $form_state->setErrorByName('auth_confirmation', $this->t('You must grant access to the LastFM API in order to continue.'));
-    }
+    // if (!$form_state->getValue('auth_confirmation')) {
+    //   $form_state->setErrorByName('auth_confirmation', $this->t('You must grant access to the LastFM API in order to continue.'));
+    // }
+
   }
 
   /**
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    // drupal_set_message($this->t('@can_name ,Your application is being submitted!', array('@can_name' => $form_state->getValue('candidate_name'))));
-    // foreach ($form_state->getValues() as $key => $value) {
-    //   \Drupal::messenger()->addMessage($key . ': ' . $value);
-    // }
-
-
-
-
-
-    // Step 4 - Fetch web service session.
-    // TODO: need a persistent storage for the request token, so it can be grabbed
-    // on a second visit and used for the session request.
-    // $session_request = [
-    //   'api_key' => $api_key,
-    //   'method' => 'auth.getSession',
-    //   'token' => $token,
-    // ];
-    // $session_response = $this->request($session_request);
-
-
+    // @todo needs to be moved to a formal Service object for dependency injection.
     $lfm = new LastFM();
-    $request_token = $lfm->fetchRequestToken();
-    $api_key = $lfm->apiKey;
+    $token = $lfm->fetchRequestToken();
 
-    $session = $this->getRequest()->getSession();
-    $session->set('lfm_req_token', $request_token);
-
-    // TODO: Steps 3/4 need to be broken into separate pages/form/steps.
-    // If the user does not authorize the token the session req is not valid.
-    // Step 3 - request user authorization (only once)
-    $redirect = "http://www.last.fm/api/auth/?api_key={$api_key}&token={$request_token}";
-    $content = "Visit {$redirect} to authorize the application.";
-
-    $request_markup = [
-      '#type' => 'markup',
-      '#markup' => $content,
-    ];
-    \Drupal::messenger()->addMessage($request_markup);
+    $form_state
+      ->set('page_num', 2)
+      ->set('req_token', $token)
+      ->set('api_key', $lfm->apiKey)
+      ->setRebuild(TRUE);
   }
 
   /**
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    // $form['candidate_name'] = array(
-    //   '#type' => 'textfield',
-    //   '#title' => t('Candidate Name:'),
-    //   '#required' => TRUE,
-    // );
-    // $form['candidate_mail'] = array(
-    //   '#type' => 'email',
-    //   '#title' => t('Email ID:'),
-    //   '#required' => TRUE,
-    // );
-    // $form['candidate_number'] = array (
-    //   '#type' => 'tel',
-    //   '#title' => t('Mobile no'),
-    // );
-    // $form['candidate_dob'] = array (
-    //   '#type' => 'date',
-    //   '#title' => t('DOB'),
-    //   '#required' => TRUE,
-    // );
-    // $form['candidate_gender'] = array (
-    //   '#type' => 'select',
-    //   '#title' => ('Gender'),
-    //   '#options' => array(
-    //     'Female' => t('Female'),
-    //     'male' => t('Male'),
-    //   ),
-    // );
-    $form['auth_confirmation'] = array (
-      '#type' => 'radios',
-      '#title' => ('Do you want to grant this application read access to your LastFM account?'),
-      '#options' => [
-        TRUE => t('Accept'),
-        FALSE => t('Decline'),
-      ],
-    );
-    // $form['candidate_copy'] = array(
-    //   '#type' => 'checkbox',
-    //   '#title' => t('Send me a copy of the application.'),
-    // );
+    if ($form_state->has('page_num') && $form_state->get('page_num') == 2) {
+      return $this->authorizePageTwo($form, $form_state);
+    }
+
+    $form['description'] = [
+      '#type' => 'item',
+      '#title' => $this->t('A basic multistep form (page 1)'),
+    ];
+
+    $form['actions'] = [
+      '#type' => 'actions',
+    ];
+
+    $form['auth_confirmation'] = [
+      '#type' => 'checkbox',
+      '#title' => ('Would you like to grant this application read access to your LastFM account?'),
+    ];
+
     $form['actions']['#type'] = 'actions';
-    $form['actions']['submit'] = array(
+    $form['actions']['submit'] = [
       '#type' => 'submit',
-      '#value' => $this->t('Submit'),
+      '#value' => $this->t('Accept'),
       '#button_type' => 'primary',
-    );
+    ];
     return $form;
+  }
+
+  /**
+   * Step two form.
+   */
+  public function authorizePageTwo(array &$form, FormStateInterface $form_state) {
+    // @todo 1:30PM - move this into state and display on second step of form.
+    // 2:30pm done
+    $api_key = $form_state->get('api_key', '');
+    $request_token = $form_state->get('req_token', '');
+
+    // // Step 3 - request user authorization (only once)
+    $redirect = "http://www.last.fm/api/auth/?api_key={$api_key}&token={$request_token}";
+    $content = "Please visit <a href='{$redirect}'>LastFM</a> in order to authorize the application.";
+
+    $request_markup = [
+      '#type' => 'markup',
+      '#markup' => $content,
+    ];
+
+    $form['description'] = [
+      '#type' => 'item',
+      '#title' => $this->t('A basic multistep form (page 2)'),
+      '#description' => $request_markup,
+    ];
+
+    $form['back'] = [
+      '#type' => 'submit',
+      '#value' => $this->t('Back'),
+      // Custom submission handler for 'Back' button.
+      '#submit' => ['::subscribePageTwoBack'],
+      '#limit_validation_errors' => [],
+    ];
+    $form['submit'] = [
+      '#type' => 'submit',
+      '#button_type' => 'primary',
+      '#value' => $this->t('Next'),
+      '#submit' => ['::authorizePageTwoSubmit'],
+    ];
+
+    return $form;
+  }
+
+  /**
+   * Step 4 - Fetch session key using request token.
+   */
+  public function authorizePageTwoSubmit(array &$form, FormStateInterface $form_state) {
+
+    $request_token = $form_state->get('req_token', '');
+
+    $lfm = new LastFM();
+    $session_key = $lfm->fetchSessionKey($request_token);
+
+    // $name = $form_state->get('page_values');
+    // $form_state
+    //   ->set('page_num', 3);
+      // ->setRebuild(TRUE);
+
+    // Save session key to persistent storage.
+    $session = $this->getRequest()->getSession();
+    $session->set('lfm_session_key', $session_key);
+
+    // @todo auth sucess user message.
+  }
+
+  /**
+   * Stub comment.
+   */
+  public function subscribePageTwoBack(array &$form, FormStateInterface $form_state) {
+    $form_state
+      // Restore values for the first step.
+      ->setValues($form_state->get('page_values'))
+      ->set('page_num', 1)
+      // Since we have logic in our buildForm() method, we have to tell the form
+      // builder to rebuild the form. Otherwise, even though we set 'page_num'
+      // to 1, the AJAX-rendered form will still show page 2.
+      ->setRebuild(TRUE);
   }
 
 }
