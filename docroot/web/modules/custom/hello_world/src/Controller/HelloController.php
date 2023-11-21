@@ -56,7 +56,12 @@ class HelloController extends ControllerBase {
     // Fetch a request token.
     // See https://www.last.fm/api/desktopauth.
     $options = ['query' => $parameters];
-    $response = $this->client->request('GET', '', $options);
+    try {
+      $response = $this->client->request('GET', '', $options);
+    }
+    catch (\Throwable $th) {
+      \Drupal::messenger()->addError($th->getMessage());
+    }
 
     if ($response->getStatusCode() == 200) {
       $json = $response->getBody()->getContents();
