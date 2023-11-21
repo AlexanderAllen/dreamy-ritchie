@@ -21,7 +21,8 @@
         "drupal/core-recommended": "^10.1",
         "drupal/search_api": "^1.30",
         "drupal/search_api_solr": "^4.3",
-        "drush/drush": "^12.4"
+        "drush/drush": "^12.4",
+        "guzzlehttp/guzzle": "^7.7"
     },
     "conflict": {
         "drupal/drupal": "*"
