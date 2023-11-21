@@ -11,6 +11,12 @@ use GuzzleHttp\Client as GuzzleHttpClient;
  * @package Drupal\hello_world\Controller
  */
 class HelloController extends ControllerBase {
+  /**
+   * Guzzle HTTP Client.
+   *
+   * @var GuzzleHttp\Client
+   */
+  protected $client;
 
   /**
    * Display the markup.
@@ -19,26 +25,13 @@ class HelloController extends ControllerBase {
    *   Render array.
    */
   public function content() {
-    $client = new GuzzleHttpClient(['base_uri' => 'https://ws.audioscrobbler.com/2.0']);
+    $this->client = new GuzzleHttpClient(['base_uri' => 'https://ws.audioscrobbler.com/2.0']);
 
     $params = [
       'api_key' => getenv('LASTFM_API_KEY') ?? '',
       'method' => 'auth.gettoken',
     ];
-    $params['api_sig'] = $this->sign($params);
-    $params['format'] = 'json';
-
-    // Fetch a request token.
-    // See https://www.last.fm/api/desktopauth.
-    $options = ['query' => $params];
-    $response = $client->request('GET', '', $options);
-    $response->getStatusCode();
-
-    if ($response->getStatusCode() == 200) {
-      $json = $response->getBody()->getContents();
-      $obj = json_decode($json);
-      $request_token = $obj->token;
-    }
+    $token = $this->request($params);
 
     // $response->getHeaders();
     // $response->getStatusCode();
@@ -50,6 +43,24 @@ class HelloController extends ControllerBase {
       '#markup' => $this->t('Hello, World!'),
       // '$markup' => var_export($c),
     ];
+  }
+
+  protected function request(array $parameters = []) {
+    $parameters['api_sig'] = $this->sign($parameters);
+    $parameters['format'] = 'json';
+
+    // Fetch a request token.
+    // See https://www.last.fm/api/desktopauth.
+    $options = ['query' => $parameters];
+    $response = $this->client->request('GET', '', $options);
+
+    if ($response->getStatusCode() == 200) {
+      $json = $response->getBody()->getContents();
+      return json_decode($json);
+      // $return = $obj->token;
+    } else {
+      return NULL;
+    }
   }
 
   /**
