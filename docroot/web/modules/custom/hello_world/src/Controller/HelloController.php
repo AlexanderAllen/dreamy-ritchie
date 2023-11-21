@@ -80,7 +80,7 @@ class HelloController extends ControllerBase {
    */
   protected function sign(array $parameters = []) {
     $sig = '';
-    asort($parameters, SORT_NATURAL);
+    ksort($parameters, SORT_STRING);
 
     foreach ($parameters as $key => $value) {
       $sig .= "{$key}{$value}";
