@@ -1,5 +1,9 @@
 <?php
 
+// phpcs:disable Drupal.Commenting.InlineComment.SpacingAfter
+// phpcs:disable DrupalPractice.Commenting.CommentEmptyLine.SpacingAfter
+// phpcs:disable Drupal.Files.LineLength.TooLong
+
 namespace Drupal\hello_world\Form;
 
 use Drupal\Core\Form\FormBase;
