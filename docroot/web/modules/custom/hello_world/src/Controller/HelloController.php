@@ -4,7 +4,6 @@ namespace Drupal\hello_world\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use GuzzleHttp\Client as GuzzleHttpClient;
-
 /**
  * Hello world.
  *
@@ -28,19 +27,30 @@ class HelloController extends ControllerBase {
     $this->client = new GuzzleHttpClient(['base_uri' => 'https://ws.audioscrobbler.com/2.0']);
     $api_key = getenv('LASTFM_API_KEY') ?? '';
 
+    // Step 2 - Fetch request token.
     $params = [
       'api_key' => $api_key,
       'method' => 'auth.gettoken',
     ];
     $token = $this->request($params);
+    $token = $token->token;
 
-    $redirect = "http://www.last.fm/api/auth/?api_key={$api_key}&token={$token->token}";
+    // TODO: Steps 3/4 need to be broken into separate pages/form/steps.
+    // If the user does not authorize the token the session req is not valid.
+    // Step 3 - request user authorization (only once)
+    $redirect = "http://www.last.fm/api/auth/?api_key={$api_key}&token={$token}";
     $content = "Visit {$redirect} to authorize the application.";
 
-    // $response->getHeaders();
-    // $response->getStatusCode();
-    // $body = $response->getBody();
-    // $c = $body->getContents();
+    // Step 4 - Fetch web service session.
+    // TODO: need a persistent storage for the request token, so it can be grabbed
+    // on a second visit and used for the session request.
+    // $session_request = [
+    //   'api_key' => $api_key,
+    //   'method' => 'auth.getSession',
+    //   'token' => $token,
+    // ];
+    // $session_response = $this->request($session_request);
+
 
     return [
       '#type' => 'markup',
