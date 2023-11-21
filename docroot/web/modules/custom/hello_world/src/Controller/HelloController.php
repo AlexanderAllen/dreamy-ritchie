@@ -26,12 +26,16 @@ class HelloController extends ControllerBase {
    */
   public function content() {
     $this->client = new GuzzleHttpClient(['base_uri' => 'https://ws.audioscrobbler.com/2.0']);
+    $api_key = getenv('LASTFM_API_KEY') ?? '';
 
     $params = [
-      'api_key' => getenv('LASTFM_API_KEY') ?? '',
+      'api_key' => $api_key,
       'method' => 'auth.gettoken',
     ];
     $token = $this->request($params);
+
+    $redirect = "http://www.last.fm/api/auth/?api_key={$api_key}&token={$token->token}";
+    $content = "Visit {$redirect} to authorize the application.";
 
     // $response->getHeaders();
     // $response->getStatusCode();
@@ -40,7 +44,7 @@ class HelloController extends ControllerBase {
 
     return [
       '#type' => 'markup',
-      '#markup' => $this->t('Hello, World!'),
+      '#markup' => $content,
       // '$markup' => var_export($c),
     ];
   }
@@ -57,8 +61,8 @@ class HelloController extends ControllerBase {
     if ($response->getStatusCode() == 200) {
       $json = $response->getBody()->getContents();
       return json_decode($json);
-      // $return = $obj->token;
-    } else {
+    }
+    else {
       return NULL;
     }
   }
