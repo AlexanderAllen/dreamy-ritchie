@@ -9,6 +9,7 @@
       "type": "php",
       "request": "launch",
       "port": 9003,
+      "hostname": "localhost",
       "pathMappings": {
         "/app": "${workspaceFolder}"
       },
@@ -27,8 +28,10 @@
       "stopOnEntry": true,
       "xdebugSettings": {
         "show_hidden": 1,
-      }
-    },    
+      },
+      // Enable when php.ini is using host.docker.internal
+      "hostname": "localhost",
+    },
     {
       "name": "Launch currently open script",
       "type": "php",
