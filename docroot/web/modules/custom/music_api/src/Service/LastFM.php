@@ -43,7 +43,6 @@ class LastFM {
     $this->apiSecret = getenv('LASTFM_API_SECRET') ?? '';
   }
 
-
   /**
    * Step 2 - Fetch request token.
    *
@@ -93,7 +92,7 @@ class LastFM {
       $response = $this->client->request('GET', '', $options);
     }
     catch (\Throwable $th) {
-      \Drupal::messenger()->addError($th->getMessage());
+      $this->messenger->addError($th->getMessage());
     }
 
     if ($response->getStatusCode() == 200) {
