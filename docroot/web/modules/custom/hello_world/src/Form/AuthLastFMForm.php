@@ -5,7 +5,7 @@ namespace Drupal\hello_world\Form;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Form\{FormBase, FormStateInterface};
 use Drupal\Core\State\State;
-use Drupal\hello_world\Services\LastFM;
+use Drupal\music_api\Service\LastFM;
 
 /**
  * Form for LastFM authentica tion.
@@ -21,6 +21,7 @@ class AuthLastFMForm extends FormBase {
    */
   protected LastFM $lfmService;
   protected State $state;
+  protected LastFM $lfm;
 
   /**
    * {@inheritdoc}
@@ -32,8 +33,9 @@ class AuthLastFMForm extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function __construct(State $state) {
+  public function __construct(State $state, LastFM $lfmService) {
     $this->state = $state;
+    $this->lfm = $lfmService;
   }
 
   /**
@@ -43,7 +45,8 @@ class AuthLastFMForm extends FormBase {
     // Instantiates this form class.
     return new static(
       // Load the service required to construct this class.
-      $container->get('state')
+      $container->get('state'),
+      $container->get('Drupal\music_api\Service\LastFM'),
     );
   }
 
@@ -60,14 +63,12 @@ class AuthLastFMForm extends FormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    // @todo needs to be moved to a formal Service object for dependency injection.
-    $lfm = new LastFM();
-    $token = $lfm->fetchRequestToken();
+    $token = $this->lfm->fetchRequestToken();
 
     $form_state
       ->set('page_num', 2)
       ->set('req_token', $token)
-      ->set('api_key', $lfm->apiKey)
+      ->set('api_key', $this->lfm->apiKey)
       ->setRebuild(TRUE);
   }
 
@@ -115,8 +116,6 @@ class AuthLastFMForm extends FormBase {
    * Step two form.
    */
   public function authorizePageTwo(array &$form, FormStateInterface $form_state) {
-    // @todo 1:30PM - move this into state and display on second step of form.
-    // 2:30pm done
     $api_key = $form_state->get('api_key', '');
     $request_token = $form_state->get('req_token', '');
 
@@ -158,12 +157,7 @@ class AuthLastFMForm extends FormBase {
   public function authorizePageTwoSubmit(array &$form, FormStateInterface $form_state) {
 
     $request_token = $form_state->get('req_token', '');
-
-    $lfm = new LastFM();
-    $session_key = $lfm->fetchSessionKey($request_token);
-
-    // Save session key to persistent storage.
-    // @todo Swtich to dependency injection here.
+    $session_key = $this->lfm->fetchSessionKey($request_token);
     $this->state->set('lfm_session_key', $session_key);
   }
 
@@ -176,8 +170,7 @@ class AuthLastFMForm extends FormBase {
       ->setValues($form_state->get('page_values'))
       ->set('page_num', 1)
       // Since we have logic in our buildForm() method, we have to tell the form
-      // builder to rebuild the form. Otherwise, even though we set 'page_num'
-      // to 1, the AJAX-rendered form will still show page 2.
+      // builder to rebuild the form.
       ->setRebuild(TRUE);
   }
 

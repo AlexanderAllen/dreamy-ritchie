@@ -1,0 +1,4 @@
+services:
+  Drupal\music_api\Service\LastFM:
+    class: Drupal\music_api\Service\LastFM
+    arguments: ['@messenger']
