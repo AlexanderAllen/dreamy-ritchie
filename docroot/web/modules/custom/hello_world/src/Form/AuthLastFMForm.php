@@ -1,17 +1,14 @@
 <?php
 
-// phpcs:disable Drupal.Commenting.InlineComment.SpacingAfter
-// phpcs:disable DrupalPractice.Commenting.CommentEmptyLine.SpacingAfter
-// phpcs:disable Drupal.Files.LineLength.TooLong
-
 namespace Drupal\hello_world\Form;
 
-use Drupal\Core\Form\FormBase;
-use Drupal\Core\Form\FormStateInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\Form\{FormBase, FormStateInterface};
+use Drupal\Core\State\State;
 use Drupal\hello_world\Services\LastFM;
 
 /**
- * Form for LastFM authentication.
+ * Form for LastFM authentica tion.
  *
  * @package Drupal\hello_world\Form
  */
@@ -23,6 +20,7 @@ class AuthLastFMForm extends FormBase {
    * @var Drupal\hello_world\Services\LastFM
    */
   protected LastFM $lfmService;
+  protected State $state;
 
   /**
    * {@inheritdoc}
@@ -34,11 +32,28 @@ class AuthLastFMForm extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function validateForm(array &$form, FormStateInterface $form_state) {
-    // if (!$form_state->getValue('auth_confirmation')) {
-    //   $form_state->setErrorByName('auth_confirmation', $this->t('You must grant access to the LastFM API in order to continue.'));
-    // }
+  public function __construct(State $state) {
+    $this->state = $state;
+  }
 
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    // Instantiates this form class.
+    return new static(
+      // Load the service required to construct this class.
+      $container->get('state')
+    );
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function validateForm(array &$form, FormStateInterface $form_state) {
+    if (!$form_state->getValue('auth_confirmation')) {
+      $form_state->setErrorByName('auth_confirmation', $this->t('You must grant access to the LastFM API in order to continue.'));
+    }
   }
 
   /**
@@ -61,7 +76,7 @@ class AuthLastFMForm extends FormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
     // Check if authorization exists already before proceeding.
-    if (!empty(\Drupal::state()->get('lfm_session_key'))) {
+    if (!empty($this->state->get('lfm_session_key'))) {
       $form['description'] = [
         '#type' => 'item',
         '#title' => $this->t('Application authorized.'),
@@ -149,7 +164,7 @@ class AuthLastFMForm extends FormBase {
 
     // Save session key to persistent storage.
     // @todo Swtich to dependency injection here.
-    \Drupal::state()->set('lfm_session_key', $session_key);
+    $this->state->set('lfm_session_key', $session_key);
   }
 
   /**
