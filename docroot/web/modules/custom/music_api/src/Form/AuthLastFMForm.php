@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\hello_world\Form;
+namespace Drupal\music_api\Form;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Form\{FormBase, FormStateInterface};
@@ -10,14 +10,14 @@ use Drupal\music_api\Service\LastFM;
 /**
  * Form for LastFM authentica tion.
  *
- * @package Drupal\hello_world\Form
+ * @package Drupal\music_api\Form
  */
 class AuthLastFMForm extends FormBase {
 
   /**
    * Last FM Auth Service.
    *
-   * @var Drupal\hello_world\Services\LastFM
+   * @var Drupal\music_api\Services\LastFM
    */
   protected LastFM $lfmService;
   protected State $state;

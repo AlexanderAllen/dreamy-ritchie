@@ -1,11 +1,13 @@
+# Blank test page.
 music_api.content:
   path: '/hello'
   defaults:
-    _controller: '\Drupal\hello_world\Controller\HelloController::content'
+    _controller: '\Drupal\music_api\Controller\HelloController::content'
     _title: 'Hello World'
   requirements:
     _permission: 'access content'
 
+# LFM Auth form.
 music_api.auth_lastfm_form:
  path: '/auth/lastfm'
  defaults:

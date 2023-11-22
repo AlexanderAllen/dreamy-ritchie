@@ -1,14 +1,16 @@
 <?php
 
-namespace Drupal\hello_world\Services;
+namespace Drupal\hello_world\Controller;
 
+use Drupal\Core\Controller\ControllerBase;
 use GuzzleHttp\Client as GuzzleHttpClient;
 
 /**
  * Hello world.
+ *
+ * @package Drupal\hello_world\Controller
  */
-class LastFM {
-
+class HelloController extends ControllerBase {
   /**
    * Guzzle HTTP Client.
    *
@@ -17,66 +19,47 @@ class LastFM {
   protected $client;
 
   /**
-   * LastFM API key.
+   * Display the markup.
    *
-   * @var string
+   * @return array
+   *   Render array.
    */
-  public $apiKey;
-
-  /**
-   * LastFM private key.
-   *
-   * @var string
-   */
-  protected $apiSecret;
-
-  /**
-   * Class constructor.
-   */
-  public function __construct() {
+  public function content() {
     $this->client = new GuzzleHttpClient(['base_uri' => 'https://ws.audioscrobbler.com/2.0']);
-    $this->apiKey = getenv('LASTFM_API_KEY') ?? '';
-    $this->apiSecret = getenv('LASTFM_API_SECRET') ?? '';
-  }
+    $api_key = getenv('LASTFM_API_KEY') ?? '';
 
-  /**
-   * Step 2 - Fetch request token.
-   *
-   * @return string
-   *   Request token.
-   */
-  public function fetchRequestToken() {
-
+    // Step 2 - Fetch request token.
     $params = [
-      'api_key' => $this->apiKey,
+      'api_key' => $api_key,
       'method' => 'auth.gettoken',
     ];
     $token = $this->request($params);
     $token = $token->token;
-    return $token;
-  }
 
-  /**
-   * Step 4- Fetch  web service session key.
-   */
-  public function fetchSessionKey(string $request_token) {
-    $session_request = [
-      'api_key' => $this->apiKey,
-      'method' => 'auth.getSession',
-      'token' => $request_token,
+    // TODO: Steps 3/4 need to be broken into separate pages/form/steps.
+    // If the user does not authorize the token the session req is not valid.
+    // Step 3 - request user authorization (only once)
+    $redirect = "http://www.last.fm/api/auth/?api_key={$api_key}&token={$token}";
+    $content = "Visit {$redirect} to authorize the application.";
+
+    // Step 4 - Fetch web service session.
+    // TODO: need a persistent storage for the request token, so it can be grabbed
+    // on a second visit and used for the session request.
+    // $session_request = [
+    //   'api_key' => $api_key,
+    //   'method' => 'auth.getSession',
+    //   'token' => $token,
+    // ];
+    // $session_response = $this->request($session_request);
+
+
+    return [
+      '#type' => 'markup',
+      '#markup' => $content,
+      // '$markup' => var_export($c),
     ];
-    $session_response = $this->request($session_request);
-
-    // See https://wiki.php.net/rfc/nullsafe_operator.
-    return $session_response?->session?->key;
   }
 
-  /**
-   * Generic reqeuest method.
-   *
-   * @param array $parameters
-   *   Parameters argument.
-   */
   protected function request(array $parameters = []) {
     $parameters['api_sig'] = $this->sign($parameters);
     $parameters['format'] = 'json';
@@ -120,7 +103,7 @@ class LastFM {
     }
 
     // Append secret to signature string.
-    $sig .= $this->apiSecret;
+    $sig .= getenv('LASTFM_API_SECRET') ?? '';
     return md5($sig);
   }
 
