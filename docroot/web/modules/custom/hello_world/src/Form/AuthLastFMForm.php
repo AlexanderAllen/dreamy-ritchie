@@ -148,16 +148,12 @@ class AuthLastFMForm extends FormBase {
     $lfm = new LastFM();
     $session_key = $lfm->fetchSessionKey($request_token);
 
-    // $name = $form_state->get('page_values');
-    // $form_state
-    //   ->set('page_num', 3);
-      // ->setRebuild(TRUE);
-
     // Save session key to persistent storage.
     $session = $this->getRequest()->getSession();
     $session->set('lfm_session_key', $session_key);
 
-    // @todo auth sucess user message.
+    // @todo Swtich to dependency injection here.
+    \Drupal::state()->set('lfm_session_key', $session_key);
   }
 
   /**
