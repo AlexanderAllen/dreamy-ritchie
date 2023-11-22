@@ -5,11 +5,3 @@ hello_world.content:
     _title: 'Hello World'
   requirements:
     _permission: 'access content'
-
-hello_world.auth_lastfm_form:
- path: '/auth/lastfm'
- defaults:
-   _title: 'Authorization form'
-   _form: '\Drupal\hello_world\Form\AuthLastFMForm'
- requirements:
-   _permission: 'access content'
