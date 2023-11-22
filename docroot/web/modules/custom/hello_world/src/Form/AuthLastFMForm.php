@@ -62,7 +62,7 @@ class AuthLastFMForm extends FormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
     // Check if authorization exists already before proceeding.
     $session = $this->getRequest()->getSession();
-    if (!empty($session->get('lfm_session_key', ''))) {
+    if (!empty(\Drupal::state()->get('lfm_session_key'))) {
       $form['description'] = [
         '#type' => 'item',
         '#title' => $this->t('Application authorized.'),
@@ -149,9 +149,6 @@ class AuthLastFMForm extends FormBase {
     $session_key = $lfm->fetchSessionKey($request_token);
 
     // Save session key to persistent storage.
-    $session = $this->getRequest()->getSession();
-    $session->set('lfm_session_key', $session_key);
-
     // @todo Swtich to dependency injection here.
     \Drupal::state()->set('lfm_session_key', $session_key);
   }
