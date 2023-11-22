@@ -60,6 +60,16 @@ class AuthLastFMForm extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
+    // Check if authorization exists already before proceeding.
+    $session = $this->getRequest()->getSession();
+    if (!empty($session->get('lfm_session_key', ''))) {
+      $form['description'] = [
+        '#type' => 'item',
+        '#title' => $this->t('Application authorized.'),
+      ];
+      return $form;
+    }
+
     if ($form_state->has('page_num') && $form_state->get('page_num') == 2) {
       return $this->authorizePageTwo($form, $form_state);
     }
