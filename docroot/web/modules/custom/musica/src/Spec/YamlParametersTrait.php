@@ -35,7 +35,7 @@ trait YamlParametersTrait {
   public function parameters($namespace = ''): array {
     $module_path = $this->extensionList()->getPath('musica');
     $real_path = $this->filesystem()->realpath($module_path);
-    $spec_file = $real_path . '/src/Spec/LastFM/file.yaml';
+    $spec_file = $real_path . '/src/Spec/LastFM/spec.yaml';
 
     try {
       // @todo use drupal filesystem services for relative file resolution.
