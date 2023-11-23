@@ -43,7 +43,8 @@ trait YamlParametersTrait {
       printf('Unable to parse the YAML string: %s', $exception->getMessage());
     }
     $endpoint = "{$namespace}.{$this->name}";
-    return $parsed_spec[$endpoint] ??= NULL;
+    $spec = $parsed_spec[$endpoint] ??= [];
+    return $spec;
   }
 
 }
