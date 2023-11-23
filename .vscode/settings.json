@@ -1,3 +1,4 @@
 {
-  "php.validate.executablePath": "/usr/bin/php81"
+  "php.validate.executablePath": "/usr/bin/php82",
+  "phpcs.autoConfigSearch": true
 }
