@@ -43,37 +43,15 @@ class HelloController extends ControllerBase {
       'artist' => 'Cher'
     ];
 
+    $getInfo = 'getInfo';
+    $spec = SpecArtistEnum::getInfo->parameters();
 
 
-    try {
-      $status = FooEnum::Foo;
-      // $status2 = Drupal\music_api\Controller\FooEnum::Bar; // relative dont work
-      $status2 = \Drupal\music_api\Controller\FooEnum::Bar;
-
-
-      // $value = Yaml::parseFile('/app/file.yaml', Yaml::PARSE_CONSTANT);
-      // $yaml = '{ bar: !php/enum \Drupal\music_api\Controller\BazEnum::Foo->value }';
-      // $parameters = Yaml::parse($yaml, Yaml::PARSE_CONSTANT);
-
-      // $parsed_spec = Yaml::parseFile('/app/file.yaml', Yaml::PARSE_CONSTANT);
-
-      $foo = 'getCorrection';
-      $spec = SpecArtistEnum::getInfo;
-      $ret = $spec->parameters(); // 'red'
-
-      $foo = null;
-    } catch (ParseException $exception) {
-      printf('Unable to parse the YAML string: %s', $exception->getMessage());
-    }
-
-    // thing is...guzzle expects request params to be an associative array.
-    // so whatever fancy interface shit we do, need to be converted back to a plain-jane assoc array.
-
-    $response = $this->lastfm->request($request);
-
-
-    // $params = Artist::getInfo();
-    // $params->artist;
+    $merged_request = array_merge($spec, $request);
+    $cleaned_request = array_filter($merged_request, function ($value) {
+      return ($value !== '') ? TRUE : FALSE;
+    });
+    $response = $this->lastfm->request($cleaned_request);
 
 
     $render_array = [];
@@ -87,69 +65,24 @@ class HelloController extends ControllerBase {
 
 }
 
-enum BazEnum: string
-{
-    case Foo = 'foo';
-    case Bar = 'bar';
-}
+trait YamlSpecParameters {
+  public function parameters(): array {
 
+    try {
+      $parsed_spec = Yaml::parseFile('/app/file.yaml', Yaml::PARSE_CONSTANT);
+    } catch (ParseException $exception) {
+      printf('Unable to parse the YAML string: %s', $exception->getMessage());
+    }
+    return $parsed_spec[$this->name] ??= NULL;
+  }
+}
 
 enum SpecArtistEnum
 {
-  case getCorrection;
   case getInfo;
   case getSimilar;
 
-  public function parameters(): array {
-    $parsed_spec = Yaml::parseFile('/app/file.yaml', Yaml::PARSE_CONSTANT);
-
-    return match ($this)
-    {
-      self::getCorrection => $parsed_spec[$this->name],
-      self::getInfo => $parsed_spec[$this->name],
-      self::getSimilar => $parsed_spec[$this->name],
-    };
-  }
-}
-
-enum Status
-{
-    case DRAFT;
-    case PUBLISHED;
-    case ARCHIVED;
-
-    public function color(): string
-    {
-        return match($this)
-        {
-            Status::DRAFT => 'grey',
-            Status::PUBLISHED => 'green',
-            Status::ARCHIVED => 'red',
-        };
-    }
-}
-
-enum GetInfoEnum: string
-{
-    case artist = 'artist';
-    case mbid = 'mbid';
-}
-
-/**
- * Tester class.
- */
-class Artist {
-
-  public static function getInfo() {
-    return new class () {
-      public $artist = '';
-      public $mbid = '';
-      public $lang = '';
-      public bool $autocorrect;
-      public $username = '';
-    };
-  }
-
+  use YamlSpecParameters;
 }
 
 /**
