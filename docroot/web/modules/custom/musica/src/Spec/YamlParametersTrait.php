@@ -8,7 +8,7 @@ use Symfony\Component\Yaml\Yaml;
 /**
  * Trait for matching object names to yaml file keys.
  */
-trait YamlParameters {
+trait YamlParametersTrait {
 
   /**
    * Provides method parameters defined in yaml files.
