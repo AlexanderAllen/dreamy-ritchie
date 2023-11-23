@@ -52,8 +52,15 @@ class HelloController extends ControllerBase {
 
 
       // $value = Yaml::parseFile('/app/file.yaml', Yaml::PARSE_CONSTANT);
-      $yaml = '{ bar: !php/enum \Drupal\music_api\Controller\BazEnum::Foo->value }';
-      $parameters = Yaml::parse($yaml, Yaml::PARSE_CONSTANT);
+      // $yaml = '{ bar: !php/enum \Drupal\music_api\Controller\BazEnum::Foo->value }';
+      // $parameters = Yaml::parse($yaml, Yaml::PARSE_CONSTANT);
+
+      // $parsed_spec = Yaml::parseFile('/app/file.yaml', Yaml::PARSE_CONSTANT);
+
+      $foo = 'getCorrection';
+      $spec = SpecArtistEnum::getInfo;
+      $ret = $spec->parameters(); // 'red'
+
       $foo = null;
     } catch (ParseException $exception) {
       printf('Unable to parse the YAML string: %s', $exception->getMessage());
@@ -84,6 +91,48 @@ enum BazEnum: string
 {
     case Foo = 'foo';
     case Bar = 'bar';
+}
+
+
+enum SpecArtistEnum
+{
+  case getCorrection;
+  case getInfo;
+  case getSimilar;
+
+  public function parameters(): array {
+    $parsed_spec = Yaml::parseFile('/app/file.yaml', Yaml::PARSE_CONSTANT);
+
+    return match ($this)
+    {
+      self::getCorrection => $parsed_spec[$this->name],
+      self::getInfo => $parsed_spec[$this->name],
+      self::getSimilar => $parsed_spec[$this->name],
+    };
+  }
+}
+
+enum Status
+{
+    case DRAFT;
+    case PUBLISHED;
+    case ARCHIVED;
+
+    public function color(): string
+    {
+        return match($this)
+        {
+            Status::DRAFT => 'grey',
+            Status::PUBLISHED => 'green',
+            Status::ARCHIVED => 'red',
+        };
+    }
+}
+
+enum GetInfoEnum: string
+{
+    case artist = 'artist';
+    case mbid = 'mbid';
 }
 
 /**
@@ -125,10 +174,10 @@ enum Suit: string {
   case Spades = 'S';
 }
 
-enum Status: string
-{
-    case DRAFT = 'draft';
-    case PUBLISHED = 'published';
-    case ARCHIVED = 'archived';
-}
+// enum Status: string
+// {
+//     case DRAFT = 'draft';
+//     case PUBLISHED = 'published';
+//     case ARCHIVED = 'archived';
+// }
 

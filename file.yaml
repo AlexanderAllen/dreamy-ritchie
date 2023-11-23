@@ -1,0 +1,20 @@
+# $yaml = '{ foo: FooEnum::Foo, bar: !php/enum FooEnum::Foo }';
+
+# foo: FooEnum:Foo
+# bar: !php/enum FooEnum::Foo
+
+getInfo:
+  artist: ''
+  mbid: ''
+  lang: ''
+  autocorrect: 0
+  username: ''
+  api_key: ''
+
+# getInfo:
+#   artist: !php/enum \Drupal\music_api\Controller\GetInfoEnum::artist
+#   mbid: !php/enum \Drupal\music_api\Controller\GetInfoEnum::mbid
+#   lang: ''
+#   autocorrect: 0
+#   username: ''
+#   api_key: ''
