@@ -46,7 +46,7 @@ class AuthLastFMForm extends FormBase {
     return new static(
       // Load the service required to construct this class.
       $container->get('state'),
-      $container->get('Drupal\music_api\Service\LastFM'),
+      $container->get('music_api.lastfm'),
     );
   }
 
