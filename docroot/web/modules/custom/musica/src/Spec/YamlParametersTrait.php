@@ -32,7 +32,7 @@ trait YamlParametersTrait {
    * @return array
    *   Array of method parameters.
    */
-  public function parameters($spec = '', $namespace = ''): array {
+  public function parametersBase($spec = '', $namespace = ''): array {
     $module_path = $this->extensionList()->getPath('musica');
     $real_path = $this->filesystem()->realpath($module_path);
     $spec_file = "{$real_path}/src/Spec/{$spec}/spec.yaml";

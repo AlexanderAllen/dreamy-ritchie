@@ -2,13 +2,13 @@
 
 namespace Drupal\musica\Spec\LastFM;
 
-use Drupal\musica\Spec\YamlParametersTrait;
+use Drupal\musica\Spec\LastFM\YamlParametersLastFMTrait;
 
 /**
  * Enumerates artist API methods available, with parameters.
  */
 enum ArtistEnum {
-  use YamlParametersTrait;
+  use YamlParametersLastFMTrait;
 
   case addTags;
   case getCorrection;
