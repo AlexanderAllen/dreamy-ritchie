@@ -1,21 +1,23 @@
 <?php
 
-namespace Drupal\musica\Controller;
+namespace Drupal\musica\Spec\LastFM;
+
+use Drupal\musica\Spec\YamlParametersTrait;
 
 /**
- * Enum doc.
+ * Enumerates artist API methods available, with parameters.
  */
-enum FooEnum: string
-{
-    case Foo = 'foo';
-    case Bar = 'bar';
-}
+enum ArtistEnum {
+  use YamlParametersTrait;
 
-/**
- * Enum doc. PSR1 wants one file per file. yeah ok.
- */
-enum BarEnum: string
-{
-    case Foo = 'foo';
-    case Bar = 'bar';
+  case addTags;
+  case getCorrection;
+  case getInfo;
+  case getSimilar;
+  case getTags;
+  case getTopAlbums;
+  case getTopTags;
+  case getTopTracks;
+  case removeTag;
+  case search;
 }
