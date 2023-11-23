@@ -46,9 +46,7 @@ class HelloController extends ControllerBase {
 
     // Merge the spec with the user request.
     $merged_request = [...$spec, ...$request];
-    $cleaned_request = array_filter($merged_request, function ($value) {
-      return ($value !== '');
-    });
+    $cleaned_request = array_filter($merged_request, fn ($value) => $value !== '');
 
     // @todo can the response be mapped to a typed native object instead of stdClass?
     $response = $this->lastfm->request($cleaned_request);
