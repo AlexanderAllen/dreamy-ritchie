@@ -81,7 +81,7 @@ class LastFM {
    * @param array $parameters
    *   Parameters argument.
    */
-  protected function request(array $parameters = []) {
+  public function request(array $parameters = []) {
     $parameters['api_sig'] = $this->sign($parameters);
     $parameters['format'] = 'json';
 
