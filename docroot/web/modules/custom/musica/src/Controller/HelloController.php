@@ -37,7 +37,7 @@ class HelloController extends ControllerBase {
     // Do an example artist getInfo request for prototyping.
     $request = [
       'api_key' => $this->lastfm->apiKey,
-      'method' => 'artist.getInfo',
+      'method' => 'artist.getInfo', // @todo can this be added to the spec? the method name is already in the enum invoked.
       'artist' => 'Cher'
     ];
 
@@ -45,10 +45,12 @@ class HelloController extends ControllerBase {
     $spec = artist::getInfo->parameters('artist');
 
     // Merge the spec with the user request.
-    $merged_request = [$spec, ...$request];
+    $merged_request = [...$spec, ...$request];
     $cleaned_request = array_filter($merged_request, function ($value) {
       return ($value !== '') ? TRUE : FALSE;
     });
+
+    // @todo can the response be mapped to a typed native object instead of stdClass?
     $response = $this->lastfm->request($cleaned_request);
 
 
@@ -56,6 +58,11 @@ class HelloController extends ControllerBase {
     $render_array[] = [
       '#type' => 'markup',
       '#markup' => "hello world sample page",
+    ];
+
+    $render_array[] = [
+      '#type' => 'markup',
+      '#markup' => "<p>{$response->artist->bio->summary}</p>",
     ];
 
     return $render_array;
