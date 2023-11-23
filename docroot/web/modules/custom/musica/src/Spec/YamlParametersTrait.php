@@ -32,13 +32,12 @@ trait YamlParametersTrait {
    * @return array
    *   Array of method parameters.
    */
-  public function parameters($namespace = ''): array {
+  public function parameters($spec = '', $namespace = ''): array {
     $module_path = $this->extensionList()->getPath('musica');
     $real_path = $this->filesystem()->realpath($module_path);
-    $spec_file = $real_path . '/src/Spec/LastFM/spec.yaml';
+    $spec_file = "{$real_path}/src/Spec/{$spec}/spec.yaml";
 
     try {
-      // @todo use drupal filesystem services for relative file resolution.
       $parsed_spec = Yaml::parseFile($spec_file, Yaml::PARSE_CONSTANT);
     } catch (ParseException $exception) {
       printf('Unable to parse the YAML string: %s', $exception->getMessage());
