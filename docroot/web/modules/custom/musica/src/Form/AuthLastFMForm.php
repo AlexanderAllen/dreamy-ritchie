@@ -1,11 +1,11 @@
 <?php
 
-namespace Drupal\music_api\Form;
+namespace Drupal\musica\Form;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Form\{FormBase, FormStateInterface};
 use Drupal\Core\State\State;
-use Drupal\music_api\Service\LastFM;
+use Drupal\musica\Service\LastFM;
 
 /**
  * Form for LastFM authentica tion.

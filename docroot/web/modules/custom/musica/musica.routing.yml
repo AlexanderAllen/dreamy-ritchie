@@ -1,17 +1,17 @@
 # Blank test page.
-music_api.content:
+musica.content:
   path: '/hello'
   defaults:
-    _controller: '\Drupal\music_api\Controller\HelloController::content'
+    _controller: '\Drupal\musica\Controller\HelloController::content'
     _title: 'Hello World'
   requirements:
     _permission: 'access content'
 
 # LFM Auth form.
-music_api.auth_lastfm_form:
+musica.auth_lastfm_form:
  path: '/auth/lastfm'
  defaults:
    _title: 'Authorization form'
-   _form: '\Drupal\music_api\Form\AuthLastFMForm'
+   _form: '\Drupal\musica\Form\AuthLastFMForm'
  requirements:
    _permission: 'access content'

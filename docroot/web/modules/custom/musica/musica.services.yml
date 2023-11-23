@@ -1,4 +1,4 @@
 services:
-  music_api.lastfm:
-    class: Drupal\music_api\Service\LastFM
+  musica.lastfm:
+    class: Drupal\musica\Service\LastFM
     arguments: ['@messenger']

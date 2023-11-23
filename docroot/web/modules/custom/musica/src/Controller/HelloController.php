@@ -2,14 +2,14 @@
 
 // phpcs:disable
 
-namespace Drupal\music_api\Controller;
+namespace Drupal\musica\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\music_api\Service\LastFM;
+use Drupal\musica\Service\LastFM;
 use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\Yaml\Exception\ParseException;
-use Drupal\music_api\Controller\FooEnum;
+use Drupal\musica\Controller\FooEnum;
 
 /**
  * Hello world.

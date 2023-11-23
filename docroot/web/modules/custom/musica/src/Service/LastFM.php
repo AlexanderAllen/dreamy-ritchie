@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\music_api\Service;
+namespace Drupal\musica\Service;
 
 use Drupal\Core\Messenger\Messenger;
 use GuzzleHttp\Client as GuzzleHttpClient;

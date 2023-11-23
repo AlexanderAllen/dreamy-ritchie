@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\music_api\Controller;
+namespace Drupal\musica\Controller;
 
 /**
  * Enum doc.
