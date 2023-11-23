@@ -52,7 +52,7 @@ class HelloController extends ControllerBase {
 
 
       // $value = Yaml::parseFile('/app/file.yaml', Yaml::PARSE_CONSTANT);
-      $yaml = '{ bar: !php/enum \Drupal\music_api\Controller\FooEnum::Foo->value }';
+      $yaml = '{ bar: !php/enum \Drupal\music_api\Controller\BazEnum::Foo->value }';
       $parameters = Yaml::parse($yaml, Yaml::PARSE_CONSTANT);
       $foo = null;
     } catch (ParseException $exception) {
