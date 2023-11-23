@@ -32,7 +32,7 @@ trait YamlParametersTrait {
    * @return array
    *   Array of method parameters.
    */
-  public function parameters(): array {
+  public function parameters($namespace = ''): array {
     $module_path = $this->extensionList()->getPath('musica');
     $real_path = $this->filesystem()->realpath($module_path);
     $spec_file = $real_path . '/src/Spec/LastFM/file.yaml';
@@ -43,7 +43,8 @@ trait YamlParametersTrait {
     } catch (ParseException $exception) {
       printf('Unable to parse the YAML string: %s', $exception->getMessage());
     }
-    return $parsed_spec[$this->name] ??= NULL;
+    $endpoint = "{$namespace}.{$this->name}";
+    return $parsed_spec[$endpoint] ??= NULL;
   }
 
 }

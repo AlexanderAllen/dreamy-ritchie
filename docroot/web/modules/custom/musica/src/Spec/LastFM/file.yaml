@@ -3,7 +3,7 @@
 # foo: FooEnum:Foo
 # bar: !php/enum FooEnum::Foo
 
-getInfo:
+artist.getInfo:
   artist: ''
   mbid: ''
   lang: ''
@@ -19,7 +19,7 @@ getInfo:
 #   username: ''
 #   api_key: ''
 
-getSimilar:
+artist.getSimilar:
   limit: '' # (Optional) Limit the number of similar artists returned
   artist: '' # (Required (unless mbid)] The artist name
   autocorrect: '' # [0|1] (Optional) Transform misspelled artist names into correct artist names, returning the correct version instead. The corrected artist name will be returned in the response.
