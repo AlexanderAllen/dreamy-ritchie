@@ -37,7 +37,6 @@ class HelloController extends ControllerBase {
     // Do an example artist getInfo request for prototyping.
     $request = [
       'api_key' => $this->lastfm->apiKey,
-      'method' => 'artist.getInfo', // @todo can this be added to the spec? the method name is already in the enum invoked.
       'artist' => 'Cher'
     ];
 
