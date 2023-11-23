@@ -44,12 +44,11 @@ class HelloController extends ControllerBase {
     // Retrieve API call parameters from spec file.
     $spec = artist::getInfo->parameters('artist');
 
-    // Merge the spec with the user request.
-    $merged_request = [...$spec, ...$request];
-    $cleaned_request = array_filter($merged_request, fn ($value) => $value !== '');
+    // Merge the spec with the user request and drop any empty parameters.
+    $merged_request = array_filter([...$spec, ...$request], fn ($value) => $value !== '');
 
     // @todo can the response be mapped to a typed native object instead of stdClass?
-    $response = $this->lastfm->request($cleaned_request);
+    $response = $this->lastfm->request($merged_request);
 
     $render_array = [];
     $render_array[] = [
