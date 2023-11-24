@@ -41,7 +41,7 @@ class HelloController extends ControllerBase {
     ];
 
     // Retrieve API call parameters from spec file.
-    $spec = artist::getInfo->parameters('artist');
+    $spec = artist::getInfo->parameters();
 
     // Merge the spec with the user request and drop any empty parameters.
     $merged_request = array_filter([...$spec, ...$request], fn ($value) => $value !== '');
