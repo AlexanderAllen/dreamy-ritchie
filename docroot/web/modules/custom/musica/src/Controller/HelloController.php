@@ -102,23 +102,34 @@ enum Dereferenced {
   case STATE;
 }
 
-// The Container provides the fluid chainable interface.
-// the container does not implement behaviors, neither it stores or describes state.
+/**
+ * Fluid design pattern container.
+ *
+ * This container provides an interface for chaining calls provided by
+ * behavioral entities implementing the BehaviorsInterface interface.
+ *
+ * The state is stored inside a single immutable EntityState instance,
+ * which this container stores a reference to, along with the current
+ * behavioral instance.
+ *
+ * You can directly invoke the container at any time to get a dereferenced copy
+ * of the container's current behavior and state.
+ */
 class EntityContainer {
   private BehaviorsInterface $entity;
-
-  // IF the container takes care of passing state around, the interface is easier to use for the user.
-  // Otherwise the user has to initialize and manually pass around state.
   private EntityState $state;
 
+  /**
+   * Private constructor.
+   */
   private function __construct(BehaviorsInterface $entity, EntityState $state) {
      $this->entity = $entity;
      $this->state = $state;
   }
 
-  // Unit function
-  // The user specifies which kind of entity they want to use.
-  // The state is abstracted by the container.
+  /**
+   * Creates and returns a container linked to the specified behavior and state.
+   */
   public static function create(BehaviorsInterface $entity, EntityState $state): EntityContainer {
     return new self($entity, $state);
   }
@@ -135,7 +146,7 @@ class EntityContainer {
    *   Optional. Method arguments.
    *
    * @return EntityContainer
-   *   Always returns an EntityContainer instance.
+   *   Always returns an instance of EntityContainer.
    */
   public function map($b, $a = []): EntityContainer {
     $new_state_ref = method_exists($this->entity, $b) ?
@@ -159,6 +170,15 @@ class EntityContainer {
     };
   }
 
+  /**
+   * Magic call implementation calls methods on the current behavior instance.
+   *
+   * @param mixed $f Target function to be called.
+   * @param array $args Optional. Function arguments.
+   *
+   * @return EntityContainer
+   *   Always returns an instance of EntityContainer.
+   */
   public function __call($f, $args = []): EntityContainer {
     return $this->map($f, $args);
   }
