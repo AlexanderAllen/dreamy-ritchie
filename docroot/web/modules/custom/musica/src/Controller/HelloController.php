@@ -45,9 +45,9 @@ class HelloController extends ControllerBase {
   public function content() {
 
     $container = EntityContainer::createFromState(new ArtistBehaviors(), new EntityState('Cher'))
-    ->map('getInfo')
+    ->map('testInfo')
     ->map('doesntexist')
-    ->map('getSomething', $this->lastfm);
+    ->map('getBio', $this->lastfm);
 
     // Deref'd container.
     // [$a, $b] = $o();
@@ -278,7 +278,7 @@ readonly class ArtistBehaviors extends Behaviors {
     $this->namespace = 'artist';
   }
 
-  public function getInfo(EntityState $state): EntityState {
+  public function testInfo(EntityState $state): EntityState {
     $data['description'] = "<h1>{$state->name} is really cool.</h1>";
     return new EntityState($state->name, [...$state->data, ...$data]);
   }
@@ -321,7 +321,7 @@ readonly class ArtistBehaviors extends Behaviors {
    * The entitiy controller is already good as it is tracking the behavior and state entities
    * in one place.
    */
-  public function getSomething(EntityState $state, LastFM $service): EntityState {
+  public function getBio(EntityState $state, LastFM $service): EntityState {
 
     $api_key = $service->apiKey;
 
