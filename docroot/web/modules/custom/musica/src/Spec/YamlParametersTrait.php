@@ -51,4 +51,26 @@ trait YamlParametersTrait {
     return $spec;
   }
 
+  /**
+   * Stub.
+   */
+  public function parametersClass(): array {
+    $spec = $this->spec();
+    $namespace = $this->namespace;
+
+    $module_path = $this->extensionList()->getPath('musica');
+    $real_path = $this->filesystem()->realpath($module_path);
+    $spec_file = "{$real_path}/src/Spec/{$spec}/spec.yaml";
+
+    try {
+      $parsed_spec = Yaml::parseFile($spec_file, Yaml::PARSE_CONSTANT);
+    } catch (ParseException $exception) {
+      printf('Unable to parse the YAML string: %s', $exception->getMessage());
+    }
+    $method = "{$namespace}.{$this->name}";
+    $spec = $parsed_spec[$method] ??= [];
+    $spec = [...$spec, 'method' => $method];
+    return $spec;
+  }
+
 }

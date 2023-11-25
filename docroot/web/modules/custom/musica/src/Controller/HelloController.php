@@ -9,6 +9,10 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\musica\Service\LastFM;
 use Drupal\musica\Spec\LastFM\ArtistEnum as artist;
 
+use Drupal\musica\Spec\LastFM\YamlParametersLastFMTrait;
+use Drupal\musica\Spec\YamlParametersTrait;
+use PhpParser\Node\Expr\Instanceof_;
+
 /**
  * Hello world.
  *
@@ -41,14 +45,22 @@ class HelloController extends ControllerBase {
     ];
 
 
-
     // second attempt.
     // $i = ServiceContainer::entity(new Entity('Cher'))->map('getInfo', ['tracks']);
 
     // $i2 = ServiceContainer::entity(new Entity('Cher'))->getInfo('bio');
 
     // second iteration, using custom objects, Entity in this case, instead of native scalars.
-    $i = EntityContainer::create(new Entity('<h1> Cher </h1>'))->map('htmlspecialchars')->map('strtolower') ;
+    // $i = EntityContainer::create(new ArtistEntity('<h1> Cher </h1>'))->map('htmlspecialchars')->map('strtolower') ;
+
+    // maybe in a fluid pattern the transformers (functions) should always return the transformed data directly and not a reference to it.
+    // it is ok if the container is just for storing the data to be manipulated.
+
+    $o = EntityContainer::create(new ArtistEntity(), new EntityState('Cher'))->getInfo();
+    $o instanceof EntityContainer;
+
+    // $s = new EntityState('Cherokee');
+    // $o2 = EntityContainer::create(new ArtistEntity(), $s)->map('htmlspecialchars');
 
     // 3rd iteration - wrap map with magic __call method.
     // 3.1 iteration - safe map wrap - returns a safe and sound entity if the method is not found,
@@ -98,72 +110,117 @@ class HelloController extends ControllerBase {
 
 }
 
-
-// i guess we could still transform the entity by populating it or performing actions on it
-// but always returning the same object so it remains chainable.
-// $i = ServiceContainer::entity(new Entity('Cher'))->map('getInfo');
-
-// instead of map, __call the api method directly, chainable too?
+// The Container provides the fluid chainable interface.
+// the container does not implement behaviors, neither it stores or describes state.
 class EntityContainer {
-  private Entity $object;
+  private BehaviorsInterface $entity;
 
-  private function __construct(Entity $object) {
-     $this->object = $object;
+  // IF the container takes care of passing state around, the interface is easier to use for the user.
+  // Otherwise the user has to initialize and manually pass around state.
+  private EntityState $state;
+
+  private function __construct(BehaviorsInterface $entity, EntityState $state) {
+     $this->entity = $entity;
+     $this->state = $state;
   }
 
   // Unit function
-  public static function create(Entity $obj) {
-     return new static($obj);
+  // The user specifies which kind of entity they want to use.
+  // The state is abstracted by the container.
+  public static function create(BehaviorsInterface $entity, EntityState $state) {
+    return new self($entity, $state);
   }
 
   // this map is also meant to trasnform the value and return it.
   public function map($f, $args = []) {
-    // $this->_value->getInfo() // works
-    // wont' work bc entity method is expecting a value
-
     // this part is fine as hell
-    call_user_func([$this->object, $f], $args);
+    // and this is also where we can become functional and pass around state instead of storing internally.
+
+    // note in the example the callables always return a value here.
+    $new_state_ref = call_user_func([$this->entity, $f], $this->state, $args);
 
     // This line does expect a result ... eh
-    return static::entity($this->object);
+
+    $new = self::create($this->entity, $new_state_ref);
+
+    return $new;
   }
 
   // Print out the container
   public function __toString(): string {
-     return "Container[ {$this->object} ]";
+     return "Container [ {$this->state->name} ]";
   }
 
   // Deference container
   public function __invoke() {
-     return $this->object;
+     return $this->state;
   }
 
+  // @todo return safe object if method does not exist.
+  // @todo map is returning a container so it can be chained, but call is not.
   public function __call($f, $args = []) {
-    $this->map($f, $args);
+    return $this->map($f, $args);
   }
 }
 
+interface BehaviorsInterface {}
+
 // Think of Entity as a string... they're both objects, this one is custom.
-class Entity {
-  private $name;
+// Again, these entities are good for defining behavior not storing state.
+// The behavior offered can be then used to alter any state passed down to the entity.
+class Entity implements BehaviorsInterface {
 
-  public function __construct($name) {
+  // in the original example the transormed object (a string) is alwways returned to the caller
+  // as opposed to doing modifications by refrence &.
+  public function htmlspecialchars(EntityState $state) {
+    return new EntityState(htmlspecialchars($state->name));
+  }
+
+  public function strtolower(EntityState $state) {
+    // $this->name = strtolower($this->name); // this is a reference modification, don't do this.
+    return new EntityState(strtolower($state->name));
+  }
+}
+
+// Aim to make the state immutable.
+class EntityState {
+  // Entity name, e.g. 'Cher'.
+  public readonly string $name;
+
+  // making this internal public is an anti-pattern, avoid it
+  // data as an arbitrary array is cool for prototyping, but...
+  // the goal is to use a standard state interface for all entities.
+  public readonly array $data;
+
+  public function __construct(string $name, array $state = []) {
     $this->name = $name;
+    $this->data = $state;
+  }
+}
+
+class ArtistEntity extends Entity {
+  use YamlParametersTrait;
+  use YamlParametersLastFMTrait;
+
+  // The namespace is a description of the object itself and not a state.
+  protected readonly string $namespace;
+
+  // DO NOT PASS STATE TO THE ENTITY CONSTRUCTOR.
+  // Otherwise the entity gets coupled to state.
+  public function __construct() {
+    $this->namespace = 'artist';
   }
 
-  public function getInfo($args) {
-    $this->name = "Here is some info for {$this->name}" . $args[0];
+
+  // Behavioral objects can and shoul modify data, but never by reference.
+  // transformations should be pure, no internal or external references.
+  // it's ok to modify objects (strings are objects), but you have to return the object.
+  // that way the caller explicetly can see the transformation on the subject
+  public function getInfo(EntityState $state) {
+
+    $data['description'] = "<h1>{$state->name} is really cool.</h1>";
+
+    return new EntityState($state->name, [...$state->data, ...$data]);
   }
 
-  public function htmlspecialchars() {
-    $this->name = htmlspecialchars($this->name);
-  }
-
-  public function strtolower() {
-    $this->name = strtolower($this->name);
-  }
-
-  public function __invoke() {
-    return new static($this->name);
-  }
 }
