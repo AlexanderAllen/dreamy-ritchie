@@ -40,7 +40,7 @@ class HelloController extends ControllerBase {
    */
   public function content() {
 
-    $container = EntityContainer::createFromState(new ArtistBehaviors(), new EntityState('Cher'))
+    $container = EntityContainer::createFromState(new LastFMArtistBehaviors(), new EntityState('Cher'))
     ->map('testInfo')
     ->map('doesntexist')
     ->map('getBio', $this->lastfm);
@@ -261,7 +261,7 @@ class EntityState {
   }
 }
 
-readonly class ArtistBehaviors extends Behaviors {
+readonly class LastFMArtistBehaviors extends Behaviors {
 
   /**
    * The kind of behavioral object, used for API calls.
@@ -272,75 +272,33 @@ readonly class ArtistBehaviors extends Behaviors {
     $this->namespace = 'artist';
   }
 
+  /**
+   * Basic state test for container.
+   */
   public function testInfo(EntityState $state): EntityState {
     $data['description'] = "<h1>{$state->name} is really cool.</h1>";
     return new EntityState($state->name, [...$state->data, ...$data]);
   }
 
   /**
-   * Initial test integration method.
+   * Get the bio summary for an artist.
    *
-   * Has to integrate with the specified API.
-   * The Service (API) cannot be hardcoded or linked to the behavior.
-   * The behavior should remain service / API agnostic.
-   *
-   * Currently the router controller is being linked to a specific service by
-   * Drupal's dependency injection facilities.
-   *
-   * As an option, the service could easily become part of EntityState.
-   * Continue to keep the behavior state and relationship agnostic at all costs.
-   *
-   * If we put business logic tied to a particular service in the behavior,
-   * it would make the behavior service-specific, requiring more behaviors to be written.
+   * @todo The behavior should remain service / API agnostic.
    *
    * Maybe there should be a service-specific facility from which
    * a service-agnostic behavior can grab data to in an abstracted manner.
    *
-   * The name or instance of the service can then be specified in the state
-   * being given to the behavior to work on.
-   *
    * The behaviors would then populate a standardized state, indpendendent of
    * service.
    *
-   * This would allow the logic to read state indpendently of which service
-   * last created or modified the state.
-   *
-   * In addition to the ALWAYS PRESENT state, behaviors can also accept
-   * optional arguments, which could be a place to insert things like which
-   * service to act on, although this would introduce coupling as well.
-   *
-   * At some point biz logic needs to be encapsulated somewhere, and the behavior
-   * classes are the specialists and candidate entities best places to do this atm.
-   *
-   * The entitiy controller is already good as it is tracking the behavior and state entities
-   * in one place.
-   *
-   * Some additional thoughts;
-   * So right now the artist specialist is doign too much.
-   * It is BOTH fetching data and manipulating data.
-   * The behavior entities should be reserved for exactly that, behavior.
-   * Connectivity is something that should belong elsewhere, like in the service.
    */
   public function getBio(EntityState $state, LastFM $service): EntityState {
 
-    // Do an example artist getInfo request for prototyping.
-    // @todo move api key to service, it's aware of it already.
-    // @todo the behavior SHOULD stay aware of the request details, as that is
-    // part of it's job description.
-    // The service knows HOW to fetch the data, but the behavior knows WHICH
-    // data to fetch.
     $request = [
       'artist' =>  $state->name,
     ];
 
     $response = $service->request($this->namespace, 'getInfo', $request);
-
-
-    // // // Merge the spec with the user request and drop any empty parameters.
-    // $merged_request = array_filter([...$spec, ...$request], fn ($value) => $value !== '');
-
-    // // // @todo can the response be mapped to a typed native object instead of stdClass?
-    // $response = $service->sendRequest($merged_request);
 
     $new = EntityState::create($state->name, $state, [
       'info' => $response?->artist?->bio?->summary,
