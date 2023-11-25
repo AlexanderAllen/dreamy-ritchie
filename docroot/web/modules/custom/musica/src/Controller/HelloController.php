@@ -220,7 +220,9 @@ readonly class Behaviors implements BehaviorsInterface {
   }
 }
 
-// Aim to make the state immutable.
+/**
+ * Immutable state entity.
+ */
 class EntityState {
   // Entity name, e.g. 'Cher'.
   public readonly string $name;
