@@ -290,21 +290,16 @@ readonly class LastFMArtistBehaviors extends Behaviors {
    *
    * The behaviors would then populate a standardized state, indpendendent of
    * service.
-   *
    */
   public function getBio(EntityState $state, LastFM $service): EntityState {
-
-    $request = [
+    $response = $service->request($this->namespace, 'getInfo', [
       'artist' =>  $state->name,
-    ];
-
-    $response = $service->request($this->namespace, 'getInfo', $request);
+    ]);
 
     $new = EntityState::create($state->name, $state, [
       'info' => $response?->artist?->bio?->summary,
     ]);
     return $new;
-
   }
 
 }
