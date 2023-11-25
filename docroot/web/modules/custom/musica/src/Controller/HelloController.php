@@ -256,6 +256,19 @@ class EntityState {
     $this->data = $state;
   }
 
+  /**
+   * Merge and return an existing state instance with a new state instance.
+   *
+   * @param string $name
+   *    The name for the new state instance.
+   * @param EntityState $current_state
+   *    The current state instance.
+   * @param array $new_state
+   *    Optional. Array of data to incorporate into the new state.
+   *
+   * @return EntityState
+   *    A new state instance merged with the previous state.
+   */
   public static function create(string $name = '', EntityState $current_state, array $new_state = []) {
     return new self($name, [...$current_state->data, ...$new_state]);
   }
