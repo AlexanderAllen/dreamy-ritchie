@@ -227,7 +227,6 @@ class EntityState {
   // Entity name, e.g. 'Cher'.
   public readonly string $name;
 
-  // @todo making this internal public is an anti-pattern, avoid it.
   // data as an arbitrary array is cool for prototyping, but...
   // the goal is to use a standard state interface for all entities.
   public readonly array $data;
