@@ -11,6 +11,7 @@ use Drupal\musica\Spec\LastFM\ArtistEnum as artist;
 
 use Drupal\musica\Spec\LastFM\YamlParametersLastFMTrait;
 use Drupal\musica\Spec\YamlParametersTrait;
+use Entity;
 use PhpParser\Node\Expr\Instanceof_;
 
 /**
@@ -44,7 +45,10 @@ class HelloController extends ControllerBase {
       'artist' => 'Cher'
     ];
 
-    $container = EntityContainer::create(new ArtistBehaviors(), new EntityState('Cher'))->map('getInfo')->map('doesntexist')->map('anotherTest');
+    $container = EntityContainer::createFromState(new ArtistBehaviors(), new EntityState('Cher'))
+    ->map('getInfo')
+    ->map('doesntexist')
+    ->map('anotherTest');
 
     // Deref'd container.
     // [$a, $b] = $o();
@@ -128,9 +132,18 @@ class EntityContainer {
   }
 
   /**
+   * Creates and returns a container with specified behavior and a empty state.
+   *
+   * Behaviors can still alter the state as they like.
+   */
+  public static function create(BehaviorsInterface $entity): EntityContainer {
+    return new self($entity, new EntityState());
+  }
+
+  /**
    * Creates and returns a container linked to the specified behavior and state.
    */
-  public static function create(BehaviorsInterface $entity, EntityState $state): EntityContainer {
+  public static function createFromState(BehaviorsInterface $entity, EntityState $state): EntityContainer {
     return new self($entity, $state);
   }
 
@@ -251,7 +264,7 @@ class EntityState {
   // the goal is to use a standard state interface for all entities.
   public readonly array $data;
 
-  public function __construct(string $name, array $state = []) {
+  public function __construct(string $name = '', array $state = []) {
     $this->name = $name;
     $this->data = $state;
   }
