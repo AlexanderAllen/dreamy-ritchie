@@ -3,12 +3,15 @@
 namespace Drupal\musica\Service;
 
 use Drupal\Core\Messenger\Messenger;
+use Drupal\musica\Spec\YamlParametersTrait;
 use GuzzleHttp\Client as GuzzleHttpClient;
+use stdClass;
 
 /**
  * Hello world.
  */
 class LastFM {
+  use YamlParametersTrait;
 
   /**
    * Guzzle HTTP Client.
@@ -55,7 +58,7 @@ class LastFM {
       'api_key' => $this->apiKey,
       'method' => 'auth.gettoken',
     ];
-    $token = $this->request($params);
+    $token = $this->sendRequest($params);
     $token = $token->token;
     return $token;
   }
@@ -69,10 +72,29 @@ class LastFM {
       'method' => 'auth.getSession',
       'token' => $request_token,
     ];
-    $session_response = $this->request($session_request);
+    $session_response = $this->sendRequest($session_request);
 
     // See https://wiki.php.net/rfc/nullsafe_operator.
     return $session_response?->session?->key;
+  }
+
+  /**
+   * Build and send a service request for a namespaced call.
+   */
+  public function request(string $namespace, string $call, array $request): stdClass {
+    // Append API key to request.
+    // @todo throw exception if API key is not present.
+    $request = [...$request, 'api_key' => $this->apiKey];
+
+    // Fetch the request specifications for the call.
+    $spec = $this->serviceNsRequestParameters($this->specName, $namespace, $call);
+
+    // // Merge the spec with the user request and drop any empty parameters.
+    $merged_request = array_filter([...$spec, ...$request], fn ($value) => $value !== '');
+
+    // // @todo can the response be mapped to a typed native object instead of stdClass?
+    $response = $this->sendRequest($merged_request);
+    return $response;
   }
 
   /**
@@ -81,7 +103,7 @@ class LastFM {
    * @param array $parameters
    *   Parameters argument.
    */
-  public function request(array $parameters = []) {
+  public function sendRequest(array $parameters = []) {
     $parameters['api_sig'] = $this->sign($parameters);
     $parameters['format'] = 'json';
 

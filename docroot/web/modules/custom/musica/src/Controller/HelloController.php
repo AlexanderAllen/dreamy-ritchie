@@ -9,10 +9,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\musica\Service\LastFM;
 use Drupal\musica\Spec\LastFM\ArtistEnum as artist;
 
-use Drupal\musica\Spec\LastFM\YamlParametersLastFMTrait;
-use Drupal\musica\Spec\YamlParametersTrait;
-use Entity;
-
 /**
  * Hello world.
  *
@@ -266,8 +262,6 @@ class EntityState {
 }
 
 readonly class ArtistBehaviors extends Behaviors {
-  use YamlParametersTrait;
-  use YamlParametersLastFMTrait;
 
   /**
    * The kind of behavioral object, used for API calls.
@@ -329,25 +323,24 @@ readonly class ArtistBehaviors extends Behaviors {
    */
   public function getBio(EntityState $state, LastFM $service): EntityState {
 
-    $api_key = $service->apiKey;
-
     // Do an example artist getInfo request for prototyping.
+    // @todo move api key to service, it's aware of it already.
+    // @todo the behavior SHOULD stay aware of the request details, as that is
+    // part of it's job description.
+    // The service knows HOW to fetch the data, but the behavior knows WHICH
+    // data to fetch.
     $request = [
-      'api_key' => $api_key,
       'artist' =>  $state->name,
     ];
 
-    // @todo: all the service logic could also just stay in the service,
-    // including api key, request building, etc.
-    // Here the rquest parameters are grabbed from a service-specific object (an enum!
-    // $spec = artist::getInfo->parameters();
-    $spec = $this->serviceNsRequestParameters($service->specName, $this->namespace, 'getInfo');
+    $response = $service->request($this->namespace, 'getInfo', $request);
 
-    // // Merge the spec with the user request and drop any empty parameters.
-    $merged_request = array_filter([...$spec, ...$request], fn ($value) => $value !== '');
 
-    // // @todo can the response be mapped to a typed native object instead of stdClass?
-    $response = $service->request($merged_request);
+    // // // Merge the spec with the user request and drop any empty parameters.
+    // $merged_request = array_filter([...$spec, ...$request], fn ($value) => $value !== '');
+
+    // // // @todo can the response be mapped to a typed native object instead of stdClass?
+    // $response = $service->sendRequest($merged_request);
 
     $new = EntityState::create($state->name, $state, [
       'info' => $response?->artist?->bio?->summary,
