@@ -12,17 +12,13 @@ class LastFM {
 
   /**
    * Guzzle HTTP Client.
-   *
-   * @var GuzzleHttp\Client
    */
-  protected $client;
+  protected GuzzleHttpClient $client;
 
   /**
    * LastFM API key.
-   *
-   * @var string
    */
-  public $apiKey;
+  public string $apiKey;
 
   /**
    * Name of service in the API parameters specifications.
@@ -31,12 +27,10 @@ class LastFM {
 
   /**
    * LastFM private key.
-   *
-   * @var string
    */
-  protected $apiSecret;
+  protected string $apiSecret;
 
-  protected $messenger;
+  protected Messenger $messenger;
 
   /**
    * Class constructor.
