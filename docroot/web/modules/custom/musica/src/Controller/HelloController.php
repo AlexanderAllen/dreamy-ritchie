@@ -11,8 +11,6 @@ use Drupal\musica\Spec\LastFM\ArtistEnum as artist;
 
 use Drupal\musica\Spec\LastFM\YamlParametersLastFMTrait;
 use Drupal\musica\Spec\YamlParametersTrait;
-use Entity;
-use PhpParser\Node\Expr\Instanceof_;
 
 /**
  * Hello world.
@@ -23,6 +21,9 @@ class HelloController extends ControllerBase {
 
   protected LastFM $lastfm;
 
+  /**
+   * {@inheritdoc}
+   */
   public static function create(ContainerInterface $container) {
     $instance = parent::create($container);
     $instance->lastfm = $container->get('musica.lastfm');
@@ -36,14 +37,6 @@ class HelloController extends ControllerBase {
    *   Render array.
    */
   public function content() {
-
-    $api_key = $this->lastfm->apiKey;
-
-    // Do an example artist getInfo request for prototyping.
-    $request = [
-      'api_key' => $this->lastfm->apiKey,
-      'artist' => 'Cher'
-    ];
 
     $container = EntityContainer::createFromState(new ArtistBehaviors(), new EntityState('Cher'))
     ->map('getInfo')
@@ -61,6 +54,8 @@ class HelloController extends ControllerBase {
     // 5th iteration - standarization - make one state entity to use across services, MUST USE INTERFACE
     // ...
     // 6th-8th iterations - pass and manipulate the entity between various containers.
+    //
+    // 10th iteration - implement default render array in behaviors.
 
     // some other ideas for further iteration
     // how about ServiceContainer::artist('Cher) -> creates artist entity out of a base shareable entity
@@ -74,27 +69,12 @@ class HelloController extends ControllerBase {
     // or
     //
 
-
-
-    // Retrieve API call parameters from spec file.
-    // $spec = artist::getInfo->parameters();
-
-    // // Merge the spec with the user request and drop any empty parameters.
-    // $merged_request = array_filter([...$spec, ...$request], fn ($value) => $value !== '');
-
-    // // @todo can the response be mapped to a typed native object instead of stdClass?
-    // $response = $this->lastfm->request($merged_request);
-
     $render_array = [];
     $render_array[] = [
       '#type' => 'markup',
       '#markup' => "hello world sample page",
     ];
 
-    // $render_array[] = [
-    //   '#type' => 'markup',
-    //   '#markup' => "<p>{$response->artist->bio->summary}</p>",
-    // ];
 
     return $render_array;
   }
@@ -286,6 +266,54 @@ readonly class ArtistBehaviors extends Behaviors {
   public function getInfo(EntityState $state): EntityState {
     $data['description'] = "<h1>{$state->name} is really cool.</h1>";
     return new EntityState($state->name, [...$state->data, ...$data]);
+  }
+
+  /**
+   * Initial test integration method.
+   *
+   * Has to integrate with the specified API.
+   * The Service (API) cannot be hardcoded or linked to the behavior.
+   * The behavior should remain service / API agnostic.
+   *
+   * Currently the router controller is being linked to a specific service by
+   * Drupal's dependency injection facilities.
+   *
+   * As an option, the service could easily become part of EntityState.
+   * Continue to keep the behavior state and relationship agnostic at all costs.
+   *
+   * If we put business logic tied to a particular service in the behavior,
+   * it would make the behavior service-specific, requiring more behaviors to be written.
+   *
+   * Maybe there should be a service-specific facility from which
+   * a service-agnostic behavior can grab data to in an abstracted manner.
+   *
+   * The name or instance of the service can then be specified in the state
+   * being given to the behavior to work on.
+   *
+   * The behaviors would then populate a standardized state, indpendendent of
+   * service.
+   *
+   * This would allow the logic to read state indpendently of which service
+   * last created or modified the state.
+   */
+  public function getSomething(): EntityState {
+
+    $api_key = $this->lastfm->apiKey;
+
+    // Do an example artist getInfo request for prototyping.
+    $request = [
+      'api_key' => $this->lastfm->apiKey,
+      'artist' => 'Cher'
+    ];
+
+    // Here the rquest parameters are grabbed from a service-specific object (an enum!
+    $spec = artist::getInfo->parameters();
+
+    // // Merge the spec with the user request and drop any empty parameters.
+    $merged_request = array_filter([...$spec, ...$request], fn ($value) => $value !== '');
+
+    // // @todo can the response be mapped to a typed native object instead of stdClass?
+    $response = $this->lastfm->request($merged_request);
   }
 
 }
