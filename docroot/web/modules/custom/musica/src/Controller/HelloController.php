@@ -44,7 +44,7 @@ class HelloController extends ControllerBase {
       'artist' => 'Cher'
     ];
 
-    $container = EntityContainer::create(new ArtistBehaviors(), new EntityState('Cher'))->map('getInfo');
+    $container = EntityContainer::create(new ArtistBehaviors(), new EntityState('Cher'))->map('getInfo')->map('doesntexist')->map('anotherTest');
 
     // Deref'd container.
     // [$a, $b] = $o();
@@ -137,7 +137,12 @@ class EntityContainer {
    * @return EntityContainer
    */
   public function map($b, $a = []): EntityContainer {
-    $new_state_ref = call_user_func([$this->entity, $b], $this->state, $a);
+
+    // IF the behavior does not exist in the target class, the shows go on.
+    $new_state_ref = method_exists($this->entity, $b) ?
+      call_user_func([$this->entity, $b], $this->state, $a) :
+      $this->state;
+
     return self::create($this->entity, $new_state_ref);
   }
 
@@ -167,7 +172,9 @@ class EntityContainer {
  * Behavioral entities CAN and SHOULD alter state, but they SHOULD NOT own,
  * store, or otherwise reference any state of any kind in any way.
  *
- * The behavior methods should always return the altered state to the caller.
+ * The behavior methods should always receive and return an instance of
+ * EntityState back to the caller, or in other words, aim to behave more like
+ * pure functions and less like OOP class methods.
  */
 interface BehaviorsInterface {
 
@@ -196,6 +203,20 @@ readonly class Behaviors implements BehaviorsInterface {
   public function strtolower(EntityState $state) {
     // $this->name = strtolower($this->name); // this is a reference modification, don't do this.
     return new EntityState(strtolower($state->name));
+  }
+
+  /**
+   * Calling this method throws an uncaught readonly prop violation error.
+   *
+   * This violation is great because it prevents the implementation from
+   * causing side effects by reference inside the state.
+   *
+   * This method is just a unit test.
+   */
+  public function readOnlyViolation(EntityState $state): EntityState {
+    // this leads to a cannot modify readonly property, hooray!
+    $state->data['mic_check'] = "<p>{$state->name} has some pipes.</p>";
+    return $state;
   }
 }
 
@@ -227,10 +248,8 @@ readonly class ArtistBehaviors extends Behaviors {
     $this->namespace = 'artist';
   }
 
-  public function getInfo(EntityState $state) {
-
+  public function getInfo(EntityState $state): EntityState {
     $data['description'] = "<h1>{$state->name} is really cool.</h1>";
-
     return new EntityState($state->name, [...$state->data, ...$data]);
   }
 
