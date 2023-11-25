@@ -25,6 +25,11 @@ class LastFM {
   public $apiKey;
 
   /**
+   * Name of service in the API parameters specifications.
+   */
+  public readonly string $specName;
+
+  /**
    * LastFM private key.
    *
    * @var string
@@ -39,6 +44,7 @@ class LastFM {
   public function __construct(Messenger $messenger) {
     $this->messenger = $messenger;
     $this->client = new GuzzleHttpClient(['base_uri' => 'https://ws.audioscrobbler.com/2.0']);
+    $this->specName = 'LastFM';
     $this->apiKey = getenv('LASTFM_API_KEY') ?? '';
     $this->apiSecret = getenv('LASTFM_API_SECRET') ?? '';
   }

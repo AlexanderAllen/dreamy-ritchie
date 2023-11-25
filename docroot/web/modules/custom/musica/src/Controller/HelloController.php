@@ -334,7 +334,8 @@ readonly class ArtistBehaviors extends Behaviors {
     // @todo: all the service logic could also just stay in the service,
     // including api key, request building, etc.
     // Here the rquest parameters are grabbed from a service-specific object (an enum!
-    $spec = artist::getInfo->parameters();
+    // $spec = artist::getInfo->parameters();
+    $spec = $this->serviceNsRequestParameters($service->specName, $this->namespace, 'getInfo');
 
     // // Merge the spec with the user request and drop any empty parameters.
     $merged_request = array_filter([...$spec, ...$request], fn ($value) => $value !== '');
