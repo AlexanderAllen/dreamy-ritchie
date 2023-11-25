@@ -46,18 +46,16 @@ class HelloController extends ControllerBase {
 
 
     // second attempt.
-    // $i = ServiceContainer::entity(new Entity('Cher'))->map('getInfo', ['tracks']);
-
     // $i2 = ServiceContainer::entity(new Entity('Cher'))->getInfo('bio');
 
     // second iteration, using custom objects, Entity in this case, instead of native scalars.
     // $i = EntityContainer::create(new ArtistEntity('<h1> Cher </h1>'))->map('htmlspecialchars')->map('strtolower') ;
 
-    // maybe in a fluid pattern the transformers (functions) should always return the transformed data directly and not a reference to it.
-    // it is ok if the container is just for storing the data to be manipulated.
+
 
     $o = EntityContainer::create(new ArtistEntity(), new EntityState('Cher'))->getInfo();
     $o instanceof EntityContainer;
+
 
     // $s = new EntityState('Cherokee');
     // $o2 = EntityContainer::create(new ArtistEntity(), $s)->map('htmlspecialchars');
@@ -86,13 +84,13 @@ class HelloController extends ControllerBase {
 
 
     // Retrieve API call parameters from spec file.
-    $spec = artist::getInfo->parameters();
+    // $spec = artist::getInfo->parameters();
 
-    // Merge the spec with the user request and drop any empty parameters.
-    $merged_request = array_filter([...$spec, ...$request], fn ($value) => $value !== '');
+    // // Merge the spec with the user request and drop any empty parameters.
+    // $merged_request = array_filter([...$spec, ...$request], fn ($value) => $value !== '');
 
-    // @todo can the response be mapped to a typed native object instead of stdClass?
-    $response = $this->lastfm->request($merged_request);
+    // // @todo can the response be mapped to a typed native object instead of stdClass?
+    // $response = $this->lastfm->request($merged_request);
 
     $render_array = [];
     $render_array[] = [
@@ -100,10 +98,10 @@ class HelloController extends ControllerBase {
       '#markup' => "hello world sample page",
     ];
 
-    $render_array[] = [
-      '#type' => 'markup',
-      '#markup' => "<p>{$response->artist->bio->summary}</p>",
-    ];
+    // $render_array[] = [
+    //   '#type' => 'markup',
+    //   '#markup' => "<p>{$response->artist->bio->summary}</p>",
+    // ];
 
     return $render_array;
   }
@@ -131,19 +129,19 @@ class EntityContainer {
     return new self($entity, $state);
   }
 
-  // this map is also meant to trasnform the value and return it.
-  public function map($f, $args = []) {
-    // this part is fine as hell
-    // and this is also where we can become functional and pass around state instead of storing internally.
-
-    // note in the example the callables always return a value here.
-    $new_state_ref = call_user_func([$this->entity, $f], $this->state, $args);
-
-    // This line does expect a result ... eh
-
-    $new = self::create($this->entity, $new_state_ref);
-
-    return $new;
+  /**
+   * Executes a behavior on EntityState data, returning a container instance.
+   *
+   * @param mixed $b
+   *   Method (behavior) to execute.
+   * @param array $a
+   *   Optional. Method arguments.
+   *
+   * @return EntityContainer
+   */
+  public function map($b, $a = []) {
+    $new_state_ref = call_user_func([$this->entity, $b], $this->state, $a);
+    return self::create($this->entity, $new_state_ref);
   }
 
   // Print out the container
@@ -153,7 +151,7 @@ class EntityContainer {
 
   // Deference container
   public function __invoke() {
-     return $this->state;
+     return [$this->entity, $this->state];
   }
 
   // @todo return safe object if method does not exist.
@@ -168,7 +166,7 @@ interface BehaviorsInterface {}
 // Think of Entity as a string... they're both objects, this one is custom.
 // Again, these entities are good for defining behavior not storing state.
 // The behavior offered can be then used to alter any state passed down to the entity.
-class Entity implements BehaviorsInterface {
+readonly class Entity implements BehaviorsInterface {
 
   // in the original example the transormed object (a string) is alwways returned to the caller
   // as opposed to doing modifications by refrence &.
@@ -198,17 +196,24 @@ class EntityState {
   }
 }
 
-class ArtistEntity extends Entity {
+readonly class ArtistEntity extends Entity {
   use YamlParametersTrait;
   use YamlParametersLastFMTrait;
 
   // The namespace is a description of the object itself and not a state.
   protected readonly string $namespace;
+  public readonly string $bar;
 
   // DO NOT PASS STATE TO THE ENTITY CONSTRUCTOR.
   // Otherwise the entity gets coupled to state.
   public function __construct() {
     $this->namespace = 'artist';
+    $this->bar = 'foo';
+  }
+
+  public function foo() {
+    // violate read-only for testing
+    $this->bar = 'foo';
   }
 
 
