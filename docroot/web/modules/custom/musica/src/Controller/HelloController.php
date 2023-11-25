@@ -53,7 +53,7 @@ class HelloController extends ControllerBase {
 
 
 
-    $container = EntityContainer::create(new ArtistBehaviors(), new EntityState('Cher'))->getInfo();
+    $container = EntityContainer::create(new ArtistBehaviors(), new EntityState('Cher'))->map('getInfo');
     $container instanceof EntityContainer;
 
     // Deref'd container.
@@ -61,7 +61,8 @@ class HelloController extends ControllerBase {
     $all = $container();
     $entity = $container(Dereferenced::ENTITY);
     $state = $container(Dereferenced::STATE);
-
+    // $entity->foo();
+    $entity->foo();
 
 
 
@@ -138,7 +139,7 @@ class EntityContainer {
   // Unit function
   // The user specifies which kind of entity they want to use.
   // The state is abstracted by the container.
-  public static function create(BehaviorsInterface $entity, EntityState $state) {
+  public static function create(BehaviorsInterface $entity, EntityState $state): EntityContainer {
     return new self($entity, $state);
   }
 
@@ -152,7 +153,7 @@ class EntityContainer {
    *
    * @return EntityContainer
    */
-  public function map($b, $a = []) {
+  public function map($b, $a = []): EntityContainer {
     $new_state_ref = call_user_func([$this->entity, $b], $this->state, $a);
     return self::create($this->entity, $new_state_ref);
   }
@@ -163,7 +164,7 @@ class EntityContainer {
   }
 
   // Deference container
-  public function __invoke(Dereferenced $case = NULL) {
+  public function __invoke(Dereferenced $case = NULL): BehaviorsInterface|EntityState|array {
     return match ($case) {
        Dereferenced::ENTITY => $this->entity,
        Dereferenced::STATE => $this->state,
@@ -172,18 +173,36 @@ class EntityContainer {
   }
 
   // @todo return safe object if method does not exist.
-  // @todo map is returning a container so it can be chained, but call is not.
-  public function __call($f, $args = []) {
+  public function __call($f, $args = []): EntityContainer {
     return $this->map($f, $args);
   }
 }
 
-interface BehaviorsInterface {}
+/**
+ * Interface for behavioral entities.
+ *
+ * Behavioral entities CAN and SHOULD alter state, but they SHOULD NOT own,
+ * store, or otherwise reference any state of any kind in any way.
+ *
+ * The behavior methods should always return the altered state to the caller.
+ */
+interface BehaviorsInterface {
 
-// Think of Entity as a string... they're both objects, this one is custom.
-// Again, these entities are good for defining behavior not storing state.
-// The behavior offered can be then used to alter any state passed down to the entity.
+  /**
+   * Stateless behavior constructor.
+   *
+   * DO NOT pass any kind of state to behavior constructors.
+   * Otherwise the state entities becaomes coupled to the behavioral entities.
+   */
+  public function __construct();
+}
+
 readonly class Behaviors implements BehaviorsInterface {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct() {}
 
   // in the original example the transormed object (a string) is alwways returned to the caller
   // as opposed to doing modifications by refrence &.
@@ -202,7 +221,7 @@ class EntityState {
   // Entity name, e.g. 'Cher'.
   public readonly string $name;
 
-  // making this internal public is an anti-pattern, avoid it
+  // @todo making this internal public is an anti-pattern, avoid it.
   // data as an arbitrary array is cool for prototyping, but...
   // the goal is to use a standard state interface for all entities.
   public readonly array $data;
@@ -221,23 +240,10 @@ readonly class ArtistBehaviors extends Behaviors {
   protected readonly string $namespace;
   public readonly string $bar;
 
-  // DO NOT PASS STATE TO THE ENTITY CONSTRUCTOR.
-  // Otherwise the entity gets coupled to state.
   public function __construct() {
     $this->namespace = 'artist';
-    $this->bar = 'foo';
   }
 
-  public function foo() {
-    // violate read-only for testing
-    $this->bar = 'foo';
-  }
-
-
-  // Behavioral objects can and shoul modify data, but never by reference.
-  // transformations should be pure, no internal or external references.
-  // it's ok to modify objects (strings are objects), but you have to return the object.
-  // that way the caller explicetly can see the transformation on the subject
   public function getInfo(EntityState $state) {
 
     $data['description'] = "<h1>{$state->name} is really cool.</h1>";
