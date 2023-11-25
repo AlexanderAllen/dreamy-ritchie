@@ -40,6 +40,15 @@ class HelloController extends ControllerBase {
       'artist' => 'Cher'
     ];
 
+
+
+    // second attempt.
+    // $i = ServiceContainer::entity(new Entity('Cher'))->map('getInfo', ['tracks']);
+
+    // $i2 = ServiceContainer::entity(new Entity('Cher'))->getInfo('bio');
+
+    $i = ServiceContainer::entity(new Entity('<h1> Cher </h1>'))->map('htmlspecialchars')->map('strtolower') ;
+
     // Retrieve API call parameters from spec file.
     $spec = artist::getInfo->parameters();
 
@@ -63,4 +72,73 @@ class HelloController extends ControllerBase {
     return $render_array;
   }
 
+}
+
+// Think of Entity as a string... they're both objects, this one is custom.
+class Entity {
+  private $name;
+
+  public function __construct($name) {
+    $this->name = $name;
+  }
+
+  public function getInfo($args) {
+    $this->name = "Here is some info for {$this->name}" . $args[0];
+  }
+
+  public function htmlspecialchars() {
+    $this->name = htmlspecialchars($this->name);
+  }
+
+  public function strtolower() {
+    $this->name = strtolower($this->name);
+  }
+
+  public function __invoke() {
+    return new static($this->name);
+  }
+}
+
+// i guess we could still transform the entity by populating it or performing actions on it
+// but always returning the same object so it remains chainable.
+// $i = ServiceContainer::entity(new Entity('Cher'))->map('getInfo');
+
+// instead of map, __call the api method directly, chainable too?
+class ServiceContainer {
+  private Entity $object;
+
+  private function __construct(Entity $object) {
+     $this->object = $object;
+  }
+
+  // Unit function
+  public static function entity(Entity $obj) {
+     return new static($obj);
+  }
+
+  // this map is also meant to trasnform the value and return it.
+  public function map($f, $args = []) {
+    // $this->_value->getInfo() // works
+    // wont' work bc entity method is expecting a value
+
+    // this part is fine as hell
+    call_user_func([$this->object, $f], $args);
+
+    // This line does expect a result ... eh
+    return static::entity($this->object);
+  }
+
+  // Print out the container
+  public function __toString(): string {
+     return "Container[ {$this->object} ]";
+  }
+
+  // Deference container
+  public function __invoke() {
+     return $this->object;
+  }
+
+  public function __call($f, $args = []) {
+    $this->map($f, $args);
+  }
 }
