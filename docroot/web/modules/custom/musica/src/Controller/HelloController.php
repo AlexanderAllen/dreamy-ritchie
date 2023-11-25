@@ -52,9 +52,6 @@ class HelloController extends ControllerBase {
     $entity = $container(Dereferenced::ENTITY);
     $state = $container(Dereferenced::STATE);
 
-
-    // 3.1 iteration - safe map wrap - returns a safe and sound entity if the method is not found,
-    //    allows the chain to continue execution, maybe log into an internal object array errors.
     // 4th iteration - populate/transform entity with information from various api calls.
     // ...
     // 5th iteration - standarization - make one state entity to use across services, MUST USE INTERFACE
@@ -129,16 +126,18 @@ class EntityContainer {
   /**
    * Executes a behavior on EntityState data, returning a container instance.
    *
+   * This is a safe method. If the call does not exist on the callee an
+   * instance of the container is returned so business can resume as usual.
+   *
    * @param mixed $b
    *   Method (behavior) to execute.
    * @param array $a
    *   Optional. Method arguments.
    *
    * @return EntityContainer
+   *   Always returns an EntityContainer instance.
    */
   public function map($b, $a = []): EntityContainer {
-
-    // IF the behavior does not exist in the target class, the shows go on.
     $new_state_ref = method_exists($this->entity, $b) ?
       call_user_func([$this->entity, $b], $this->state, $a) :
       $this->state;
@@ -160,7 +159,6 @@ class EntityContainer {
     };
   }
 
-  // @todo return safe object if method does not exist.
   public function __call($f, $args = []): EntityContainer {
     return $this->map($f, $args);
   }
@@ -194,14 +192,17 @@ readonly class Behaviors implements BehaviorsInterface {
    */
   public function __construct() {}
 
-  // in the original example the transormed object (a string) is alwways returned to the caller
-  // as opposed to doing modifications by refrence &.
+  /**
+   * Working example method - escape entity name.
+   */
   public function htmlspecialchars(EntityState $state) {
     return new EntityState(htmlspecialchars($state->name));
   }
 
+  /**
+   * Working example method - lowercase entity name.
+   */
   public function strtolower(EntityState $state) {
-    // $this->name = strtolower($this->name); // this is a reference modification, don't do this.
     return new EntityState(strtolower($state->name));
   }
 
@@ -214,7 +215,6 @@ readonly class Behaviors implements BehaviorsInterface {
    * This method is just a unit test.
    */
   public function readOnlyViolation(EntityState $state): EntityState {
-    // this leads to a cannot modify readonly property, hooray!
     $state->data['mic_check'] = "<p>{$state->name} has some pipes.</p>";
     return $state;
   }
@@ -241,9 +241,10 @@ readonly class ArtistBehaviors extends Behaviors {
   use YamlParametersTrait;
   use YamlParametersLastFMTrait;
 
-  // The namespace is a description of the object itself and not a state.
+  /**
+   * The kind of behavioral object, used for API calls.
+   */
   protected readonly string $namespace;
-  public readonly string $bar;
 
   public function __construct() {
     $this->namespace = 'artist';
