@@ -51,25 +51,13 @@ class HelloController extends ControllerBase {
     $entity = $container(Dereferenced::ENTITY);
     $state = $container(Dereferenced::STATE);
 
-    // 4th iteration - populate/transform entity with information from various api calls.
+    // 4.2 iteration - populate/transform entity with information from VARIOUS api calls.
     // ...
     // 5th iteration - standarization - make one state entity to use across services, MUST USE INTERFACE
     // ...
     // 6th-8th iterations - pass and manipulate the entity between various containers.
     //
     // 10th iteration - implement default render array in behaviors.
-
-    // some other ideas for further iteration
-    // how about ServiceContainer::artist('Cher) -> creates artist entity out of a base shareable entity
-    // so ServiceContainer::artist('Cher')->getInfo()->getBio() // getBio could also call the first if data not populated.
-    // Also this container is more like an entity container
-    // perhaps is best to have a separate service container, that can contain the entity container
-    // so...
-    // ServiceContainerLastFM::EntityContainer::entity->method1()->method2;
-    // LastFM (implements ServiceContainer)::Artist (EntityContainer) :: entity->method1
-    // LastFM::Artist::method1
-    // or
-    //
 
     $render_array = [];
     $render_array[] = [
