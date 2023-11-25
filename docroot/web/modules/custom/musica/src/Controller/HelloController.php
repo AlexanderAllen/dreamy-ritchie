@@ -53,7 +53,7 @@ class HelloController extends ControllerBase {
 
 
 
-    $container = EntityContainer::create(new ArtistEntity(), new EntityState('Cher'))->getInfo();
+    $container = EntityContainer::create(new ArtistBehaviors(), new EntityState('Cher'))->getInfo();
     $container instanceof EntityContainer;
 
     // Deref'd container.
@@ -61,6 +61,7 @@ class HelloController extends ControllerBase {
     $all = $container();
     $entity = $container(Dereferenced::ENTITY);
     $state = $container(Dereferenced::STATE);
+
 
 
 
@@ -182,7 +183,7 @@ interface BehaviorsInterface {}
 // Think of Entity as a string... they're both objects, this one is custom.
 // Again, these entities are good for defining behavior not storing state.
 // The behavior offered can be then used to alter any state passed down to the entity.
-readonly class Entity implements BehaviorsInterface {
+readonly class Behaviors implements BehaviorsInterface {
 
   // in the original example the transormed object (a string) is alwways returned to the caller
   // as opposed to doing modifications by refrence &.
@@ -212,7 +213,7 @@ class EntityState {
   }
 }
 
-readonly class ArtistEntity extends Entity {
+readonly class ArtistBehaviors extends Behaviors {
   use YamlParametersTrait;
   use YamlParametersLastFMTrait;
 
