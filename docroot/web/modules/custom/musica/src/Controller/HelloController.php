@@ -11,6 +11,7 @@ use Drupal\musica\Spec\LastFM\ArtistEnum as artist;
 
 use Drupal\musica\Spec\LastFM\YamlParametersLastFMTrait;
 use Drupal\musica\Spec\YamlParametersTrait;
+use Entity;
 
 /**
  * Hello world.
@@ -19,6 +20,11 @@ use Drupal\musica\Spec\YamlParametersTrait;
  */
 class HelloController extends ControllerBase {
 
+  /**
+   * LFM Service located at the route controller.
+   *
+   * Created via dependency injection by Drupal's service container.
+   */
   protected LastFM $lastfm;
 
   /**
@@ -41,7 +47,7 @@ class HelloController extends ControllerBase {
     $container = EntityContainer::createFromState(new ArtistBehaviors(), new EntityState('Cher'))
     ->map('getInfo')
     ->map('doesntexist')
-    ->map('anotherTest');
+    ->map('getSomething', $this->lastfm);
 
     // Deref'd container.
     // [$a, $b] = $o();
@@ -73,6 +79,11 @@ class HelloController extends ControllerBase {
     $render_array[] = [
       '#type' => 'markup',
       '#markup' => "hello world sample page",
+    ];
+
+    $render_array[] = [
+      '#type' => 'markup',
+      '#markup' => "<p>Bio: {$state?->data['info']}</p>",
     ];
 
 
@@ -146,7 +157,20 @@ class EntityContainer {
       call_user_func([$this->entity, $b], $this->state, $a) :
       $this->state;
 
-    return self::create($this->entity, $new_state_ref);
+    return self::createFromState($this->entity, $new_state_ref);
+  }
+
+  /**
+   * Magic call implementation calls methods on the current behavior instance.
+   *
+   * @param mixed $b Behavior to be called.
+   * @param array $a Optional. Method arguments.
+   *
+   * @return EntityContainer
+   *   Always returns an instance of EntityContainer.
+   */
+  public function __call($b, $a = []): EntityContainer {
+    return $this->map($b, $a);
   }
 
   // Print out the container
@@ -161,19 +185,6 @@ class EntityContainer {
        Dereferenced::STATE => $this->state,
        default => [$this->entity, $this->state],
     };
-  }
-
-  /**
-   * Magic call implementation calls methods on the current behavior instance.
-   *
-   * @param mixed $f Target function to be called.
-   * @param array $args Optional. Function arguments.
-   *
-   * @return EntityContainer
-   *   Always returns an instance of EntityContainer.
-   */
-  public function __call($f, $args = []): EntityContainer {
-    return $this->map($f, $args);
   }
 }
 
@@ -248,6 +259,10 @@ class EntityState {
     $this->name = $name;
     $this->data = $state;
   }
+
+  public static function create(string $name = '', EntityState $current_state, array $new_state = []) {
+    return new self($name, [...$current_state->data, ...$new_state]);
+  }
 }
 
 readonly class ArtistBehaviors extends Behaviors {
@@ -295,17 +310,29 @@ readonly class ArtistBehaviors extends Behaviors {
    *
    * This would allow the logic to read state indpendently of which service
    * last created or modified the state.
+   *
+   * In addition to the ALWAYS PRESENT state, behaviors can also accept
+   * optional arguments, which could be a place to insert things like which
+   * service to act on, although this would introduce coupling as well.
+   *
+   * At some point biz logic needs to be encapsulated somewhere, and the behavior
+   * classes are the specialists and candidate entities best places to do this atm.
+   *
+   * The entitiy controller is already good as it is tracking the behavior and state entities
+   * in one place.
    */
-  public function getSomething(): EntityState {
+  public function getSomething(EntityState $state, LastFM $service): EntityState {
 
-    $api_key = $this->lastfm->apiKey;
+    $api_key = $service->apiKey;
 
     // Do an example artist getInfo request for prototyping.
     $request = [
-      'api_key' => $this->lastfm->apiKey,
-      'artist' => 'Cher'
+      'api_key' => $api_key,
+      'artist' =>  $state->name,
     ];
 
+    // @todo: all the service logic could also just stay in the service,
+    // including api key, request building, etc.
     // Here the rquest parameters are grabbed from a service-specific object (an enum!
     $spec = artist::getInfo->parameters();
 
@@ -313,7 +340,13 @@ readonly class ArtistBehaviors extends Behaviors {
     $merged_request = array_filter([...$spec, ...$request], fn ($value) => $value !== '');
 
     // // @todo can the response be mapped to a typed native object instead of stdClass?
-    $response = $this->lastfm->request($merged_request);
+    $response = $service->request($merged_request);
+
+    $new = EntityState::create($state->name, $state, [
+      'info' => $response?->artist?->bio?->summary,
+    ]);
+    return $new;
+
   }
 
 }
