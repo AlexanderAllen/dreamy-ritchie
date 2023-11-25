@@ -44,32 +44,15 @@ class HelloController extends ControllerBase {
       'artist' => 'Cher'
     ];
 
-
-    // second attempt.
-    // $i2 = ServiceContainer::entity(new Entity('Cher'))->getInfo('bio');
-
-    // second iteration, using custom objects, Entity in this case, instead of native scalars.
-    // $i = EntityContainer::create(new ArtistEntity('<h1> Cher </h1>'))->map('htmlspecialchars')->map('strtolower') ;
-
-
-
     $container = EntityContainer::create(new ArtistBehaviors(), new EntityState('Cher'))->map('getInfo');
-    $container instanceof EntityContainer;
 
     // Deref'd container.
     // [$a, $b] = $o();
     $all = $container();
     $entity = $container(Dereferenced::ENTITY);
     $state = $container(Dereferenced::STATE);
-    // $entity->foo();
-    $entity->foo();
 
 
-
-    // $s = new EntityState('Cherokee');
-    // $o2 = EntityContainer::create(new ArtistEntity(), $s)->map('htmlspecialchars');
-
-    // 3rd iteration - wrap map with magic __call method.
     // 3.1 iteration - safe map wrap - returns a safe and sound entity if the method is not found,
     //    allows the chain to continue execution, maybe log into an internal object array errors.
     // 4th iteration - populate/transform entity with information from various api calls.
@@ -192,7 +175,7 @@ interface BehaviorsInterface {
    * Stateless behavior constructor.
    *
    * DO NOT pass any kind of state to behavior constructors.
-   * Otherwise the state entities becaomes coupled to the behavioral entities.
+   * Otherwise the state entities becaome coupled to the behavioral entities.
    */
   public function __construct();
 }
