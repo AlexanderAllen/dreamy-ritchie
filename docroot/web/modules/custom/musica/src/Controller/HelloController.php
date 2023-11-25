@@ -244,11 +244,19 @@ readonly class Behaviors implements BehaviorsInterface {
  * Immutable state entity.
  */
 class EntityState {
-  // Entity name, e.g. 'Cher'.
+
+  /**
+   * Human-readable name of the state entity.
+   *
+   * Can be used by behavioral entities to make API calls.
+   */
   public readonly string $name;
 
-  // data as an arbitrary array is cool for prototyping, but...
-  // the goal is to use a standard state interface for all entities.
+  /**
+   * Private member containing the current state.
+   *
+   * @todo data as an arbitrary array is cool for prototyping, but...
+   */
   public readonly array $data;
 
   public function __construct(string $name = '', array $state = []) {
