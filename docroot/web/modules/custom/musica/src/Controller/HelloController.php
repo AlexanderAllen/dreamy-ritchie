@@ -320,6 +320,12 @@ readonly class ArtistBehaviors extends Behaviors {
    *
    * The entitiy controller is already good as it is tracking the behavior and state entities
    * in one place.
+   *
+   * Some additional thoughts;
+   * So right now the artist specialist is doign too much.
+   * It is BOTH fetching data and manipulating data.
+   * The behavior entities should be reserved for exactly that, behavior.
+   * Connectivity is something that should belong elsewhere, like in the service.
    */
   public function getBio(EntityState $state, LastFM $service): EntityState {
 
