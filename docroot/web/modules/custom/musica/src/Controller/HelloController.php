@@ -53,8 +53,15 @@ class HelloController extends ControllerBase {
 
 
 
-    $o = EntityContainer::create(new ArtistEntity(), new EntityState('Cher'))->getInfo();
-    $o instanceof EntityContainer;
+    $container = EntityContainer::create(new ArtistEntity(), new EntityState('Cher'))->getInfo();
+    $container instanceof EntityContainer;
+
+    // Deref'd container.
+    // [$a, $b] = $o();
+    $all = $container();
+    $entity = $container(Dereferenced::ENTITY);
+    $state = $container(Dereferenced::STATE);
+
 
 
     // $s = new EntityState('Cherokee');
@@ -108,6 +115,11 @@ class HelloController extends ControllerBase {
 
 }
 
+enum Dereferenced {
+  case ENTITY;
+  case STATE;
+}
+
 // The Container provides the fluid chainable interface.
 // the container does not implement behaviors, neither it stores or describes state.
 class EntityContainer {
@@ -150,8 +162,12 @@ class EntityContainer {
   }
 
   // Deference container
-  public function __invoke() {
-     return [$this->entity, $this->state];
+  public function __invoke(Dereferenced $case = NULL) {
+    return match ($case) {
+       Dereferenced::ENTITY => $this->entity,
+       Dereferenced::STATE => $this->state,
+       default => [$this->entity, $this->state],
+    };
   }
 
   // @todo return safe object if method does not exist.
