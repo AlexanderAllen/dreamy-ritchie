@@ -273,6 +273,18 @@ class EntityState {
   }
 }
 
+
+
+/**
+ * Behavioral class for Artist entity, coupled to LastFM Service ATM.
+ *
+ * @todo NEWS 11/26 createBehaviorHOF() IS NOT SERVICE BOUND !!!
+ * We can decouple the class again, yeeeeeeehawwwwww
+ *
+ * @todo As an alternative to supressing the deprecation notice, I could
+ * swtich $this->{$behavior->name} to a pre-defined property, an array of
+ * closures.
+ */
 #[AllowDynamicProperties]
 class LastFMArtistBehaviors extends Behaviors {
 
@@ -311,7 +323,7 @@ class LastFMArtistBehaviors extends Behaviors {
    *
    * @todo move to unit testing as well.
    */
-  public function getBio(EntityState $state, LastFM $service): EntityState {
+  public function getBio(EntityState $state, ServiceInterface $service): EntityState {
     $response = $service->request($this->namespace, 'getInfo', [
       'artist' =>  $state->name,
     ]);
@@ -327,7 +339,7 @@ class LastFMArtistBehaviors extends Behaviors {
    *
    * @todo should be implementing throwables at the service for API errors.
    */
-  public function getSimilarTest(EntityState $state, LastFM $service): EntityState {
+  public function getSimilarTest(EntityState $state, ServiceInterface $service): EntityState {
     $response = $service->request($this->namespace, 'getSimilar', [
       'artist' =>  $state->name,
       'limit' => 10,
@@ -358,9 +370,7 @@ class LastFMArtistBehaviors extends Behaviors {
     );
   }
 
-    // // Merge the spec with the user request and drop any empty parameters.
-    // $merged_request = array_filter([...$spec, ...$request], fn ($value) => $value !== '');
-
+  // @todo 11/26
   // if we end up doing a behavior factory, it should be in a base factory class.
   // the base churns out the method boilerplate, but the behaviors still hash out
   // the individual behaviors.
