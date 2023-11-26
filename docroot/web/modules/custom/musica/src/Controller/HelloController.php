@@ -43,7 +43,7 @@ class HelloController extends ControllerBase {
    */
   public function content() {
 
-    $container = EntityContainer::createFromState(new LastFMArtistBehaviors(), new EntityState('Cher'))
+    $container = EntityContainer::createFromState(new ArtistBehaviors(), new EntityState('Cher'))
     ->map('testInfo')
     ->map('doesntexist')
     ->map('getSimilar', $this->lastfm);
@@ -276,17 +276,14 @@ class EntityState {
 
 
 /**
- * Behavioral class for Artist entity, coupled to LastFM Service ATM.
- *
- * @todo NEWS 11/26 createBehaviorHOF() IS NOT SERVICE BOUND !!!
- * We can decouple the class again, yeeeeeeehawwwwww
+ * Behavioral class for Artist entity.
  *
  * @todo As an alternative to supressing the deprecation notice, I could
  * swtich $this->{$behavior->name} to a pre-defined property, an array of
  * closures.
  */
 #[AllowDynamicProperties]
-class LastFMArtistBehaviors extends Behaviors {
+class ArtistBehaviors extends Behaviors {
 
   /**
    * The kind of behavioral object, used for API calls.
@@ -312,8 +309,6 @@ class LastFMArtistBehaviors extends Behaviors {
 
   /**
    * Get the bio summary for an artist.
-   *
-   * @todo The behavior should remain service / API agnostic.
    *
    * Maybe there should be a service-specific facility from which
    * a service-agnostic behavior can grab data to in an abstracted manner.
