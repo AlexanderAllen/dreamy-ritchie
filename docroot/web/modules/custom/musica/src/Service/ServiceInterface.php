@@ -10,7 +10,7 @@ use stdClass;
 interface ServiceInterface {
 
   /**
-   * Build and send a namespaced service request for a namespaced call.
+   * Build and send a namespaced API Service request.
    *
    * @param string $namespace
    *   Namespace of the API request. For example: "artist", "track", etc.
