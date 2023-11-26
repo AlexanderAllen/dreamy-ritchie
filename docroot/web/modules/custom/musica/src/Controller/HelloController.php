@@ -80,10 +80,10 @@ class HelloController extends ControllerBase {
       '#markup' => "hello world sample page",
     ];
 
-    $render_array[] = [
-      '#type' => 'markup',
-      '#markup' => "<p>Bio: {$state?->data['info']}</p>",
-    ];
+    // $render_array[] = [
+    //   '#type' => 'markup',
+    //   '#markup' => "<p>Bio: {$state?->data['info']}</p>",
+    // ];
 
 
     return $render_array;
@@ -152,9 +152,19 @@ class EntityContainer {
    *   Always returns an instance of EntityContainer.
    */
   public function map(string $b, ServiceInterface $s = NULL, array $a = []): EntityContainer {
-    $new_state_ref = method_exists($this->entity, $b) ?
-      call_user_func([$this->entity, $b], $this->state, $s, $a) :
-      $this->state;
+    $new_state_ref = $this->state;
+
+    // For built-in class methods.
+    if (method_exists($this->entity, $b)) {
+      $new_state_ref = call_user_func([$this->entity, $b], $this->state, $s, $a);
+    }
+
+    $prop_exists = array_key_exists($b, get_object_vars($this->entity));
+    if ($prop_exists && is_callable($this->entity->{$b})) {
+      // Closures as properties need to be deref'd before they can be called.
+      $closure = $this->entity->{$b};
+      $new_state_ref = $closure($this->state, $s, $a);
+    }
 
     return self::createFromState($this->entity, $new_state_ref);
   }
@@ -258,7 +268,7 @@ class EntityState {
    * @return EntityState
    *    A new state instance merged with the previous state.
    */
-  public static function create(string $name = '', EntityState $current_state, array $new_state = []) {
+  public static function create(string $name, EntityState $current_state, array $new_state = []) {
     return new self($name, [...$current_state->data, ...$new_state]);
   }
 }
@@ -280,6 +290,8 @@ class LastFMArtistBehaviors extends Behaviors {
 
   /**
    * Basic state test for container.
+   *
+   * @todo move to unit test.
    */
   public function testInfo(EntityState $state): EntityState {
     $data['description'] = "<h1>{$state->name} is really cool.</h1>";
@@ -296,6 +308,8 @@ class LastFMArtistBehaviors extends Behaviors {
    *
    * The behaviors would then populate a standardized state, indpendendent of
    * service.
+   *
+   * @todo move to unit testing as well.
    */
   public function getBio(EntityState $state, LastFM $service): EntityState {
     $response = $service->request($this->namespace, 'getInfo', [
