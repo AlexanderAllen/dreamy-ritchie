@@ -151,19 +151,6 @@ class EntityContainer {
     return self::createFromState($this->entity, $new_state_ref);
   }
 
-  /**
-   * Magic call implementation calls methods on the current behavior instance.
-   *
-   * @param mixed $b Behavior to be called.
-   * @param array $a Optional. Method arguments.
-   *
-   * @return EntityContainer
-   *   Always returns an instance of EntityContainer.
-   */
-  public function __call($b, $a = []): EntityContainer {
-    return $this->map($b, $a);
-  }
-
   // Print out the container
   public function __toString(): string {
      return "Container [ {$this->state->name} ]";
