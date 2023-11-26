@@ -80,14 +80,7 @@ class LastFM implements ServiceInterface {
   }
 
   /**
-   * Build and send a namespaced service request for a namespaced call.
-   *
-   * @param string $namespace
-   *   Namespace of the API request. For example: "artist", "track", etc.
-   * @param string $call
-   *   Name of the API call. For example: "getInfo".
-   * @param array $request
-   *   Arbitrary non-associative array of request parameters.
+   * {@inheritdoc}
    */
   public function request(string $namespace, string $call, array $request): stdClass {
     // Append API key to request.
@@ -97,7 +90,7 @@ class LastFM implements ServiceInterface {
     // Fetch the request specifications for the call.
     $spec = $this->serviceNsRequestParameters($this->specName, $namespace, $call);
 
-    // // Merge the spec with the user request and drop any empty parameters.
+    // Merge the spec with the user request and drop any empty parameters.
     $merged_request = array_filter([...$spec, ...$request], fn ($value) => $value !== '');
 
     // // @todo can the response be mapped to a typed native object instead of stdClass?
