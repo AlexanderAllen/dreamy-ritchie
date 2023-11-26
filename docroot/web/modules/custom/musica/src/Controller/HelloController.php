@@ -7,7 +7,7 @@ namespace Drupal\musica\Controller;
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\musica\Service\LastFM;
-use Drupal\musica\Spec\LastFM\ArtistEnum as artist;
+use Drupal\musica\Spec\LastFM\ArtistEnum;
 
 /**
  * Hello world.
@@ -45,11 +45,16 @@ class HelloController extends ControllerBase {
     ->map('doesntexist')
     ->map('getBio', $this->lastfm);
 
+    // route controller initial candidate for cache.
+    // entity level cache should be lower in the stack.
+
     // Deref'd container.
     // [$a, $b] = $o();
     $all = $container();
     $entity = $container(Dereferenced::ENTITY);
     $state = $container(Dereferenced::STATE);
+
+    $b = $entity->behaviors();
 
     // 4.2 iteration - populate/transform entity with information from VARIOUS api calls.
     // ...
@@ -191,14 +196,27 @@ interface BehaviorsInterface {
    * Otherwise the state entities becaome coupled to the behavioral entities.
    */
   public function __construct();
+
+  /**
+   * Provide information about behaviors available to this entity.
+   *
+   * @return array
+   *    List of behaviors available.
+   */
+  public function behaviors();
 }
 
-readonly class Behaviors implements BehaviorsInterface {
+readonly abstract class Behaviors implements BehaviorsInterface {
 
   /**
    * {@inheritdoc}
    */
   public function __construct() {}
+
+  /**
+   * {@inheritdoc}
+   */
+  public function behaviors() {}
 
   /**
    * Working example method - escape entity name.
@@ -279,6 +297,10 @@ readonly class LastFMArtistBehaviors extends Behaviors {
 
   public function __construct() {
     $this->namespace = 'artist';
+  }
+
+  public function behaviors() {
+    return array_map(fn ($case) => $case->name, ArtistEnum::cases());
   }
 
   /**
