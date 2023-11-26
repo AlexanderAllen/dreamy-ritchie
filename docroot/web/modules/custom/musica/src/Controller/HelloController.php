@@ -7,8 +7,9 @@ namespace Drupal\musica\Controller;
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\musica\Service\LastFM;
+use Drupal\musica\Service\ServiceInterface;
 use Drupal\musica\Spec\LastFM\ArtistEnum;
-use Entity;
+use AllowDynamicProperties;
 
 /**
  * Hello world.
@@ -44,19 +45,25 @@ class HelloController extends ControllerBase {
     $container = EntityContainer::createFromState(new LastFMArtistBehaviors(), new EntityState('Cher'))
     ->map('testInfo')
     ->map('doesntexist')
-    ->map('getBio', $this->lastfm)
     ->map('getSimilar', $this->lastfm);
+
+    // supress api calls temporarily
+    // ->map('getBio', $this->lastfm)
+    // ->map('getSimilar', $this->lastfm);
 
     // route controller initial candidate for cache.
     // entity level cache should be lower in the stack.
 
     // Deref'd container.
     // [$a, $b] = $o();
+    // @todo I need the dereferences to be strongly typed, I don't want a union.
     $all = $container();
-    $entity = $container(Dereferenced::ENTITY);
-    $state = $container(Dereferenced::STATE);
+    $behavior = $container->getBehaviorEntity();
+    $state = $container->getStateEntity();
 
-    $b = $entity::behaviors();
+    // $b = $behavior->defineBehaviors();
+    // $exec = $b['getSimilar']($state);
+
 
     // 4.2 iteration - populate/transform entity with information from VARIOUS api calls.
     // ...
@@ -84,7 +91,7 @@ class HelloController extends ControllerBase {
 }
 
 enum Dereferenced {
-  case ENTITY;
+  case BEHAVIOR;
   case STATE;
 }
 
@@ -143,9 +150,9 @@ class EntityContainer {
    * @return EntityContainer
    *   Always returns an instance of EntityContainer.
    */
-  public function map($b, $a = []): EntityContainer {
+  public function map(string $b, ServiceInterface $s = NULL, array $a = []): EntityContainer {
     $new_state_ref = method_exists($this->entity, $b) ?
-      call_user_func([$this->entity, $b], $this->state, $a) :
+      call_user_func([$this->entity, $b], $this->state, $s, $a) :
       $this->state;
 
     return self::createFromState($this->entity, $new_state_ref);
@@ -159,10 +166,17 @@ class EntityContainer {
   // Deference container
   public function __invoke(Dereferenced $case = NULL): BehaviorsInterface|EntityState|array {
     return match ($case) {
-       Dereferenced::ENTITY => $this->entity,
+       Dereferenced::BEHAVIOR => $this->entity,
        Dereferenced::STATE => $this->state,
        default => [$this->entity, $this->state],
     };
+  }
+
+  public function getBehaviorEntity() {
+    return $this->entity;
+  }
+  public function getStateEntity() {
+    return $this->state;
   }
 }
 
@@ -195,7 +209,7 @@ interface BehaviorsInterface {
   public static function behaviors();
 }
 
-readonly abstract class Behaviors implements BehaviorsInterface {
+abstract class Behaviors implements BehaviorsInterface {
 
   /**
    * {@inheritdoc}
@@ -277,7 +291,8 @@ class EntityState {
   }
 }
 
-readonly class LastFMArtistBehaviors extends Behaviors {
+#[AllowDynamicProperties]
+class LastFMArtistBehaviors extends Behaviors {
 
   /**
    * The kind of behavioral object, used for API calls.
@@ -286,10 +301,9 @@ readonly class LastFMArtistBehaviors extends Behaviors {
 
   public function __construct() {
     $this->namespace = 'artist';
-  }
-
-  public static function behaviors() {
-    return array_map(fn ($case) => $case->name, ArtistEnum::cases());
+    $this->assignBehaviors();
+    // @todo should be parent::assignBehaviors(behavioralEnum);
+    $test = null;
   }
 
   /**
@@ -327,7 +341,7 @@ readonly class LastFMArtistBehaviors extends Behaviors {
    *
    * @todo should be implementing throwables at the service for API errors.
    */
-  public function getSimilar(EntityState $state, LastFM $service): EntityState {
+  public function getSimilarTest(EntityState $state, LastFM $service): EntityState {
     $response = $service->request($this->namespace, 'getSimilar', [
       'artist' =>  $state->name,
       'limit' => 10,
@@ -338,11 +352,41 @@ readonly class LastFMArtistBehaviors extends Behaviors {
     return $new;
   }
 
+  protected function assignBehaviors(): void {
+    $behaviors = ArtistEnum::cases();
+    array_walk($behaviors,
+      fn ($behavior) => $this->{$behavior->name} = $this->createBehaviorHOF($behavior->name)
+    );
+  }
+
+  // @todo additiona arbitrary call parameters need to be supported as needed
+  protected function createBehaviorHOF(string $behavior_name): callable {
+    return fn (EntityState $state, ServiceInterface $service, array $params = []) => (
+      EntityState::create($state->name, $state, [
+        $behavior_name => $service->request(
+          $this->namespace,
+          $behavior_name,
+          ['artist' =>  $state->name, ...$params]
+        ),
+      ])
+    );
+  }
+
+    // // Merge the spec with the user request and drop any empty parameters.
+    // $merged_request = array_filter([...$spec, ...$request], fn ($value) => $value !== '');
+
+  // if we end up doing a behavior factory, it should be in a base factory class.
+  // the base churns out the method boilerplate, but the behaviors still hash out
+  // the individual behaviors.
+
   /**
    * Oh hey hey, using closures we could factory out the calls based on the enum methods!
    * Behavioral logic would still need some methods...such as parsing the results.
    *
    * Also look up data/json hydration patterns.
+   *
+   * Before hashing out the rest of the artist behaviors or coming up w/ a
+   * factory... check how to hydrate + standarize the state.
    */
 
 }
