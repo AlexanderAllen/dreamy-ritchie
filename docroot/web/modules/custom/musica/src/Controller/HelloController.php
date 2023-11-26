@@ -6,7 +6,7 @@ namespace Drupal\musica\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\musica\Behavior\BehaviorsInterface;
+use Drupal\musica\Behavior\BehaviorInterface;
 use Drupal\musica\Service\LastFM;
 use Drupal\musica\Service\ServiceInterface;
 use Drupal\musica\Spec\LastFM\ArtistEnum;
@@ -100,7 +100,7 @@ enum Dereferenced {
  * Fluid design pattern container.
  *
  * This container provides an interface for chaining calls provided by
- * behavioral entities implementing the BehaviorsInterface interface.
+ * behavioral entities implementing the BehaviorInterface interface.
  *
  * The state is stored inside a single immutable EntityState instance,
  * which this container stores a reference to, along with the current
@@ -110,13 +110,13 @@ enum Dereferenced {
  * of the container's current behavior and state.
  */
 class EntityContainer {
-  private BehaviorsInterface $entity;
+  private BehaviorInterface $entity;
   private EntityState $state;
 
   /**
    * Private constructor.
    */
-  private function __construct(BehaviorsInterface $entity, EntityState $state) {
+  private function __construct(BehaviorInterface $entity, EntityState $state) {
      $this->entity = $entity;
      $this->state = $state;
   }
@@ -126,14 +126,14 @@ class EntityContainer {
    *
    * Behaviors can still alter the state as they like.
    */
-  public static function create(BehaviorsInterface $entity): EntityContainer {
+  public static function create(BehaviorInterface $entity): EntityContainer {
     return new self($entity, new EntityState());
   }
 
   /**
    * Creates and returns a container linked to the specified behavior and state.
    */
-  public static function createFromState(BehaviorsInterface $entity, EntityState $state): EntityContainer {
+  public static function createFromState(BehaviorInterface $entity, EntityState $state): EntityContainer {
     return new self($entity, $state);
   }
 
@@ -165,7 +165,7 @@ class EntityContainer {
   }
 
   // Deference container
-  public function __invoke(Dereferenced $case = NULL): BehaviorsInterface|EntityState|array {
+  public function __invoke(Dereferenced $case = NULL): BehaviorInterface|EntityState|array {
     return match ($case) {
        Dereferenced::BEHAVIOR => $this->entity,
        Dereferenced::STATE => $this->state,
@@ -181,7 +181,7 @@ class EntityContainer {
   }
 }
 
-abstract class Behaviors implements BehaviorsInterface {
+abstract class Behaviors implements BehaviorInterface {
 
   /**
    * {@inheritdoc}

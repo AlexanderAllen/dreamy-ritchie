@@ -12,7 +12,7 @@ namespace Drupal\musica\Behavior;
  * EntityState back to the caller, or in other words, aim to behave more like
  * pure functions and less like OOP class methods.
  */
-interface BehaviorsInterface {
+interface BehaviorInterface {
 
   /**
    * Stateless behavior constructor.
