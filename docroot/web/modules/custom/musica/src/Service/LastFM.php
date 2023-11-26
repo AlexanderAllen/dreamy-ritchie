@@ -3,6 +3,7 @@
 namespace Drupal\musica\Service;
 
 use Drupal\Core\Messenger\Messenger;
+use Drupal\musica\Service\ServiceInterface;
 use Drupal\musica\Spec\YamlParametersTrait;
 use GuzzleHttp\Client as GuzzleHttpClient;
 use stdClass;
@@ -10,7 +11,7 @@ use stdClass;
 /**
  * Hello world.
  */
-class LastFM {
+class LastFM implements ServiceInterface {
   use YamlParametersTrait;
 
   /**
