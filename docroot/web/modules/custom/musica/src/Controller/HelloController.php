@@ -8,6 +8,7 @@ use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\musica\Service\LastFM;
 use Drupal\musica\Spec\LastFM\ArtistEnum;
+use Entity;
 
 /**
  * Hello world.
@@ -43,7 +44,8 @@ class HelloController extends ControllerBase {
     $container = EntityContainer::createFromState(new LastFMArtistBehaviors(), new EntityState('Cher'))
     ->map('testInfo')
     ->map('doesntexist')
-    ->map('getBio', $this->lastfm);
+    ->map('getBio', $this->lastfm)
+    ->map('getSimilar', $this->lastfm);
 
     // route controller initial candidate for cache.
     // entity level cache should be lower in the stack.
@@ -54,7 +56,7 @@ class HelloController extends ControllerBase {
     $entity = $container(Dereferenced::ENTITY);
     $state = $container(Dereferenced::STATE);
 
-    $b = $entity->behaviors();
+    $b = $entity::behaviors();
 
     // 4.2 iteration - populate/transform entity with information from VARIOUS api calls.
     // ...
@@ -203,7 +205,7 @@ interface BehaviorsInterface {
    * @return array
    *    List of behaviors available.
    */
-  public function behaviors();
+  public static function behaviors();
 }
 
 readonly abstract class Behaviors implements BehaviorsInterface {
@@ -216,7 +218,7 @@ readonly abstract class Behaviors implements BehaviorsInterface {
   /**
    * {@inheritdoc}
    */
-  public function behaviors() {}
+  public static function behaviors() {}
 
   /**
    * Working example method - escape entity name.
@@ -299,7 +301,7 @@ readonly class LastFMArtistBehaviors extends Behaviors {
     $this->namespace = 'artist';
   }
 
-  public function behaviors() {
+  public static function behaviors() {
     return array_map(fn ($case) => $case->name, ArtistEnum::cases());
   }
 
@@ -332,5 +334,28 @@ readonly class LastFMArtistBehaviors extends Behaviors {
     ]);
     return $new;
   }
+
+  /**
+   * Implements artist.getSimilar API call.
+   *
+   * @todo should be implementing throwables at the service for API errors.
+   */
+  public function getSimilar(EntityState $state, LastFM $service): EntityState {
+    $response = $service->request($this->namespace, 'getSimilar', [
+      'artist' =>  $state->name,
+      'limit' => 10,
+    ]);
+    $new = EntityState::create($state->name, $state, [
+      'getSimilar' => $response,
+    ]);
+    return $new;
+  }
+
+  /**
+   * Oh hey hey, using closures we could factory out the calls based on the enum methods!
+   * Behavioral logic would still need some methods...such as parsing the results.
+   *
+   * Also look up data/json hydration patterns.
+   */
 
 }
