@@ -80,7 +80,14 @@ class LastFM implements ServiceInterface {
   }
 
   /**
-   * Build and send a service request for a namespaced call.
+   * Build and send a namespaced service request for a namespaced call.
+   *
+   * @param string $namespace
+   *   Namespace of the API request. For example: "artist", "track", etc.
+   * @param string $call
+   *   Name of the API call. For example: "getInfo".
+   * @param array $request
+   *   Arbitrary non-associative array of request parameters.
    */
   public function request(string $namespace, string $call, array $request): stdClass {
     // Append API key to request.
