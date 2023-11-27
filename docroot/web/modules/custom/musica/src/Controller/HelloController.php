@@ -56,16 +56,8 @@ class HelloController extends ControllerBase {
     // route controller initial candidate for cache.
     // entity level cache should be lower in the stack.
 
-    // Deref'd container.
-    // [$a, $b] = $o();
-    // @todo I need the dereferences to be strongly typed, I don't want a union.
-    $all = $container();
     $behavior = $container->getBehaviorEntity();
     $state = $container->getStateEntity();
-
-    // $b = $behavior->defineBehaviors();
-    // $exec = $b['getSimilar']($state);
-
 
     // 4.2 iteration - populate/transform entity with information from VARIOUS api calls.
     // ...
@@ -90,11 +82,6 @@ class HelloController extends ControllerBase {
     return $render_array;
   }
 
-}
-
-enum Dereferenced {
-  case BEHAVIOR;
-  case STATE;
 }
 
 /**
@@ -164,20 +151,6 @@ class EntityContainer {
     }
 
     return self::createFromState($this->entity, $new_state_ref);
-  }
-
-  // Print out the container
-  public function __toString(): string {
-     return "Container [ {$this->state->name} ]";
-  }
-
-  // Deference container
-  public function __invoke(Dereferenced $case = NULL) {
-    return match ($case) {
-       Dereferenced::BEHAVIOR => $this->entity,
-       Dereferenced::STATE => $this->state,
-       default => [$this->entity, $this->state],
-    };
   }
 
   public function getBehaviorEntity() {
