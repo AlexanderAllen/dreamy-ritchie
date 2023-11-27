@@ -3,8 +3,8 @@
 namespace Drupal\musica\Behavior;
 
 use Drupal\musica\Behavior\BehaviorInterface;
-use Drupal\musica\Controller\EntityState;
 use Drupal\musica\Service\ServiceInterface;
+use Drupal\musica\State\EntityState;
 
 /**
  * Class stub.
@@ -76,8 +76,9 @@ abstract class BaseBehaviors implements BehaviorInterface {
    * Populates the class behaviors property with behavioral closures.
    */
   protected function assignBehaviors(array $behaviors): void {
-    array_walk($behaviors,
-      fn ($behavior) => $this->behaviors[$behavior->name] = $this->createBehaviorHOF($behavior->name)
+    array_walk(
+      $behaviors,
+      fn ($behavior) => $this->behaviors[$behavior->name] = $this->createBehaviorHof($behavior->name)
     );
   }
 
@@ -94,8 +95,12 @@ abstract class BaseBehaviors implements BehaviorInterface {
     );
   }
 
-  // @todo additiona arbitrary call parameters need to be supported as needed
-  protected function createBehaviorHOF(string $behavior_name): callable {
+  /**
+   * Higher Order Function that returns behavioral closures.
+   *
+   * @todo additiona arbitrary call parameters need to be supported as needed
+   */
+  protected function createBehaviorHof(string $behavior_name): callable {
     return fn (EntityState $state, ServiceInterface $service, array $params = []) => (
       EntityState::create($state->name, $state, [
         $behavior_name => $service->request(
