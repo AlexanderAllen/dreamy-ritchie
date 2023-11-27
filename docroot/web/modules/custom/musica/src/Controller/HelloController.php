@@ -132,10 +132,12 @@ class EntityContainer {
    * This is a safe method. If the call does not exist on the callee an
    * instance of the container is returned so business can resume as usual.
    *
-   * @param mixed $b
+   * @param string $b
    *   Method (behavior) to execute.
+   * @param ServiceInterface $s
+   *   Optional. Service entity instance.
    * @param array $a
-   *   Optional. Method arguments.
+   *   Optional. Array of optional parameters
    *
    * @return EntityContainer
    *   Always returns an instance of EntityContainer.
