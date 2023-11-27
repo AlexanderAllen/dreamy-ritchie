@@ -288,7 +288,7 @@ class ArtistBehaviors extends Behaviors {
 
   public function __construct() {
     $this->namespace = 'artist';
-    $this->assignBehaviors();
+    $this->assignBehaviors(ArtistEnum::cases());
     // @todo should be parent::assignBehaviors(behavioralEnum);
     $test = null;
   }
@@ -353,9 +353,10 @@ class ArtistBehaviors extends Behaviors {
     }
   }
 
-  protected function assignBehaviors(): void {
-    // @todo decouple the enum.
-    $behaviors = ArtistEnum::cases();
+  /**
+   * Populates the class behaviors property with behavioral closures.
+   */
+  protected function assignBehaviors(array $behaviors): void {
     array_walk($behaviors,
       fn ($behavior) => $this->behaviors[$behavior->name] = $this->createBehaviorHOF($behavior->name)
     );
@@ -366,7 +367,7 @@ class ArtistBehaviors extends Behaviors {
    *
    * Use for testing and to preserve the functional purity of the state.
    * In case a non-existant behavior is requested, the dummy callable can be
-   * subbed in without violating the previous state or side effects.
+   * subbed in without state violations or side effects.
    */
   protected function dummyBehavior(EntityState $state = NULL, ServiceInterface $service = NULL, array $params = []): callable {
     return fn (EntityState $state, ServiceInterface $service = NULL, array $params = []) => (
