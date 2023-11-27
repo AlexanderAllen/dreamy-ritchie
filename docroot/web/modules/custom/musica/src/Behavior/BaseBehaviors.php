@@ -67,7 +67,8 @@ abstract class BaseBehaviors implements BehaviorInterface {
     $prop_exists = array_key_exists($b, $this->behaviors);
     if ($prop_exists && is_callable($this->behaviors[$b])) {
       return $this->behaviors[$b];
-    } else {
+    }
+    else {
       return $this->dummyBehavior();
     }
   }
@@ -97,8 +98,6 @@ abstract class BaseBehaviors implements BehaviorInterface {
 
   /**
    * Higher Order Function that returns behavioral closures.
-   *
-   * @todo additiona arbitrary call parameters need to be supported as needed
    */
   protected function createBehaviorHof(string $behavior_name): callable {
     return fn (EntityState $state, ServiceInterface $service, array $params = []) => (

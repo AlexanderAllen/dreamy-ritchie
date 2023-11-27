@@ -31,9 +31,6 @@ interface BehaviorInterface {
 
   /**
    * Provide information about behaviors available to this entity.
-   *
-   * @return array
-   *   List of behaviors available.
    */
   public static function behaviors();
 

@@ -13,6 +13,7 @@ use Drupal\musica\Service\ServiceInterface;
 use Drupal\musica\Spec\LastFM\ArtistEnum;
 use Drupal\musica\State\EntityState;
 
+
 /**
  * Hello world.
  *
@@ -47,7 +48,7 @@ class HelloController extends ControllerBase {
     $container = EntityContainer::createFromState(new ArtistBehaviors(), new EntityState('Cher'))
     ->map('testInfo')
     ->map('doesntexist')
-    ->map('getSimilar', $this->lastfm);
+    ->map('getSimilar', $this->lastfm, ['limit' => 10]);
 
     // supress api calls temporarily
     // ->map('getBio', $this->lastfm)
