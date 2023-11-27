@@ -4,4 +4,4 @@ parameters:
         - web/modules/custom
     cognitive_complexity:
         class: 50
-        function: 8
+        function: 4
