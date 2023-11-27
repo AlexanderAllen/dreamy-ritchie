@@ -187,7 +187,7 @@ class EntityContainer {
   }
 }
 
-abstract class Behaviors implements BehaviorInterface {
+abstract class BaseBehaviors implements BehaviorInterface {
 
   /**
    * {@inheritdoc}
@@ -225,6 +225,54 @@ abstract class Behaviors implements BehaviorInterface {
     $state->data['mic_check'] = "<p>{$state->name} has some pipes.</p>";
     return $state;
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getBehavior(string $b): callable {
+    $prop_exists = array_key_exists($b, $this->behaviors);
+    if ($prop_exists && is_callable($this->behaviors[$b])) {
+      return $this->behaviors[$b];
+    } else {
+      return $this->dummyBehavior();
+    }
+  }
+
+  /**
+   * Populates the class behaviors property with behavioral closures.
+   */
+  protected function assignBehaviors(array $behaviors): void {
+    array_walk($behaviors,
+      fn ($behavior) => $this->behaviors[$behavior->name] = $this->createBehaviorHOF($behavior->name)
+    );
+  }
+
+  /**
+   * Dummy behavior that goes nowhere and does mostly nothing.
+   *
+   * Use for testing and to preserve the functional purity of the state.
+   * In case a non-existant behavior is requested, the dummy callable can be
+   * subbed in without state violations or side effects.
+   */
+  protected function dummyBehavior(EntityState $state = NULL, ServiceInterface $service = NULL, array $params = []): callable {
+    return fn (EntityState $state, ServiceInterface $service = NULL, array $params = []) => (
+      EntityState::create($state->name, $state, [])
+    );
+  }
+
+  // @todo additiona arbitrary call parameters need to be supported as needed
+  protected function createBehaviorHOF(string $behavior_name): callable {
+    return fn (EntityState $state, ServiceInterface $service, array $params = []) => (
+      EntityState::create($state->name, $state, [
+        $behavior_name => $service->request(
+          $this->namespace,
+          $behavior_name,
+          [$this->namespace =>  $state->name, ...$params]
+        ),
+      ])
+    );
+  }
+
 }
 
 /**
@@ -273,8 +321,10 @@ class EntityState {
 
 /**
  * Behavioral class for Artist entity.
+ *
+ * @todo look up data/json hydration patterns.
  */
-class ArtistBehaviors extends Behaviors {
+class ArtistBehaviors extends BaseBehaviors {
 
   /**
    * The kind of behavioral object, used for API calls.
@@ -289,7 +339,6 @@ class ArtistBehaviors extends Behaviors {
   public function __construct() {
     $this->namespace = 'artist';
     $this->assignBehaviors(ArtistEnum::cases());
-    // @todo should be parent::assignBehaviors(behavioralEnum);
     $test = null;
   }
 
@@ -340,67 +389,5 @@ class ArtistBehaviors extends Behaviors {
     ]);
     return $new;
   }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getBehavior(string $b): callable {
-    $prop_exists = array_key_exists($b, $this->behaviors);
-    if ($prop_exists && is_callable($this->behaviors[$b])) {
-      return $this->behaviors[$b];
-    } else {
-      return $this->dummyBehavior();
-    }
-  }
-
-  /**
-   * Populates the class behaviors property with behavioral closures.
-   */
-  protected function assignBehaviors(array $behaviors): void {
-    array_walk($behaviors,
-      fn ($behavior) => $this->behaviors[$behavior->name] = $this->createBehaviorHOF($behavior->name)
-    );
-  }
-
-  /**
-   * Dummy behavior that goes nowhere and does mostly nothing.
-   *
-   * Use for testing and to preserve the functional purity of the state.
-   * In case a non-existant behavior is requested, the dummy callable can be
-   * subbed in without state violations or side effects.
-   */
-  protected function dummyBehavior(EntityState $state = NULL, ServiceInterface $service = NULL, array $params = []): callable {
-    return fn (EntityState $state, ServiceInterface $service = NULL, array $params = []) => (
-      EntityState::create($state->name, $state, [])
-    );
-  }
-
-  // @todo additiona arbitrary call parameters need to be supported as needed
-  protected function createBehaviorHOF(string $behavior_name): callable {
-    return fn (EntityState $state, ServiceInterface $service, array $params = []) => (
-      EntityState::create($state->name, $state, [
-        $behavior_name => $service->request(
-          $this->namespace,
-          $behavior_name,
-          [$this->namespace =>  $state->name, ...$params]
-        ),
-      ])
-    );
-  }
-
-  // @todo 11/26
-  // if we end up doing a behavior factory, it should be in a base factory class.
-  // the base churns out the method boilerplate, but the behaviors still hash out
-  // the individual behaviors.
-
-  /**
-   * Oh hey hey, using closures we could factory out the calls based on the enum methods!
-   * Behavioral logic would still need some methods...such as parsing the results.
-   *
-   * Also look up data/json hydration patterns.
-   *
-   * Before hashing out the rest of the artist behaviors or coming up w/ a
-   * factory... check how to hydrate + standarize the state.
-   */
 
 }
