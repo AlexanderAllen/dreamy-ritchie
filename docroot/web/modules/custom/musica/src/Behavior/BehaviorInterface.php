@@ -23,6 +23,13 @@ interface BehaviorInterface {
   public function __construct();
 
   /**
+   * Returns the behavior callable if found, or a dummy callable otherwise.
+   *
+   * This method will always return a callable.
+   */
+  public function getBehavior(string $behavior): callable;
+
+  /**
    * Provide information about behaviors available to this entity.
    *
    * @return array

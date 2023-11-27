@@ -10,7 +10,7 @@ use Drupal\musica\Behavior\BehaviorInterface;
 use Drupal\musica\Service\LastFM;
 use Drupal\musica\Service\ServiceInterface;
 use Drupal\musica\Spec\LastFM\ArtistEnum;
-use AllowDynamicProperties;
+use Entity;
 
 /**
  * Hello world.
@@ -157,12 +157,8 @@ class EntityContainer {
     // For built-in class methods.
     if (method_exists($this->entity, $b)) {
       $new_state_ref = call_user_func([$this->entity, $b], $this->state, $s, $a);
-    }
-
-    $prop_exists = array_key_exists($b, get_object_vars($this->entity));
-    if ($prop_exists && is_callable($this->entity->{$b})) {
-      // Closures as properties need to be deref'd before they can be called.
-      $closure = $this->entity->{$b};
+    } else {
+      $closure = $this->entity->getBehavior($b);
       $new_state_ref = $closure($this->state, $s, $a);
     }
 
@@ -277,18 +273,18 @@ class EntityState {
 
 /**
  * Behavioral class for Artist entity.
- *
- * @todo As an alternative to supressing the deprecation notice, I could
- * swtich $this->{$behavior->name} to a pre-defined property, an array of
- * closures.
  */
-#[AllowDynamicProperties]
 class ArtistBehaviors extends Behaviors {
 
   /**
    * The kind of behavioral object, used for API calls.
    */
   protected readonly string $namespace;
+
+  /**
+   * Behaviors available for this entity.
+   */
+  protected array $behaviors;
 
   public function __construct() {
     $this->namespace = 'artist';
@@ -345,10 +341,36 @@ class ArtistBehaviors extends Behaviors {
     return $new;
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function getBehavior(string $b): callable {
+    $prop_exists = array_key_exists($b, $this->behaviors);
+    if ($prop_exists && is_callable($this->behaviors[$b])) {
+      return $this->behaviors[$b];
+    } else {
+      return $this->dummyBehavior();
+    }
+  }
+
   protected function assignBehaviors(): void {
+    // @todo decouple the enum.
     $behaviors = ArtistEnum::cases();
     array_walk($behaviors,
-      fn ($behavior) => $this->{$behavior->name} = $this->createBehaviorHOF($behavior->name)
+      fn ($behavior) => $this->behaviors[$behavior->name] = $this->createBehaviorHOF($behavior->name)
+    );
+  }
+
+  /**
+   * Dummy behavior that goes nowhere and does mostly nothing.
+   *
+   * Use for testing and to preserve the functional purity of the state.
+   * In case a non-existant behavior is requested, the dummy callable can be
+   * subbed in without violating the previous state or side effects.
+   */
+  protected function dummyBehavior(EntityState $state = NULL, ServiceInterface $service = NULL, array $params = []): callable {
+    return fn (EntityState $state, ServiceInterface $service = NULL, array $params = []) => (
+      EntityState::create($state->name, $state, [])
     );
   }
 
@@ -359,7 +381,7 @@ class ArtistBehaviors extends Behaviors {
         $behavior_name => $service->request(
           $this->namespace,
           $behavior_name,
-          ['artist' =>  $state->name, ...$params]
+          [$this->namespace =>  $state->name, ...$params]
         ),
       ])
     );
