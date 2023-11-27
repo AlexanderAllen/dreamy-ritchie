@@ -1,0 +1,7 @@
+parameters:
+    level: 1
+    paths:
+        - web/modules/custom
+    cognitive_complexity:
+        class: 50
+        function: 8

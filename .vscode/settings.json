@@ -1,4 +1,14 @@
 {
   "php.validate.executablePath": "/usr/bin/php82",
-  "phpcs.autoConfigSearch": true
+  "phpcs.autoConfigSearch": true,
+
+  "phpstan.binCommand":[
+    "phpstan",
+    // "lando",
+  ],
+  // "phpstan.binPath": "docroot/vendor/bin/phpstan",
+
+  "phpstan.configFile": "phpstan.neon",
+  "phpstan.showProgress": true,
+  "phpstan.rootDir": "docroot"
 }
