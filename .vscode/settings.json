@@ -10,5 +10,19 @@
 
   "phpstan.configFile": "phpstan.neon",
   "phpstan.showProgress": true,
-  "phpstan.rootDir": "docroot"
+  "phpstan.rootDir": "docroot",
+
+  "phpcs.showSources": true,
+  "phpcs.standard": "",
+  "git.enableSmartCommit": true,
+  "git-graph.defaultColumnVisibility": {
+
+      "Date": true,
+      "Author": true,
+      "Commit": true
+  },
+
+  "git-graph.repository.sign.commits": true,
+  "git-graph.repository.sign.tags": true,
+  "git-graph.repository.commits.showSignatureStatus": true,
 }
