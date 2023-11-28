@@ -6,10 +6,8 @@ namespace Drupal\musica\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\musica\Behavior\BehaviorInterface;
 use Drupal\musica\Behavior\BaseBehaviors;
 use Drupal\musica\Service\LastFM;
-use Drupal\musica\Service\ServiceInterface;
 use Drupal\musica\Spec\LastFM\ArtistEnum;
 use Drupal\musica\State\EntityState;
 
@@ -49,9 +47,6 @@ class HelloController extends ControllerBase {
     ->map('doesntexist')
     ->map('getSimilar', $this->lastfm, ['limit' => 10]);
 
-    // supress api calls temporarily
-    // ->map('getBio', $this->lastfm)
-    // ->map('getSimilar', $this->lastfm);
 
     // route controller initial candidate for cache.
     // entity level cache should be lower in the stack.
