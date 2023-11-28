@@ -41,38 +41,6 @@ class Classroom extends ControllerBase {
     $result = $concat2('Hello', 'World');
     $render_array[] = $this->output($result);
 
-    //// Returning a function from a function
-    function concatWith(string $a): callable {
-      return function (string $b) use ($a): string {
-        return $a . $b;
-      };
-    }
-    $helloWith = concatWith('Hello');
-    $helloWith('World'); //-> 'Hello World'
-
-    // Supplying functions as parameters
-    $add = function (float $a, float $b): float {
-      return $a + $b;
-    };
-
-    function apply(callable $operator, $a, $b) {
-     return $operator($a, $b);
-    }
-    apply($add, 5, 5);
-
-    function applyMoreExpressive(callable $operator): callable {
-      return function($a, $b) use ($operator) {
-        return $operator($a, $b);
-      };
-    }
-    $function = applyMoreExpressive($add);
-    $result = $function(5, 5);
-    // Or inline.
-    $result = applyMoreExpressive($add)(5, 5);
-
-
-
-
 
     return $render_array;
   }
