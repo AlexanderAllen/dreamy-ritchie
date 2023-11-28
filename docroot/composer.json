@@ -99,6 +99,7 @@
     },
     "require-dev": {
         "behat/mink": "^1.10",
+        "behat/mink-browserkit-driver": "^2.1",
         "jangregor/phpstan-prophecy": "^1.0",
         "kint-php/kint": "^5.1",
         "kint-php/kint-helpers": "^5.0",
