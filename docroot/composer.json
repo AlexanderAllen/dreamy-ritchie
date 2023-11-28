@@ -101,6 +101,9 @@
             ]
         },
         "hooks": {
+            "config": {
+                "stop-on-failure": ["pre-commit"]
+            },
             "pre-commit": [
                 "echo committing as $(git config user.name) !",
                 "echo ussing SSH key $(ssh-add -l -E md5)",
