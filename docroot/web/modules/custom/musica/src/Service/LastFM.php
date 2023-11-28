@@ -6,7 +6,6 @@ use Drupal\Core\Messenger\Messenger;
 use Drupal\musica\Service\ServiceInterface;
 use Drupal\musica\Spec\YamlParametersTrait;
 use GuzzleHttp\Client as GuzzleHttpClient;
-use stdClass;
 
 /**
  * Hello world.
@@ -82,7 +81,7 @@ class LastFM implements ServiceInterface {
   /**
    * {@inheritdoc}
    */
-  public function request(string $namespace, string $call, array $request): stdClass {
+  public function request(string $namespace, string $call, array $request): \stdClass {
     // Append API key to request.
     // @todo throw exception if API key is not present.
     $request = [...$request, 'api_key' => $this->apiKey];
@@ -111,6 +110,7 @@ class LastFM implements ServiceInterface {
     // Fetch a request token.
     // See https://www.last.fm/api/desktopauth.
     $options = ['query' => $parameters];
+    $response = NULL;
     try {
       $response = $this->client->request('GET', '', $options);
     }
@@ -118,10 +118,11 @@ class LastFM implements ServiceInterface {
       $this->messenger->addError($th->getMessage());
     }
 
-    if ($response->getStatusCode() == 200) {
+    if ($response->getStatusCode() === 200) {
       $json = $response->getBody()->getContents();
       return json_decode($json);
-    } else {
+    }
+    else {
       return NULL;
     }
   }
