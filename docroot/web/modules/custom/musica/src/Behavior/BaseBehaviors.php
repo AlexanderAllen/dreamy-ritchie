@@ -34,33 +34,6 @@ abstract class BaseBehaviors implements BehaviorInterface {
   }
 
   /**
-   * Working example method - escape entity name.
-   */
-  public function htmlspecialchars(EntityState $state) {
-    return new EntityState(htmlspecialchars($state->name));
-  }
-
-  /**
-   * Working example method - lowercase entity name.
-   */
-  public function strtolower(EntityState $state) {
-    return new EntityState(strtolower($state->name));
-  }
-
-  /**
-   * Calling this method throws an uncaught readonly prop violation error.
-   *
-   * This violation is great because it prevents the implementation from
-   * causing side effects by reference inside the state.
-   *
-   * This method is just a unit test.
-   */
-  public function readOnlyViolation(EntityState $state): EntityState {
-    $state->data['mic_check'] = "<p>{$state->name} has some pipes.</p>";
-    return $state;
-  }
-
-  /**
    * {@inheritdoc}
    */
   public function getBehavior(string $b): callable {

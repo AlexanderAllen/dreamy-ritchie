@@ -49,9 +49,25 @@ class BasicBehavior extends BaseBehaviors {
   }
 
   /**
-   * Basic state test for container.
+   * Working example method - lowercase entity name.
+   */
+  public function strtolower(EntityState $state) {
+    return new EntityState(strtolower($state->name));
+  }
+
+  /**
+   * Calling this method throws an uncaught readonly prop violation error.
    *
-   * @todo move to unit test.
+   * This violation is great because it prevents the implementation from
+   * causing side effects by reference inside the state.
+   */
+  public function readOnlyViolation(EntityState $state): EntityState {
+    $state->data['mic_check'] = "<p>{$state->name} has some pipes.</p>";
+    return $state;
+  }
+
+  /**
+   * Basic state test for container.
    */
   public function testInfo(EntityState $state): EntityState {
     $data['description'] = "<h1>{$state->name} is really cool.</h1>";
@@ -66,8 +82,6 @@ class BasicBehavior extends BaseBehaviors {
    *
    * The behaviors would then populate a standardized state, indpendendent of
    * service.
-   *
-   * @todo move to unit testing as well.
    */
   public function getBio(EntityState $state, ServiceInterface $service): EntityState {
     $response = $service->request($this->namespace, 'getInfo', [
