@@ -32,7 +32,7 @@
     "conflict": {
         "drupal/drupal": "*"
     },
-    "minimum-stability": "stable",
+    "minimum-stability": "alpha",
     "prefer-stable": true,
     "config": {
         "allow-plugins": {
@@ -99,11 +99,20 @@
                 "  * Remove the plugin that prints this message:",
                 "      composer remove drupal/core-project-message"
             ]
+        },
+        "hooks": {
+            "pre-commit": [
+                "echo committing as $(git config user.name)",
+                "echo ussing SSH key $(ssh-add -l -E md5)",
+                "echo and signing with GPG key $(git config user.signingkey)",
+                "./lando phpunit web/modules/custom"
+            ]
         }
     },
     "require-dev": {
         "behat/mink": "^1.10",
         "behat/mink-browserkit-driver": "^2.1",
+        "brainmaestro/composer-git-hooks": "^3.0@alpha",
         "dmore/chrome-mink-driver": "^2.9",
         "drupal/core-dev": "^10.1",
         "jangregor/phpstan-prophecy": "^1.0",
