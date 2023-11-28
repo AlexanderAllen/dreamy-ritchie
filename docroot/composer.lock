@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "59021ccbd869e7b5c1df6f29394b821f",
+    "content-hash": "625d54156fd8261549f0b9efa12bac06",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -7049,6 +7049,103 @@
                 "source": "https://github.com/kint-php/kint/tree/5.1.0"
             },
             "time": "2023-11-16T06:04:49+00:00"
+        },
+        {
+            "name": "kint-php/kint-helpers",
+            "version": "5.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kint-php/kint-helpers.git",
+                "reference": "339884c2ec32aea9200763fd2a93b037acdb873a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kint-php/kint-helpers/zipball/339884c2ec32aea9200763fd2a93b037acdb873a",
+                "reference": "339884c2ec32aea9200763fd2a93b037acdb873a",
+                "shasum": ""
+            },
+            "require": {
+                "kint-php/kint": "^4 || ^5",
+                "php": ">=7.1"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "init.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jonathan Vollebregt",
+                    "homepage": "https://github.com/jnvsor"
+                }
+            ],
+            "description": "Kint helper functions",
+            "homepage": "https://kint-php.github.io/kint/",
+            "keywords": [
+                "debug",
+                "kint",
+                "php"
+            ],
+            "support": {
+                "issues": "https://github.com/kint-php/kint-helpers/issues",
+                "source": "https://github.com/kint-php/kint-helpers/tree/5.0"
+            },
+            "time": "2022-11-22T10:16:11+00:00"
+        },
+        {
+            "name": "kint-php/kint-twig",
+            "version": "5.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kint-php/kint-twig.git",
+                "reference": "db7a0172b53017f3ca1740d7bfa1bb5f9aedb283"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kint-php/kint-twig/zipball/db7a0172b53017f3ca1740d7bfa1bb5f9aedb283",
+                "reference": "db7a0172b53017f3ca1740d7bfa1bb5f9aedb283",
+                "shasum": ""
+            },
+            "require": {
+                "kint-php/kint": "^4 || ^5",
+                "php": ">=7.1",
+                "twig/twig": "^2.4 || ^3.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3",
+                "phpunit/phpunit": "^9.0",
+                "vimeo/psalm": "^5@dev"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Kint\\Twig\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "Jonathan Vollebregt",
+                    "email": "jnvsor@gmail.com"
+                }
+            ],
+            "description": "Twig extension for Kint integration",
+            "support": {
+                "issues": "https://github.com/kint-php/kint-twig/issues",
+                "source": "https://github.com/kint-php/kint-twig/tree/5.0"
+            },
+            "time": "2022-11-22T10:10:15+00:00"
         },
         {
             "name": "mglaman/phpstan-drupal",

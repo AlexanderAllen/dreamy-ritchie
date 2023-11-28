@@ -101,6 +101,8 @@
         "behat/mink": "^1.10",
         "jangregor/phpstan-prophecy": "^1.0",
         "kint-php/kint": "^5.1",
+        "kint-php/kint-helpers": "^5.0",
+        "kint-php/kint-twig": "^5.0",
         "mglaman/phpstan-drupal": "^1.2",
         "phpspec/prophecy": "^1.17",
         "phpstan/extension-installer": "^1.3",
