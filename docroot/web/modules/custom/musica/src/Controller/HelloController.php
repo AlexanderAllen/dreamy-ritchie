@@ -95,42 +95,4 @@ class ArtistBehaviors extends BaseBehaviors {
     $this->assignBehaviors(ArtistEnum::cases());
   }
 
-  /**
-   * Get the bio summary for an artist.
-   *
-   * Maybe there should be a service-specific facility from which
-   * a service-agnostic behavior can grab data to in an abstracted manner.
-   *
-   * The behaviors would then populate a standardized state, indpendendent of
-   * service.
-   *
-   * @todo move to unit testing as well.
-   */
-  public function getBio(EntityState $state, ServiceInterface $service): EntityState {
-    $response = $service->request($this->namespace, 'getInfo', [
-      'artist' =>  $state->name,
-    ]);
-
-    $new = EntityState::create($state->name, $state, [
-      'info' => $response?->artist?->bio?->summary,
-    ]);
-    return $new;
-  }
-
-  /**
-   * Implements artist.getSimilar API call.
-   *
-   * @todo should be implementing throwables at the service for API errors.
-   */
-  public function getSimilarTest(EntityState $state, ServiceInterface $service): EntityState {
-    $response = $service->request($this->namespace, 'getSimilar', [
-      'artist' =>  $state->name,
-      'limit' => 10,
-    ]);
-    $new = EntityState::create($state->name, $state, [
-      'getSimilar' => $response,
-    ]);
-    return $new;
-  }
-
 }

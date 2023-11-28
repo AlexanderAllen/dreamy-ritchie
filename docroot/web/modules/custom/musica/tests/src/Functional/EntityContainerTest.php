@@ -6,6 +6,7 @@ use Drupal\musica\State\EntityState;
 use PHPUnit\Framework\TestCase;
 use Drupal\musica\Controller\EntityContainer;
 use Drupal\musica\Behavior\BaseBehaviors;
+use Drupal\musica\Service\ServiceInterface;
 use Drupal\musica\Spec\LastFM\ArtistEnum;
 
 /**
@@ -55,6 +56,47 @@ class BasicBehavior extends BaseBehaviors {
   public function testInfo(EntityState $state): EntityState {
     $data['description'] = "<h1>{$state->name} is really cool.</h1>";
     return new EntityState($state->name, [...$state->data, ...$data]);
+  }
+
+  /**
+   * Get the bio summary for an artist.
+   *
+   * Maybe there should be a service-specific facility from which
+   * a service-agnostic behavior can grab data to in an abstracted manner.
+   *
+   * The behaviors would then populate a standardized state, indpendendent of
+   * service.
+   *
+   * @todo move to unit testing as well.
+   */
+  public function getBio(EntityState $state, ServiceInterface $service): EntityState {
+    $response = $service->request($this->namespace, 'getInfo', [
+      'artist' =>  $state->name,
+    ]);
+
+    $new = EntityState::create($state->name, $state, [
+      'info' => $response?->artist?->bio?->summary,
+    ]);
+    return $new;
+  }
+
+  /**
+   * Implements live artist.getSimilar API call.
+   *
+   * Limits the live response to 10 results while still allowing full
+   * integration testing to help avoid rate-limit impacts.
+   *
+   * @todo should be implementing throwables at the service for API errors.
+   */
+  public function getSimilarTest(EntityState $state, ServiceInterface $service): EntityState {
+    $response = $service->request($this->namespace, 'getSimilar', [
+      'artist' =>  $state->name,
+      'limit' => 10,
+    ]);
+    $new = EntityState::create($state->name, $state, [
+      'getSimilar' => $response,
+    ]);
+    return $new;
   }
 
 }
