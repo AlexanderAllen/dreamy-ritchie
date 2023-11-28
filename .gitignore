@@ -20,3 +20,6 @@ docroot/web/web.config
 
 # Sites directories
 docroot/web/sites/default/files
+
+# Unit testing
+docroot/web/sites/simpletest
