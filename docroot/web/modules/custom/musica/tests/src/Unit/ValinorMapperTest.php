@@ -38,7 +38,9 @@ class ValinorMapperTest extends TestCase {
       $this->assertSame('Paris', $country->cities[0]->name);
 
     }
-    catch (\Throwable $error) {
+    // @phpstan-ignore-next-line
+    catch (MappingError $error) {
+      $e = $error;
       // Handle the error…
     }
 
