@@ -85,7 +85,7 @@ class BasicBehavior extends BaseBehaviors {
    */
   public function getBio(EntityState $state, ServiceInterface $service): EntityState {
     $response = $service->request($this->namespace, 'getInfo', [
-      'artist' =>  $state->name,
+      'artist' => $state->name,
     ]);
 
     $new = EntityState::create($state->name, $state, [
@@ -104,7 +104,7 @@ class BasicBehavior extends BaseBehaviors {
    */
   public function getSimilarTest(EntityState $state, ServiceInterface $service): EntityState {
     $response = $service->request($this->namespace, 'getSimilar', [
-      'artist' =>  $state->name,
+      'artist' => $state->name,
       'limit' => 10,
     ]);
     $new = EntityState::create($state->name, $state, [
