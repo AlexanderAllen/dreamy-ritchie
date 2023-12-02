@@ -26,7 +26,12 @@ class ValinorBaselineTest extends TestCase {
         ->mapper()
         ->map(Similar::class, $sauce);
 
-      $this->assertSame('France', 'France');
+      $this->assertSame($dto->artist[0]->name, 'Cyndi Lauper');
+
+      // Test the custom PHPStan type ImageProps array.
+      $this->assertIsArray($dto->artist[0]->image);
+      $this->assertIsArray($dto->artist[0]->image[0]);
+      $this->assertArrayHasKey('#text', $dto->artist[0]->image[0]);
 
     }
     // @phpstan-ignore-next-line
@@ -45,13 +50,15 @@ final class Similar {
     /** @var non-empty-string */
     public readonly string $name,
     /** @var list<Artist> */
-    public readonly array $artists,
+    public readonly array $artist,
   ) {}
 
 }
 
 /**
  * @phpstan-type ImageProps array{"#text": string, size: string}
+ *
+ * @see https://phpstan.org/writing-php-code/phpdoc-types#local-type-aliases
  */
 final class Artist {
 
@@ -72,14 +79,3 @@ final class Artist {
 
 }
 
-
-final class Image {
-
-  public function __construct(
-    /** @var non-empty-string */
-    public mixed $text,
-    /** @var non-empty-string */
-    public readonly string $size,
-  ) {}
-
-}
