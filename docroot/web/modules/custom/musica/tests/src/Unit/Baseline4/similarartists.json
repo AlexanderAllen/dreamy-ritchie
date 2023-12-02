@@ -1,0 +1,18 @@
+{
+  "name": "Cher",
+  "artists": [
+    {
+      "name": "Cyndi Lauper",
+      "mbid": "7bd9e20e-74b9-446a-a2ed-a223f82a36e7",
+      "match": "0.706950",
+      "url": "https://www.last.fm/music/Cyndi+Lauper",
+      "image": [
+        {
+          "#text": "https://lastfm.freetls.fastly.net/i/u/34s/2a96cbd8b46e442fc41c2b86b821562f.png",
+          "size": "small"
+        }
+      ],
+      "streamable": "0"
+    }
+  ]
+}
