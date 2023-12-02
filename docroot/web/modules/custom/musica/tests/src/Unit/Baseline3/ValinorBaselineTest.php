@@ -50,7 +50,9 @@ final class Similar {
 
 }
 
-
+/**
+ * @phpstan-type ImageProps array{"#text": string, size: string}
+ */
 final class Artist {
 
   public function __construct(
@@ -62,7 +64,7 @@ final class Artist {
     public readonly string $match,
     /** @var non-empty-string */
     public readonly string $url,
-    /** @var list<Image> */
+    /** @var list<ImageProps> */
     public readonly array $image,
     /** @var non-empty-string */
     public readonly string $streamable,
@@ -70,11 +72,12 @@ final class Artist {
 
 }
 
+
 final class Image {
 
   public function __construct(
     /** @var non-empty-string */
-    public readonly string $text,
+    public mixed $text,
     /** @var non-empty-string */
     public readonly string $size,
   ) {}
