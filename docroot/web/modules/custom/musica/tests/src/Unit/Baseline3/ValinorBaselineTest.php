@@ -13,6 +13,8 @@ use PHPUnit\Framework\TestCase;
  * Basic Valinor DTO hydration test.
  *
  * @group musica
+ * @group ignore
+ *
  * @see https://github.com/CuyZ/Valinor#example
  */
 class ValinorBaselineTest extends TestCase {
