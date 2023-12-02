@@ -11,6 +11,7 @@ use Drupal\musica\Service\LastFM;
 use Drupal\musica\Spec\LastFM\ArtistEnum;
 use Drupal\musica\State\EntityState;
 
+
 /**
  * Hello world.
  *
@@ -43,13 +44,7 @@ class HelloController extends ControllerBase {
   public function content() {
 
     $container = EntityContainer::createFromState(new ArtistBehaviors(), new EntityState('Cher'))
-    ->map('testInfo')
-    ->map('doesntexist')
     ->map('getSimilar', $this->lastfm, ['limit' => 10]);
-
-
-    // route controller initial candidate for cache.
-    // entity level cache should be lower in the stack.
 
     $behavior = $container->getBehaviorEntity();
     $state = $container->getStateEntity();
