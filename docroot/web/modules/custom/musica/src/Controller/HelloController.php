@@ -45,7 +45,8 @@ class HelloController extends ControllerBase {
     $container = EntityContainer::createFromState(new ArtistBehaviors(), new EntityState('Cher'))
     // ->map('getSimilar', $this->lastfm, ['limit' => 10]); // hydrated 12/3
     // ->map('getTags', $this->lastfm); // user not found
-    ->map('getTopAlbums', $this->lastfm, ['limit' => 10]); // hydrated 12/3
+    ->map('getTopAlbums', $this->lastfm, ['limit' => 10])
+    ->hydrate();
 
 
     $behavior = $container->getBehaviorEntity();
@@ -55,7 +56,7 @@ class HelloController extends ControllerBase {
 
     // $dto = ArtistBehaviors::hydrateState($state, 'getSimilar'); // tested OK 12/3
 
-    $dto = ArtistBehaviors::hydrateState($state, 'getTopAlbums'); // tested OK 12/3
+    // $dto = ArtistBehaviors::hydrateState($state, 'getTopAlbums'); // tested OK 12/3
 
 
     // 4.2 iteration - populate/transform entity with information from VARIOUS api calls.

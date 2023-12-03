@@ -26,7 +26,7 @@ abstract class BaseBehaviors implements BehaviorInterface {
   /**
    * Holds signature / shapes for DTO hydration.
    */
-  protected static array $shapes;
+  public static array $shapes;
 
   /**
    * {@inheritdoc}
@@ -69,6 +69,8 @@ abstract class BaseBehaviors implements BehaviorInterface {
       fn ($behavior) => self::$shapes[$behavior->name] = $behavior->value
     );
   }
+
+  public static function hydrateState(EntityState $state, string $dataKey) {}
 
   /**
    * Dummy behavior that goes nowhere and does mostly nothing.

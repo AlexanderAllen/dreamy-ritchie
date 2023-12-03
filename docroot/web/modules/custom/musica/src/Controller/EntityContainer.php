@@ -91,4 +91,28 @@ class EntityContainer {
     return self::createFromState($this->behavior, $new_state_ref);
   }
 
+  /**
+   * Transmutes the internal State entity data into Data Transfer Objects.
+   *
+   * @see Drupal\musica\Behavior\BaseBehaviors::hydrateState()
+   *
+   * @return EntityContainer
+   */
+  public function hydrate() {
+    // Default NOOP state.
+    $new_state = $this->state;
+
+    $shapes = array_keys($this->behavior::$shapes);
+    foreach ($shapes as $method) {
+      // Only hydrate populated states.
+      if (array_key_exists($method, $this->state->data)) {
+        $dto = $this->behavior->hydrateState($this->state, $method);
+        $new_state = EntityState::create($this->state->name, $this->state, [
+          'dto-' . $method => $dto
+        ]);
+      }
+    }
+    return self::createFromState($this->behavior, $new_state);
+  }
+
 }
