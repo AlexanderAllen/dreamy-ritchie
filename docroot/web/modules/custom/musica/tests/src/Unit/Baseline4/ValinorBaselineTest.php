@@ -13,13 +13,19 @@ use PHPUnit\Framework\TestCase;
  * Basic Valinor DTO hydration test.
  *
  * @group musica
+ * @group ignore
+ *
  * @see https://github.com/CuyZ/Valinor#example
+ * @see https://valinor.cuyz.io/1.7/how-to/use-custom-object-constructors
+ * @see https://valinor.cuyz.io/1.7/usage/type-strictness-and-flexibility/
  *
  */
 class ValinorBaselineTest extends TestCase {
 
   public function testSimilarArtistsWithoutAttr() {
-    $sauce = Source::file(new \SplFileObject('/app/docroot/web/modules/custom/musica/tests/src/Unit/Baseline4/object.json'));
+    $file = 'similarartists-full.json';
+    // $file = 'object.json';
+    $sauce = Source::file(new \SplFileObject('/app/docroot/web/modules/custom/musica/tests/src/Unit/Baseline4/' . $file));
 
     try {
 
@@ -27,7 +33,9 @@ class ValinorBaselineTest extends TestCase {
         ->allowPermissiveTypes()
         ->registerConstructor(
           function ($values): Simpleton {
-            return new Simpleton('cher');
+            ['similarartists' => $similarartists] = $values;
+            $name = $similarartists['@attr']['artist'];
+            return new Simpleton($name, new Attribute($name));
           }
         )
         ->mapper()
@@ -57,6 +65,7 @@ class Attribute {
 class Simpleton {
   public function __construct(
     public readonly string $name,
+    public readonly Attribute $attr,
   ) {}
 }
 
