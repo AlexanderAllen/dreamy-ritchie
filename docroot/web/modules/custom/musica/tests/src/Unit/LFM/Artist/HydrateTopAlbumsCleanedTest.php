@@ -35,7 +35,7 @@ class HydrateTopAlbumsCleanedTest extends TestCase {
       $signature = 'array{topalbums: array{album: ' . EntityListAlbum::class . $suffix;
       $dto = (new MapperBuilder())
         // ->allowSuperfluousKeys()
-        // ->allowPermissiveTypes()
+        ->allowPermissiveTypes()
         // ->enableFlexibleCasting()
         ->mapper()
         ->map($signature, $sauce);
@@ -50,6 +50,15 @@ class HydrateTopAlbumsCleanedTest extends TestCase {
 
 }
 
+class ImageProps {
+  public readonly string $text;
+  public readonly string $size;
+
+  public function __construct(...$args) {
+    [$this->text, $this->size] = $args;
+  }
+}
+
 
 final class EntityListAlbum {
 
@@ -61,8 +70,7 @@ final class EntityListAlbum {
 }
 
 /**
- * @phpstan-type ImageProps array{"#text": string, size: string}
- * @phpstan-type ArtistArray array{"name": string, mbid: string, url: string}
+ * @phpstan-type ImageProps3 array{"#text": string, size: string}
  */
 final class Album {
 
@@ -98,8 +106,6 @@ class Attribute {
 }
 
 /**
- * @phpstan-type ImageProps array{"#text": string, size: string}
- *
  * @see https://phpstan.org/writing-php-code/phpdoc-types#local-type-aliases
  */
 final class Artist {
