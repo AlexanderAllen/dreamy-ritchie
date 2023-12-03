@@ -1,5 +1,7 @@
 <?php
 
+// phpcs:disable Drupal.Classes.UnusedUseStatement.UnusedUse
+
 namespace Drupal\musica\Behavior;
 
 use Drupal\musica\Behavior\BehaviorInterface;
