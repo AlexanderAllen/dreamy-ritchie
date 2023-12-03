@@ -10,11 +10,7 @@ namespace Drupal\Tests\musica\Unit\LFM\Artist\GetTopAlbums;
 
 use CuyZ\Valinor\MapperBuilder;
 use CuyZ\Valinor\Mapper\Source\Source;
-use CuyZ\Valinor\Mapper\Tree\Message\Messages;
-use CuyZ\Valinor\Mapper\Tree\Message\NodeMessage;
 use PHPUnit\Framework\TestCase;
-use Kint\Kint;
-
 
 /**
  * Basic Valinor DTO hydration test.
@@ -47,58 +43,13 @@ class HydrateTopAlbumsCleanedTest extends TestCase {
       $this->assertSame(TRUE, TRUE);
     }
     catch (\CuyZ\Valinor\Mapper\MappingError $error) {
-
-      Kint::$enabled_mode = Kint::MODE_CLI;
-      Kint::$expanded = FALSE;
-      Kint::$depth_limit = 1;
-      // $kint = Kint::createFromStatics(Kint::getStatics());
-
-      $messages = Messages::flattenFromNode(
-        $error->node()
-      );
-
-      // Formatters can be added and will be applied on all messages
-      // $messages = $messages->formatWith(
-      //   new \CuyZ\Valinor\Mapper\Tree\Message\Formatter\MessageMapFormatter([
-      //     'some_code' => 'New content / code: {message_code}',
-      //     '1655449641' => function (NodeMessage $message) {
-      //       $o = $message->originalMessage();
-      //       return $o->body();
-      //     }
-      //   ]),
-      // );
-
-      // If only errors are wanted, they can be filtered
-      $errorMessages = $messages->errors();
-      foreach ($errorMessages as $message) {
-        // d($message);
-        // Kint::dump($message);
-        $b = $message->body();
-
-        /** @var \CuyZ\Valinor\Mapper\Tree\Message\Message */
-        $om = $message->originalMessage();
-        // @phpstan-ignore-next-line
-        $oms = $om->getMessage();
-
-        $node = $message->node();
-        $path = $node->path();
-        $type = $node->type();
-        $valid = $node->isValid();
-        // $mapped = $node->mappedValue();
-        // $node->
-
-        printf("Original Message: %s, PATH: %s, TYPE: %s, VALID: %b \n", $oms, $path, $type, $valid);
-
-        // Kint::dump($om);
-        flush();
-        ob_flush();
-      }
-
+      Debugger::toCLI($error);
     }
 
   }
 
 }
+
 
 final class EntityListAlbum {
 
