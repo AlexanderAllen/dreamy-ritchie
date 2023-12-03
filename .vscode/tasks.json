@@ -11,7 +11,9 @@
       "group": {
         "kind": "test",
         "isDefault": true
-      }
+      },
+      // I don't need the terminal to pop up.
+      "isBackground": true,
     }
   ]
 }
