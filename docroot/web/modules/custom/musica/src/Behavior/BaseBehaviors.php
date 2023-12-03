@@ -24,6 +24,11 @@ abstract class BaseBehaviors implements BehaviorInterface {
   protected array $behaviors;
 
   /**
+   * Holds signature / shapes for DTO hydration.
+   */
+  protected static array $shapes;
+
+  /**
    * {@inheritdoc}
    */
   public function __construct() {
@@ -55,6 +60,13 @@ abstract class BaseBehaviors implements BehaviorInterface {
     array_walk(
       $behaviors,
       fn ($behavior) => $this->behaviors[$behavior->name] = $this->createBehaviorHof($behavior->name)
+    );
+  }
+
+  protected function assignDTOShapes(array $behaviors): void {
+    array_walk(
+      $behaviors,
+      fn ($behavior) => self::$shapes[$behavior->name] = $behavior->value
     );
   }
 

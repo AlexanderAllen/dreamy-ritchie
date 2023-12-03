@@ -49,13 +49,13 @@ class HelloController extends ControllerBase {
   public function content() {
 
     $container = EntityContainer::createFromState(new ArtistBehaviors(), new EntityState('Cher'))
-    ->map('getSimilar', $this->lastfm, ['limit' => 10]);
+    ->map('getSimilar', $this->lastfm, ['limit' => 10]); // hydrated 12/3
+    // ->map('getTags', $this->lastfm); // user not found
 
     $behavior = $container->getBehaviorEntity();
     $state = $container->getStateEntity();
 
-    $sig = 'array{similarartists: array{artist: ' . EntityList::class . ', "@attr": ' . Attribute::class . '} }';
-    $dto = ArtistBehaviors::hydrateState($sig, $state, 'getSimilar');
+    $dto = ArtistBehaviors::hydrateState($state, 'getSimilar');
 
 
     // 4.2 iteration - populate/transform entity with information from VARIOUS api calls.
@@ -88,6 +88,23 @@ class HelloController extends ControllerBase {
 }
 
 /**
+ * Provides DTO shapes for hydrating raw Artist data.
+ */
+enum ArtisDTOShapesEnum: string {
+
+  case addTags = 'addTags';
+  case getCorrection = 'getCorrection';
+  case getInfo = 'getInfo';
+  case getSimilar = 'array{similarartists: array{artist: ' . EntityList::class . ', "@attr": ' . Attribute::class . '} }';
+  case getTags = 'getTags';
+  case getTopAlbums = 'getTopAlbums';
+  case getTopTags = 'getTopTags';
+  case getTopTracks = 'getTopTracks';
+  case removeTag = 'removeTag';
+  case search = 'search';
+}
+
+/**
  * Behavioral class for Artist entity.
  */
 class ArtistBehaviors extends BaseBehaviors {
@@ -95,16 +112,17 @@ class ArtistBehaviors extends BaseBehaviors {
   public function __construct() {
     $this->namespace = 'artist';
     $this->assignBehaviors(ArtistEnum::cases());
+    $this->assignDTOShapes(ArtisDTOShapesEnum::cases());
   }
 
   /**
    * Reduce raw API state into a data transfer object.
    */
-  public static function hydrateState(string $mapSignature, EntityState $state, string $dataKey) {
+  public static function hydrateState(EntityState $state, string $dataKey) {
     $sauce = Source::json($state->data[$dataKey]);
     return (new MapperBuilder())
       ->mapper()
-      ->map($mapSignature, $sauce);
+      ->map(self::$shapes[$dataKey], $sauce);
   }
 
 }
