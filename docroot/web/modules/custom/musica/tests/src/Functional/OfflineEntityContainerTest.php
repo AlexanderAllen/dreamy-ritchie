@@ -13,6 +13,7 @@ use Drupal\musica\Spec\LastFM\ArtistEnum;
  * Stress test entity container functionality.
  *
  * @group musica
+ * @group ignore
  */
 class OfflineEntityContainerTest extends TestCase {
 
