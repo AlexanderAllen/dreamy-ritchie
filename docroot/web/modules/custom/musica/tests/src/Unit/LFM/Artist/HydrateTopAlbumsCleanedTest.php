@@ -6,7 +6,7 @@
 // phpcs:disable Squiz.WhiteSpace.FunctionSpacing.BeforeFirst, Drupal.Classes.ClassDeclaration.CloseBraceAfterBody
 // phpcs:disable Drupal.Classes.FullyQualifiedNamespace.UseStatementMissing
 
-namespace Drupal\Tests\musica\Unit\LFM\Artist;
+namespace Drupal\Tests\musica\Unit\LFM\Artist\GetTopAlbums;
 
 use CuyZ\Valinor\MapperBuilder;
 use CuyZ\Valinor\Mapper\Source\Source;
@@ -20,14 +20,13 @@ use Kint\Kint;
  * Basic Valinor DTO hydration test.
  *
  * @group musica
- * @group ignore
  *
  * @see https://www.last.fm/api/show/artist.getTopAlbums
  * @see https://github.com/CuyZ/Valinor#example
  * @see https://valinor.cuyz.io/1.7/how-to/use-custom-object-constructors
  * @see https://valinor.cuyz.io/1.7/usage/type-strictness-and-flexibility/
  */
-class HydrateTopAlbumsTest extends TestCase {
+class HydrateTopAlbumsCleanedTest extends TestCase {
 
   public function testSimilarArtistsWithoutAttr() {
     $file = 'topalbums-full.json';
@@ -35,15 +34,13 @@ class HydrateTopAlbumsTest extends TestCase {
     $sauce = Source::file(new \SplFileObject($path . $file));
 
     try {
-      // baseline6 reference
-      // 'array{similarartists: array{artist: ' . EntityList::class . ', "@attr": ' . Attribute::class . '} }'
 
-      // $signature = 'array{topalbums: array{album: ' . EntityListAlbum::class . ', "@attr": ' . Attribute::class . '} }'
-      $signature = 'array{topalbums: array{album: ' . EntityListAlbum::class . '} }';
+      $suffix = ', "@attr": ' . Attribute::class . '} }';
+      $signature = 'array{topalbums: array{album: ' . EntityListAlbum::class . $suffix;
       $dto = (new MapperBuilder())
-        ->allowSuperfluousKeys()
-        ->allowPermissiveTypes()
-        ->enableFlexibleCasting()
+        // ->allowSuperfluousKeys()
+        // ->allowPermissiveTypes()
+        // ->enableFlexibleCasting()
         ->mapper()
         ->map($signature, $sauce);
 
