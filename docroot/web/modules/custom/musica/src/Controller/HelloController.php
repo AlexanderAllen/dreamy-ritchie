@@ -4,9 +4,14 @@
 
 namespace Drupal\musica\Controller;
 
+use CuyZ\Valinor\Mapper\Source\Source;
+use Cuyz\Valinor\Mapper\MappingError;
+use CuyZ\Valinor\MapperBuilder;
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\musica\Behavior\BaseBehaviors;
+use Drupal\musica\DTO\LFM\Attribute;
+use Drupal\musica\DTO\LFM\EntityList;
 use Drupal\musica\Service\LastFM;
 use Drupal\musica\Spec\LastFM\ArtistEnum;
 use Drupal\musica\State\EntityState;
@@ -49,6 +54,10 @@ class HelloController extends ControllerBase {
     $behavior = $container->getBehaviorEntity();
     $state = $container->getStateEntity();
 
+    $sig = 'array{similarartists: array{artist: ' . EntityList::class . ', "@attr": ' . Attribute::class . '} }';
+    $dto = ArtistBehaviors::hydrateState($sig, $state, 'getSimilar');
+
+
     // 4.2 iteration - populate/transform entity with information from VARIOUS api calls.
     // ...
     // 5th iteration - standarization - make one state entity to use across services, MUST USE INTERFACE
@@ -56,6 +65,11 @@ class HelloController extends ControllerBase {
     // 6th-8th iterations - pass and manipulate the entity between various containers.
     //
     // 10th iteration - implement default render array in behaviors.
+
+    // $dto = DTOMapper::map($state->data['getSimilar'], SimilarArtists:class);
+
+
+
 
     $render_array = [];
     $render_array[] = [
@@ -83,6 +97,16 @@ class ArtistBehaviors extends BaseBehaviors {
   public function __construct() {
     $this->namespace = 'artist';
     $this->assignBehaviors(ArtistEnum::cases());
+  }
+
+  /**
+   * Reduce raw API state into a data transfer object.
+   */
+  public static function hydrateState(string $mapSignature, EntityState $state, string $dataKey) {
+    $sauce = Source::json($state->data[$dataKey]);
+    return (new MapperBuilder())
+      ->mapper()
+      ->map($mapSignature, $sauce);
   }
 
 }
