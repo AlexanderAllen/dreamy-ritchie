@@ -99,20 +99,24 @@ class EntityContainer {
    * @return EntityContainer
    */
   public function hydrate() {
-    // Default NOOP state.
-    $new_state = $this->state;
 
     $shapes = array_keys($this->behavior::$shapes);
     foreach ($shapes as $method) {
       // Only hydrate populated states.
       if (array_key_exists($method, $this->state->data)) {
-        $dto = $this->behavior->hydrateState($this->state, $method);
-        $new_state = EntityState::create($this->state->name, $this->state, [
-          'dto-' . $method => $dto
+
+        $dto = $this->behavior::hydrateState($this->state, $method);
+
+        $old_dto = is_null($this->state?->data['dto']) ? [] : $this->state->data['dto'];
+        $this->state = EntityState::create($this->state->name, $this->state, [
+          'dto' =>  [
+            ...$old_dto,
+            ...$dto
+          ],
         ]);
       }
     }
-    return self::createFromState($this->behavior, $new_state);
+    return self::createFromState($this->behavior, $this->state);
   }
 
 }
