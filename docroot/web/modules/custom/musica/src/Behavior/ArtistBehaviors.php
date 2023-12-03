@@ -16,22 +16,22 @@ use Drupal\musica\State\EntityState;
 class ArtistBehaviors extends BaseBehaviors {
 
   public function __construct() {
-    $this->namespace = 'artist';
-    $this->assignBehaviors(ArtistEnum::cases());
-    $this->assignDTOShapes(ArtisDTOShapesEnum::cases());
+    parent::__construct('artist', ArtistEnum::class, ArtisDTOShapesEnum::class);
   }
 
   /**
    * Reduce raw API state into a data transfer object.
    */
-  public static function hydrateState(EntityState $state, string $dataKey) {
+  public static function hydrateState(EntityState $state, string $dataKey): array {
     $sauce = Source::json($state->data[$dataKey]);
-    return (new MapperBuilder())
+    /** @var array */
+    $ret = (new MapperBuilder())
       // ->allowSuperfluousKeys()
       ->allowPermissiveTypes()
       // ->enableFlexibleCasting()
       ->mapper()
       ->map(self::$shapes[$dataKey], $sauce);
+    return $ret;
   }
 
 }

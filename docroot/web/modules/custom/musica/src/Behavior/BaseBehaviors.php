@@ -14,11 +14,6 @@ use Drupal\musica\State\EntityState;
 abstract class BaseBehaviors implements BehaviorInterface {
 
   /**
-   * The kind of behavioral object, used for API calls.
-   */
-  protected string $namespace;
-
-  /**
    * Behaviors available for this entity.
    */
   protected array $behaviors;
@@ -29,9 +24,25 @@ abstract class BaseBehaviors implements BehaviorInterface {
   public static array $shapes;
 
   /**
-   * {@inheritdoc}
+   * Stateless behavior constructor.
+   *
+   * DO NOT pass any kind of state (data) to behavior constructors, otherwise
+   * the behavioral entities get tied (coupled) to the stateful entities.
+   *
+   * @param non-empty-string $namespace
+   *   The kind of behavioral object, used for API calls.
+   * @param class-string<\BackedEnum> $enumBehaviors
+   *   Reference to object enumerating the available API methods (behaviors).
+   * @param class-string<\BackedEnum> $enumShapes
+   *   Reference to object enumerating the shapes used for DTO hydration.
    */
-  public function __construct() {
+  public function __construct(
+    public readonly string $namespace,
+    public readonly string $enumBehaviors,
+    public readonly string $enumShapes,
+  ) {
+    $this->assignBehaviors($enumBehaviors::cases());
+    $this->assignDTOShapes($enumShapes::cases());
   }
 
   /**
@@ -63,6 +74,11 @@ abstract class BaseBehaviors implements BehaviorInterface {
     );
   }
 
+  /**
+   * Transfer DTO shapes from enumerator into internal array.
+   *
+   * @todo shapes and behaviors could be sourced from the same enum.
+   */
   protected function assignDTOShapes(array $behaviors): void {
     array_walk(
       $behaviors,
@@ -70,7 +86,7 @@ abstract class BaseBehaviors implements BehaviorInterface {
     );
   }
 
-  public static function hydrateState(EntityState $state, string $dataKey) {}
+  abstract public static function hydrateState(EntityState $state, string $dataKey): array;
 
   /**
    * Dummy behavior that goes nowhere and does mostly nothing.
