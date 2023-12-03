@@ -89,8 +89,6 @@ class HelloController extends ControllerBase {
 
 /**
  * Behavioral class for Artist entity.
- *
- * @todo look up data/json hydration patterns.
  */
 class ArtistBehaviors extends BaseBehaviors {
 
