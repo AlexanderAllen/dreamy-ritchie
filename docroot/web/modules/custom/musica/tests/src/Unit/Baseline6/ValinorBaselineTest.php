@@ -30,20 +30,8 @@ class ValinorBaselineTest extends TestCase {
     try {
 
       $dto = (new MapperBuilder())
-        ->allowPermissiveTypes()
-        // Ignore @attr.
-        ->allowSuperfluousKeys()
-        // ->registerConstructor(
-        //   Parser::parseArray(...),
-        // )
         ->mapper()
-        // ->map('object{similarartists: object{artist: list<Artist>, "@attr": object{artist: string}}}', $sauce);
-        // ->map(Simpleton::class, $sauce);
-        ->map('array{similarartists: array{artist: ' . EntityList::class . '} }', $sauce);
-
-      // $dto2 = (new MapperBuilder())
-      //   ->mapper()
-      //   ->map(EntityList::class, $dto->similarartists);
+        ->map('array{similarartists: array{artist: ' . EntityList::class . ', "@attr": ' . Attribute::class . '} }', $sauce);
 
       $this->assertSame(TRUE, TRUE);
     }
@@ -61,47 +49,6 @@ class Attribute {
   public function __construct(
     public readonly string $artist,
   ) {}
-
-}
-
-class Simpleton {
-
-  public function __construct(
-    public readonly string $name,
-    public readonly Attribute $attr,
-    /** @var list<Artist> */
-    public readonly array $similarartists,
-  ) {}
-
-}
-
-final class Parser {
-
-  public static function parse($values): Simpleton {
-    ['similarartists' => $similarartists] = $values;
-    ['artist' => $artistList, '@attr' => $attributes] = $similarartists;
-
-    $name = $similarartists['@attr']['artist'];
-    return new Simpleton($name, new Attribute($attributes['artist']), $artistList);
-  }
-
-  public static function parseArray($values): array {
-    ['similarartists' => $similarartists] = $values;
-    ['artist' => $artistList, '@attr' => $attributes] = $similarartists;
-
-    $name = $similarartists['@attr']['artist'];
-    // 'list' => $artistList
-    return ['name' => $name];
-  }
-
-  public static function parseEntity($values): array {
-    ['similarartists' => $similarartists] = $values;
-    ['artist' => $artistList, '@attr' => $attributes] = $similarartists;
-
-    $name = $similarartists['@attr']['artist'];
-    // 'list' => $artistList
-    return ['name' => $name];
-  }
 
 }
 
