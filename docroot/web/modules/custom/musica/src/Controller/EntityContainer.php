@@ -4,13 +4,8 @@
 
 namespace Drupal\musica\Controller;
 
-use Drupal\Core\Controller\ControllerBase;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\musica\Behavior\BehaviorInterface;
-use Drupal\musica\Behavior\BaseBehaviors;
-use Drupal\musica\Service\LastFM;
 use Drupal\musica\Service\ServiceInterface;
-use Drupal\musica\Spec\LastFM\ArtistEnum;
 use Drupal\musica\State\EntityState;
 
 /**
@@ -27,15 +22,27 @@ use Drupal\musica\State\EntityState;
  * of the container's current behavior and state.
  */
 class EntityContainer {
-  private BehaviorInterface $entity;
-  private EntityState $state;
 
   /**
    * Private constructor.
    */
-  private function __construct(BehaviorInterface $entity, EntityState $state) {
-     $this->entity = $entity;
-     $this->state = $state;
+  private function __construct(
+    private BehaviorInterface $entity,
+    private EntityState $state,
+  ) {}
+
+  /**
+   * Private behavior getter.
+   */
+  public function getBehaviorEntity() {
+    return $this->entity;
+  }
+
+  /**
+   * Private State getter.
+   */
+  public function getStateEntity() {
+    return $this->state;
   }
 
   /**
@@ -84,10 +91,5 @@ class EntityContainer {
     return self::createFromState($this->entity, $new_state_ref);
   }
 
-  public function getBehaviorEntity() {
-    return $this->entity;
-  }
-  public function getStateEntity() {
-    return $this->state;
-  }
+
 }
