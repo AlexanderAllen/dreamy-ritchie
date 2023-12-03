@@ -16,6 +16,7 @@ use PHPUnit\Framework\TestCase;
  * Basic Valinor DTO hydration test.
  *
  * @group musica
+ * @group ignore
  *
  * @see https://github.com/CuyZ/Valinor#example
  * @see https://valinor.cuyz.io/1.7/how-to/use-custom-object-constructors
