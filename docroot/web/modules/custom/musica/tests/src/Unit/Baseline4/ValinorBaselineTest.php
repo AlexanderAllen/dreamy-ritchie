@@ -22,11 +22,18 @@ class ValinorBaselineTest extends TestCase {
     $sauce = Source::file(new \SplFileObject('/app/docroot/web/modules/custom/musica/tests/src/Unit/Baseline4/object.json'));
 
     try {
+
       $dto = (new MapperBuilder())
         ->allowPermissiveTypes()
+        ->registerConstructor(
+          function ($values): Simpleton {
+            return new Simpleton('cher');
+          }
+        )
         ->mapper()
         // ->map('object{similarartists: object{artist: list<Artist>, "@attr": object{artist: string}}}', $sauce);
-        ->map('array{name: string}', $sauce);
+        // ->map('array{name: string}', $sauce);
+        ->map(Simpleton::class, $sauce);
 
 
 
@@ -39,6 +46,18 @@ class ValinorBaselineTest extends TestCase {
 
   }
 
+}
+
+class Attribute {
+  public function __construct(
+    public readonly string $artist,
+  ) {}
+}
+
+class Simpleton {
+  public function __construct(
+    public readonly string $name,
+  ) {}
 }
 
 /**
