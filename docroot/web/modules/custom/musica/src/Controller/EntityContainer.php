@@ -4,7 +4,7 @@
 
 namespace Drupal\musica\Controller;
 
-use Drupal\musica\Behavior\BehaviorInterface;
+use Drupal\musica\Behavior\BaseBehaviors;
 use Drupal\musica\Service\ServiceInterface;
 use Drupal\musica\State\EntityState;
 
@@ -27,7 +27,7 @@ class EntityContainer {
    * Private constructor.
    */
   private function __construct(
-    private BehaviorInterface $entity,
+    private BaseBehaviors $behavior,
     private EntityState $state,
   ) {}
 
@@ -35,7 +35,7 @@ class EntityContainer {
    * Private behavior getter.
    */
   public function getBehaviorEntity() {
-    return $this->entity;
+    return $this->behavior;
   }
 
   /**
@@ -50,15 +50,15 @@ class EntityContainer {
    *
    * Behaviors can still alter the state as they like.
    */
-  public static function create(BehaviorInterface $entity): EntityContainer {
-    return new self($entity, new EntityState());
+  public static function create(BaseBehaviors $behavior): EntityContainer {
+    return new self($behavior, new EntityState());
   }
 
   /**
    * Creates and returns a container linked to the specified behavior and state.
    */
-  public static function createFromState(BehaviorInterface $entity, EntityState $state): EntityContainer {
-    return new self($entity, $state);
+  public static function createFromState(BaseBehaviors $behavior, EntityState $state): EntityContainer {
+    return new self($behavior, $state);
   }
 
   /**
@@ -81,15 +81,14 @@ class EntityContainer {
     $new_state_ref = $this->state;
 
     // For built-in class methods.
-    if (method_exists($this->entity, $b)) {
-      $new_state_ref = call_user_func([$this->entity, $b], $this->state, $s, $a);
+    if (method_exists($this->behavior, $b)) {
+      $new_state_ref = call_user_func([$this->behavior, $b], $this->state, $s, $a);
     } else {
-      $closure = $this->entity->getBehavior($b);
+      $closure = $this->behavior->getBehavior($b);
       $new_state_ref = $closure($this->state, $s, $a);
     }
 
-    return self::createFromState($this->entity, $new_state_ref);
+    return self::createFromState($this->behavior, $new_state_ref);
   }
-
 
 }
