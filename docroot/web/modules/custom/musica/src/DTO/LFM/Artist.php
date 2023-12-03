@@ -16,13 +16,13 @@ final class Artist {
     public readonly string $name,
     /** @var non-empty-string */
     public readonly string $mbid,
-    /** @var non-empty-string */
+    /** @var string */
     public readonly string $match,
     /** @var non-empty-string */
     public readonly string $url,
     /** @var list<ImageProps> */
     public readonly array $image,
-    /** @var non-empty-string */
+    /** @var string */
     public readonly string $streamable,
   ) {}
 
