@@ -4,17 +4,11 @@
 
 namespace Drupal\musica\Controller;
 
-use CuyZ\Valinor\Mapper\Source\Source;
-use Cuyz\Valinor\Mapper\MappingError;
-use CuyZ\Valinor\MapperBuilder;
 use Drupal\Core\Controller\ControllerBase;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\musica\Behavior\BaseBehaviors;
-use Drupal\musica\DTO\LFM\Attribute;
-use Drupal\musica\DTO\LFM\EntityList;
+use Drupal\musica\Behavior\ArtistBehaviors;
 use Drupal\musica\Service\LastFM;
-use Drupal\musica\Spec\LastFM\ArtistEnum;
-use Drupal\musica\State\EntityState;
+use Drupal\musica\State\EntityState;;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 
 /**
@@ -49,13 +43,19 @@ class HelloController extends ControllerBase {
   public function content() {
 
     $container = EntityContainer::createFromState(new ArtistBehaviors(), new EntityState('Cher'))
-    ->map('getSimilar', $this->lastfm, ['limit' => 10]); // hydrated 12/3
+    // ->map('getSimilar', $this->lastfm, ['limit' => 10]); // hydrated 12/3
     // ->map('getTags', $this->lastfm); // user not found
+    ->map('getTopAlbums', $this->lastfm, ['limit' => 10]); // hydrated 12/3
+
 
     $behavior = $container->getBehaviorEntity();
     $state = $container->getStateEntity();
 
-    $dto = ArtistBehaviors::hydrateState($state, 'getSimilar');
+    // d($state->data['getTopAlbums']);
+
+    // $dto = ArtistBehaviors::hydrateState($state, 'getSimilar'); // tested OK 12/3
+
+    $dto = ArtistBehaviors::hydrateState($state, 'getTopAlbums'); // tested OK 12/3
 
 
     // 4.2 iteration - populate/transform entity with information from VARIOUS api calls.
@@ -83,46 +83,6 @@ class HelloController extends ControllerBase {
     // ];
 
     return $render_array;
-  }
-
-}
-
-/**
- * Provides DTO shapes for hydrating raw Artist data.
- */
-enum ArtisDTOShapesEnum: string {
-
-  case addTags = 'addTags';
-  case getCorrection = 'getCorrection';
-  case getInfo = 'getInfo';
-  case getSimilar = 'array{similarartists: array{artist: ' . EntityList::class . ', "@attr": ' . Attribute::class . '} }';
-  case getTags = 'getTags';
-  case getTopAlbums = 'getTopAlbums';
-  case getTopTags = 'getTopTags';
-  case getTopTracks = 'getTopTracks';
-  case removeTag = 'removeTag';
-  case search = 'search';
-}
-
-/**
- * Behavioral class for Artist entity.
- */
-class ArtistBehaviors extends BaseBehaviors {
-
-  public function __construct() {
-    $this->namespace = 'artist';
-    $this->assignBehaviors(ArtistEnum::cases());
-    $this->assignDTOShapes(ArtisDTOShapesEnum::cases());
-  }
-
-  /**
-   * Reduce raw API state into a data transfer object.
-   */
-  public static function hydrateState(EntityState $state, string $dataKey) {
-    $sauce = Source::json($state->data[$dataKey]);
-    return (new MapperBuilder())
-      ->mapper()
-      ->map(self::$shapes[$dataKey], $sauce);
   }
 
 }
