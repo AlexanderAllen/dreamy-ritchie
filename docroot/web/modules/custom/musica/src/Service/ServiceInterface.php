@@ -2,8 +2,6 @@
 
 namespace Drupal\musica\Service;
 
-use stdClass;
-
 /**
  * Stub for custom Service interface.
  */
