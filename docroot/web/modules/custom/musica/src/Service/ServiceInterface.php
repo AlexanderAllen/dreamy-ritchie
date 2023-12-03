@@ -19,6 +19,6 @@ interface ServiceInterface {
    * @param array $request
    *   Arbitrary non-associative array of request parameters.
    */
-  public function request(string $namespace, string $call, array $request): stdClass;
+  public function request(string $namespace, string $call, array $request);
 
 }
