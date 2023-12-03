@@ -6,6 +6,7 @@ use Drupal\Core\Messenger\Messenger;
 use Drupal\musica\Service\ServiceInterface;
 use Drupal\musica\Spec\YamlParametersTrait;
 use GuzzleHttp\Client as GuzzleHttpClient;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * Hello world.
@@ -58,9 +59,9 @@ class LastFM implements ServiceInterface {
       'api_key' => $this->apiKey,
       'method' => 'auth.gettoken',
     ];
-    $token = $this->sendRequest($params);
-    $token = $token->token;
-    return $token;
+    $o = $this->sendRequest($params);
+    $token = json_decode($o->getBody()->getContents());
+    return $token->token;
   }
 
   /**
@@ -72,16 +73,15 @@ class LastFM implements ServiceInterface {
       'method' => 'auth.getSession',
       'token' => $request_token,
     ];
-    $session_response = $this->sendRequest($session_request);
-
-    // See https://wiki.php.net/rfc/nullsafe_operator.
+    $o = $this->sendRequest($session_request);
+    $session_response = json_decode($o->getBody()->getContents());
     return $session_response?->session?->key;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function request(string $namespace, string $call, array $request): \stdClass {
+  public function request(string $namespace, string $call, array $request) {
     // Append API key to request.
     // @todo throw exception if API key is not present.
     $request = [...$request, 'api_key' => $this->apiKey];
@@ -93,38 +93,32 @@ class LastFM implements ServiceInterface {
     $merged_request = array_filter([...$spec, ...$request], fn ($value) => $value !== '');
 
     // // @todo can the response be mapped to a typed native object instead of stdClass?
-    $response = $this->sendRequest($merged_request);
-    return $response;
+    try {
+      $res = $this->sendRequest($merged_request);
+      if ($res->getStatusCode() === 200) {
+        return $res->getBody()->getContents();
+      }
+    }
+    catch (\Throwable $th) {
+      $this->messenger->addError($th->getMessage());
+    }
+    return '';
   }
 
   /**
-   * Generic reqeuest method.
+   * Uses Guzzle to send and receive signed reqeust.
    *
    * @param array $parameters
    *   Parameters argument.
    */
-  public function sendRequest(array $parameters = []) {
+  public function sendRequest(array $parameters = []): ResponseInterface {
     $parameters['api_sig'] = $this->sign($parameters);
     $parameters['format'] = 'json';
 
     // Fetch a request token.
     // See https://www.last.fm/api/desktopauth.
     $options = ['query' => $parameters];
-    $response = NULL;
-    try {
-      $response = $this->client->request('GET', '', $options);
-    }
-    catch (\Throwable $th) {
-      $this->messenger->addError($th->getMessage());
-    }
-
-    if ($response->getStatusCode() === 200) {
-      $json = $response->getBody()->getContents();
-      return json_decode($json);
-    }
-    else {
-      return NULL;
-    }
+    return $this->client->request('GET', '', $options);
   }
 
   /**
