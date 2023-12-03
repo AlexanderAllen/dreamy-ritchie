@@ -42,6 +42,7 @@ class HydrateTopAlbumsTest extends TestCase {
       $dto = (new MapperBuilder())
         ->allowSuperfluousKeys()
         ->allowPermissiveTypes()
+        ->enableFlexibleCasting()
         ->mapper()
         ->map($signature, $sauce);
 
@@ -78,6 +79,7 @@ class HydrateTopAlbumsTest extends TestCase {
 
         /** @var \CuyZ\Valinor\Mapper\Tree\Message\Message */
         $om = $message->originalMessage();
+        // @phpstan-ignore-next-line
         $oms = $om->getMessage();
 
         $node = $message->node();
@@ -87,7 +89,7 @@ class HydrateTopAlbumsTest extends TestCase {
         // $mapped = $node->mappedValue();
         // $node->
 
-        printf("OM: %s, PATH: %s, TYPE: %s, VALID: %s \n", $oms, $path, $type, $valid);
+        printf("Original Message: %s, PATH: %s, TYPE: %s, VALID: %b \n", $oms, $path, $type, $valid);
 
         // Kint::dump($om);
         flush();
@@ -126,6 +128,8 @@ final class Album {
     public readonly Artist $artist,
     /** @var list<ImageProps> */
     public readonly array $image = [],
+    /** @var string */
+    public readonly string $mbid = '',
   ) {}
 
 }
