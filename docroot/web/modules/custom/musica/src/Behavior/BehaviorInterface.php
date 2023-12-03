@@ -15,14 +15,6 @@ namespace Drupal\musica\Behavior;
 interface BehaviorInterface {
 
   /**
-   * Stateless behavior constructor.
-   *
-   * DO NOT pass any kind of state to behavior constructors.
-   * Otherwise the state entities becaome coupled to the behavioral entities.
-   */
-  public function __construct();
-
-  /**
    * Returns the behavior callable if found, or a dummy callable otherwise.
    *
    * This method will always return a callable.
