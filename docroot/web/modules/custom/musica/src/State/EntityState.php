@@ -46,4 +46,28 @@ class EntityState {
     return new self($name, [...$current_state->data, ...$new_state]);
   }
 
+  /**
+   * Merges new data into the specified state silo.
+   *
+   * @param string $silo
+   *   The name (array key) of a new or existing data silo in EntityState.
+   * @param EntityState $currentState
+   *   Existing state instance onto which the new data is going to be added.
+   * @param array $newData
+   *   New data to insert and merge into the state silo.
+   *
+   * @return EntityState
+   *   New EntityState instance containing $newData.
+   */
+  public static function mergeStateSilo(string $silo, EntityState $currentState, array $newData): EntityState {
+    $old_silo = array_key_exists($silo, $currentState->data) ? $currentState->data[$silo] : [];
+    $new_state = self::create($currentState->name, $currentState, [
+      $silo => [
+        ...$old_silo,
+        ...$newData,
+      ],
+    ]);
+    return $new_state;
+  }
+
 }
