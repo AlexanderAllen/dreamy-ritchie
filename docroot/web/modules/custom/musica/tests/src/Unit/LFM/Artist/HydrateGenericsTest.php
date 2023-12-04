@@ -22,8 +22,10 @@ use PHPUnit\Framework\TestCase;
  * @see https://github.com/CuyZ/Valinor#example
  * @see https://valinor.cuyz.io/1.7/how-to/use-custom-object-constructors
  * @see https://valinor.cuyz.io/1.7/usage/type-strictness-and-flexibility/
+ *
+ * For information on generics.
  */
-class HydrateTopAlbumsCleanedTest extends TestCase {
+class HydrateGenericsTest extends TestCase {
 
   public function testSimilarArtistsWithoutAttr() {
     $file = 'topalbums-full.json';
