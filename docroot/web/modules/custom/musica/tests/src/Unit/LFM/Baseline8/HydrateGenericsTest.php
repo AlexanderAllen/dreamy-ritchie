@@ -13,7 +13,7 @@ use CuyZ\Valinor\Mapper\Source\Source;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Basic Valinor DTO hydration test.
+ * Unit test for using PHPStan Generics with Valinor.
  *
  * @group musica
  *
@@ -31,21 +31,47 @@ use PHPUnit\Framework\TestCase;
 class HydrateGenericsTest extends TestCase {
 
   public function testSimilarArtistsWithoutAttr() {
-    $file = 'topalbums-full.json';
-    $path = '/app/docroot/web/modules/custom/musica/tests/src/Unit/LFM/Artist/';
+    $file = 'getTopTags-trimmed.json';
+    $path = '/app/docroot/web/modules/custom/musica/tests/src/Unit/LFM/Baseline8/';
     $sauce = Source::file(new \SplFileObject($path . $file));
+
+    $json = <<<JSON
+    {
+      "toptags": {
+        "tag": [
+          {
+            "count": 100,
+            "name": "pop",
+            "url": "https://www.last.fm/tag/pop"
+          }
+        ],
+        "@attr": {
+          "artist": "Cher"
+        }
+      }
+    }
+    JSON;
+    $response = Source::json($json);
 
     try {
 
       $suffix = ', "@attr": ' . Attribute::class . '} }';
       $signature = 'array{topalbums: array{album: ' . EntityListAlbum::class . $suffix;
+
       $dto = (new MapperBuilder())
         // ->allowSuperfluousKeys()
         ->allowPermissiveTypes()
         // ->enableFlexibleCasting()
         ->mapper()
-        // ->map($signature, $sauce);
         ->map(MyGenericWrapper::class . '<string>', ['value' => 'who knows?']);
+
+      /**
+       * Notes/description:
+       *
+       * For Valinor to work there needs to be a 1-to-1 source to target
+       * reference. The source properties need to match with the VARIABLE
+       * NAMES in the target class (or shape).
+       */
 
       $this->assertSame(TRUE, TRUE);
     }
