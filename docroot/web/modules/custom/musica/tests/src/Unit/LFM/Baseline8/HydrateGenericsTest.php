@@ -1,10 +1,6 @@
 <?php
 
-// phpcs:disable Drupal.Commenting.DocComment.ContentAfterOpen
-// phpcs:disable Squiz.WhiteSpace.FunctionSpacing.After
-// phpcs:disable Squiz.WhiteSpace.FunctionSpacing.AfterLast
-// phpcs:disable Squiz.WhiteSpace.FunctionSpacing.BeforeFirst, Drupal.Classes.ClassDeclaration.CloseBraceAfterBody
-// phpcs:disable Drupal.Classes.FullyQualifiedNamespace.UseStatementMissing
+// phpcs:disable
 
 namespace Drupal\Tests\musica\Unit\Baseline8;
 
@@ -37,18 +33,13 @@ class HydrateGenericsTest extends TestCase {
 
     $json = <<<JSON
     {
-      "toptags": {
-        "tag": [
-          {
-            "count": 100,
-            "name": "pop",
-            "url": "https://www.last.fm/tag/pop"
-          }
-        ],
-        "@attr": {
-          "artist": "Cher"
+      "tag": [
+        {
+          "count": 100,
+          "name": "pop",
+          "url": "https://www.last.fm/tag/pop"
         }
-      }
+      ]
     }
     JSON;
     $response = Source::json($json);
@@ -58,20 +49,27 @@ class HydrateGenericsTest extends TestCase {
       $suffix = ', "@attr": ' . Attribute::class . '} }';
       $signature = 'array{topalbums: array{album: ' . EntityListAlbum::class . $suffix;
 
+      /**
+       * Notes, Usage, Description.
+       *
+       * For Valinor to work there needs to be a 1-to-1 source to target
+       * variable name correlation. The props in the source map to the ones in
+       * the class constructor.
+       *
+       * This introduces some amount of coupling in the generic wrapper.
+       *
+       * The Template value can be specified, but it needs to be an existing
+       * scalar type (or maybe class) that exists already. If it's defined
+       * in the current scope the mapper won't find it!
+       */
       $dto = (new MapperBuilder())
         // ->allowSuperfluousKeys()
         ->allowPermissiveTypes()
         // ->enableFlexibleCasting()
         ->mapper()
-        ->map(MyGenericWrapper::class . '<string>', ['value' => 'who knows?']);
+        ->map(MyGenericWrapper::class . '<Tag>', $response);
 
-      /**
-       * Notes/description:
-       *
-       * For Valinor to work there needs to be a 1-to-1 source to target
-       * reference. The source properties need to match with the VARIABLE
-       * NAMES in the target class (or shape).
-       */
+
 
       $this->assertSame(TRUE, TRUE);
     }
@@ -84,14 +82,13 @@ class HydrateGenericsTest extends TestCase {
 
 }
 
-// phpcs:disable
 /**
- * @template T of mixed
+ * @template T
  */
 class MyGenericWrapper
 {
     /** @var T */
-    public mixed $value;
+    public mixed $tag;
 }
 
 /**
