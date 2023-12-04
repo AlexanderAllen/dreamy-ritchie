@@ -99,23 +99,15 @@ class EntityContainer {
    * @return EntityContainer
    */
   public function hydrate() {
+    $behaviors = $this->behavior->enumBehaviors::cases();
+    /** @var array<\BackedEnum> */
+    $populated = array_filter($behaviors, fn ($behavior) => array_key_exists($behavior->name, $this->state->data));
 
-    $shapes = array_keys($this->behavior::$shapes);
-    foreach ($shapes as $method) {
-      // Only hydrate populated states.
-      if (array_key_exists($method, $this->state->data)) {
+    array_walk(
+      $populated,
+      fn ($_behavior) => $this->state = $this->behavior::hydrateState($this->state, $_behavior->name)
+    );
 
-        $dto = $this->behavior::hydrateState($this->state, $method);
-
-        $old_dto = is_null($this->state?->data['dto']) ? [] : $this->state->data['dto'];
-        $this->state = EntityState::create($this->state->name, $this->state, [
-          'dto' =>  [
-            ...$old_dto,
-            ...$dto
-          ],
-        ]);
-      }
-    }
     return self::createFromState($this->behavior, $this->state);
   }
 
