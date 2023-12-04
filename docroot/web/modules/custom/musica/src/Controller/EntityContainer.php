@@ -45,6 +45,10 @@ class EntityContainer {
     return $this->state;
   }
 
+  public function dumpState() {
+    devel_render($this->state->data);
+  }
+
   /**
    * Creates and returns a container with specified behavior and a empty state.
    *
