@@ -86,7 +86,7 @@ abstract class BaseBehaviors implements BehaviorInterface {
     );
   }
 
-  abstract public static function hydrateState(EntityState $state, string $dataKey): array;
+  abstract public static function hydrateState(EntityState $state, string $dataKey): EntityState;
 
   /**
    * Dummy behavior that goes nowhere and does mostly nothing.
