@@ -42,6 +42,11 @@ class HydrateGenericsTest extends TestCase {
     }
     JSON;
     $response = Source::json($json);
+    /**
+     * @todo what about if we skim the root element name and replace it with
+     * a generic name? That way we can utilize the same generic class for
+     * everyone!? That wold require some JSON OPS.
+     */
 
     try {
 
@@ -57,16 +62,25 @@ class HydrateGenericsTest extends TestCase {
        *
        * This introduces some amount of coupling in the generic wrapper.
        *
-       * The Template value can be specified, but it needs to be an existing
-       * scalar type (or maybe class) that exists already. If it's defined
-       * in the current scope the mapper won't find it!
+       * Update 5:19AM 12/4: FQ namespaces are found by the mapper.
+       * This opens the door to the signature to be decoupled.
+       *
+       * @todo However the generic wrapper prop names are still coupled to
+       * the source.
        */
       $dto = (new MapperBuilder())
         // ->allowSuperfluousKeys()
         ->allowPermissiveTypes()
         // ->enableFlexibleCasting()
         ->mapper()
-        ->map(MyGenericWrapper::class . '<Drupal\Tests\musica\Unit\Baseline8\Tag>', $response);
+        // This workes as long as the target prop name is mappable to SRC.
+        // ->map(MyGenericWrapper::class . '<Drupal\Tests\musica\Unit\Baseline8\Tag>', $response);
+
+        // somehoe working?
+        // ->map(SomeCollection::class . '<array>', $response);
+
+        // THIS ITERATION WORKS 100%
+        ->map(SomeCollection::class . '<Drupal\Tests\musica\Unit\Baseline8\Tag>', $response);
 
 
 
@@ -74,7 +88,7 @@ class HydrateGenericsTest extends TestCase {
     }
     catch (\CuyZ\Valinor\Mapper\MappingError $error) {
       // Debugger::toCLI($error);
-      $test = NULL;
+      $this->markTestIncomplete('The mapper raised an exception!');
     }
 
   }
@@ -82,12 +96,29 @@ class HydrateGenericsTest extends TestCase {
 }
 
 /**
+ * @see https://github.com/CuyZ/Valinor/issues/8
+ * @see https://github.com/CuyZ/Valinor/blob/396f64a5246ccfe3f6f6d3211bac7f542a9c7fc6/README.md#object
+ */
+
+/**
+ * @template T of object
+ */
+final class SomeCollection
+{
+    public function __construct(
+        /** @var array<T> */
+        private array $objects,
+    ) {}
+}
+
+
+/**
  * @template T
  */
 class MyGenericWrapper
 {
     /** @var T */
-    public mixed $tag;
+    public $tag;
 }
 
 /**
