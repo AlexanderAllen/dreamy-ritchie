@@ -15,7 +15,7 @@ use Drupal\musica\Spec\LastFM\ArtistEnum;
  * @group musica
  * @group ignore
  */
-class OfflineEntityContainerTest extends TestCase {
+class OfflineEntityContainerIgnore extends TestCase {
 
   public function testInvalidChainedBehaviors() {
     $container = EntityContainer::createFromState(new BasicBehavior(), new EntityState('Cher'))

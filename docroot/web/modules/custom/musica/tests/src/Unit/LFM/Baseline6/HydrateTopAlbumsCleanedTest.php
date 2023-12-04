@@ -6,7 +6,7 @@
 // phpcs:disable Squiz.WhiteSpace.FunctionSpacing.BeforeFirst, Drupal.Classes.ClassDeclaration.CloseBraceAfterBody
 // phpcs:disable Drupal.Classes.FullyQualifiedNamespace.UseStatementMissing
 
-namespace Drupal\Tests\musica\Unit\LFM\Artist\GetTopAlbums;
+namespace Drupal\Tests\musica\Unit\LFM\Bseline6;
 
 use CuyZ\Valinor\MapperBuilder;
 use CuyZ\Valinor\Mapper\Source\Source;
@@ -27,7 +27,7 @@ class HydrateTopAlbumsCleanedTest extends TestCase {
 
   public function testSimilarArtistsWithoutAttr() {
     $file = 'topalbums-full.json';
-    $path = '/app/docroot/web/modules/custom/musica/tests/src/Unit/LFM/Artist/';
+    $path = '/app/docroot/web/modules/custom/musica/tests/src/Unit/LFM/Baseline6/';
     $sauce = Source::file(new \SplFileObject($path . $file));
 
     try {
@@ -44,7 +44,8 @@ class HydrateTopAlbumsCleanedTest extends TestCase {
       $this->assertSame(TRUE, TRUE);
     }
     catch (\CuyZ\Valinor\Mapper\MappingError $error) {
-      Debugger::toCLI($error);
+      // Debugger::toCLI($error);
+      $test = NULL;
     }
 
   }

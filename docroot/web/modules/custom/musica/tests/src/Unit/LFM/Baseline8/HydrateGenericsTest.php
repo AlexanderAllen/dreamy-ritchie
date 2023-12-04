@@ -33,13 +33,12 @@ class HydrateGenericsTest extends TestCase {
 
     $json = <<<JSON
     {
-      "tag": [
+      "tag":
         {
           "count": 100,
           "name": "pop",
           "url": "https://www.last.fm/tag/pop"
         }
-      ]
     }
     JSON;
     $response = Source::json($json);
@@ -67,7 +66,7 @@ class HydrateGenericsTest extends TestCase {
         ->allowPermissiveTypes()
         // ->enableFlexibleCasting()
         ->mapper()
-        ->map(MyGenericWrapper::class . '<Tag>', $response);
+        ->map(MyGenericWrapper::class . '<Drupal\Tests\musica\Unit\Baseline8\Tag>', $response);
 
 
 
