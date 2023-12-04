@@ -6,7 +6,7 @@
 // phpcs:disable Squiz.WhiteSpace.FunctionSpacing.BeforeFirst, Drupal.Classes.ClassDeclaration.CloseBraceAfterBody
 // phpcs:disable Drupal.Classes.FullyQualifiedNamespace.UseStatementMissing
 
-namespace Drupal\Tests\musica\Unit\Baseline7;
+namespace Drupal\Tests\musica\Unit\Baseline8;
 
 use CuyZ\Valinor\MapperBuilder;
 use CuyZ\Valinor\Mapper\Source\Source;
