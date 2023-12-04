@@ -1,5 +1,7 @@
 <?php
 
+// phpcs:disable Drupal.Commenting.DataTypeNamespace.DataTypeNamespace
+
 namespace Drupal\musica\Behavior;
 
 use CuyZ\Valinor\Mapper\Source\Source;
@@ -20,18 +22,45 @@ class ArtistBehaviors extends BaseBehaviors {
   }
 
   /**
-   * Reduce raw API state into a data transfer object.
+   * Hyrdrates and returns a new EntityState.
    */
-  public static function hydrateState(EntityState $state, string $dataKey): array {
+  public static function hydrateState(EntityState $state, string $dataKey): EntityState {
     $sauce = Source::json($state->data[$dataKey]);
     /** @var array */
-    $ret = (new MapperBuilder())
+    $dto = (new MapperBuilder())
       // ->allowSuperfluousKeys()
       ->allowPermissiveTypes()
       // ->enableFlexibleCasting()
       ->mapper()
       ->map(self::$shapes[$dataKey], $sauce);
-    return $ret;
+
+    return self::mergeStateSilo('dto', $state, $dto);
+  }
+
+  /**
+   * Merges new data into the specified state silo.
+   *
+   * @param string $silo
+   *   The name (array key) of a new or existing data silo in EntityState.
+   * @param EntityState $currentState
+   *   Existing state instance onto which the new data is going to be added.
+   * @param array $newData
+   *   New data to insert and merge into the state silo.
+   *
+   * @return EntityState
+   *   New EntityState instance containing $newData.
+   *
+   * @todo Would be nice to make this method a state trait.
+   */
+  public static function mergeStateSilo(string $silo, EntityState $currentState, array $newData): EntityState {
+    $old_silo = is_null($currentState?->data[$silo]) ? [] : $currentState->data[$silo];
+    $new_state = EntityState::create($currentState->name, $currentState, [
+      $silo => [
+        ...$old_silo,
+        ...$newData,
+      ],
+    ]);
+    return $new_state;
   }
 
 }
