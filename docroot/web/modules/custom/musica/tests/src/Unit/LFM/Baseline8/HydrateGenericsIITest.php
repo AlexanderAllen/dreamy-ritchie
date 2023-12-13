@@ -74,12 +74,10 @@ class HydrateGenericsIITest extends TestCase {
  */
 final class GenericCollection
 {
-    public function __construct(
-        /** @var T */
-        public $collection,
-    ) {
-      $test = NULL;
-    }
+  public function __construct(
+      /** @var T */
+      public readonly mixed $collection,
+  ) {}
 }
 
 /**
@@ -89,8 +87,8 @@ final class TopTags {
 
   public function __construct(
     /** @var tags $toptags */
-    public $toptags,
-) {}
+    public readonly mixed $toptags,
+  ) {}
 }
 
 final class Tag {
