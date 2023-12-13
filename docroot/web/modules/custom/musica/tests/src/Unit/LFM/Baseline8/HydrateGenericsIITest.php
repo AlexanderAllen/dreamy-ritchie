@@ -21,6 +21,7 @@ use PHPUnit\Framework\TestCase;
  * For PHPStan and Valinor information on generics.
  * @see https://github.com/CuyZ/Valinor/issues/8 valinor generics
  * @see https://github.com/CuyZ/Valinor/blob/396f64a5246ccfe3f6f6d3211bac7f542a9c7fc6/README.md#object
+ *
  * @see https://phpstan.org/blog/generics-in-php-using-phpdocs
  * @see https://phpstan.org/blog/generics-by-examples
  */
@@ -49,6 +50,11 @@ class HydrateGenericsIITest extends TestCase {
     {
       "toptags": {
         "tag": [
+          {
+            "count": 100,
+            "name": "pop",
+            "url": "https://www.last.fm/tag/pop"
+          }
         ]
       }
     }
@@ -58,25 +64,14 @@ class HydrateGenericsIITest extends TestCase {
 
     try {
 
-      $signature = 'array{toptags: array{tag: ' . Tag::class . ', "@attr": ' . Attribute::class . '} }';
+      $signature = GenericCollection::class . '<Drupal\Tests\musica\Unit\Baseline8a\TopTags>';
 
       $dto = (new MapperBuilder())
         // ->allowSuperfluousKeys()
         ->allowPermissiveTypes()
         // ->enableFlexibleCasting()
         ->mapper()
-        // This workes as long as the target prop name is mappable to SRC.
-        // ->map(MyGenericWrapper::class . '<Drupal\Tests\musica\Unit\Baseline8\Tag>', $response);
-
-        // somehoe working?
-        ->map(GenericCollection::class . '<Drupal\Tests\musica\Unit\Baseline8a\TopTags>', $response);
-
-        // THIS ITERATION WORKS 100%
-        //->map(SomeCollection::class . '<Drupal\Tests\musica\Unit\Baseline8\Tag>', $response);
-
-        // ->map($signature, $response);
-
-
+        ->map($signature, $response);
 
       $this->assertSame(TRUE, TRUE);
     }
@@ -88,12 +83,6 @@ class HydrateGenericsIITest extends TestCase {
   }
 
 }
-
-/**
- * @see https://github.com/CuyZ/Valinor/issues/8
- * @see https://github.com/CuyZ/Valinor/blob/396f64a5246ccfe3f6f6d3211bac7f542a9c7fc6/README.md#object
- */
-
 
 
 /**
@@ -109,15 +98,15 @@ final class GenericCollection
 
 class TopTags {
   public function __construct(
-    /** @var array */
+    /** @var array<Tag> */
     private array $tag,
 ) {}
 }
 
 final class Tag {
   public function __construct(
-    public readonly int $count,
-    public readonly string $name,
+    public readonly int $count = 0,
+    public readonly string $name = '',
     public readonly string $url = '',
   ) {}
 }
