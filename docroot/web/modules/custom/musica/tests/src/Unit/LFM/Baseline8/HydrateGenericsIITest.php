@@ -48,6 +48,8 @@ class HydrateGenericsIITest extends TestCase {
     $sauce = <<<JSON
     {
       "toptags": {
+        "tag": [
+        ]
       }
     }
     JSON;
@@ -67,7 +69,7 @@ class HydrateGenericsIITest extends TestCase {
         // ->map(MyGenericWrapper::class . '<Drupal\Tests\musica\Unit\Baseline8\Tag>', $response);
 
         // somehoe working?
-        ->map(SomeCollection::class . '<Drupal\Tests\musica\Unit\Baseline8a\TopTags>', $response);
+        ->map(GenericCollection::class . '<Drupal\Tests\musica\Unit\Baseline8a\TopTags>', $response);
 
         // THIS ITERATION WORKS 100%
         //->map(SomeCollection::class . '<Drupal\Tests\musica\Unit\Baseline8\Tag>', $response);
@@ -93,41 +95,24 @@ class HydrateGenericsIITest extends TestCase {
  */
 
 
-class TopTags {
-  public function __construct(
-    /** @var array */
-    private array $objects,
-) {}
-}
 
 /**
  * @template T
  */
-final class SomeCollection
+final class GenericCollection
 {
     public function __construct(
         /** @var array<T> */
-        private array $objects,
+        private array $collection,
     ) {}
 }
 
-/**
- * @template T of mixed
- * …or…
- * @template T // mixed is the default type
- *
- * You can also use advanced types:
- * @template T of int|float
- * @template T of SomeClass&SomeOtherClass
- * @template T of string|SomeClass
- * etc…
- */
-class MyGenericWrapperOG
-{
-    /** @var T */
-    public mixed $value;
+class TopTags {
+  public function __construct(
+    /** @var array */
+    private array $tag,
+) {}
 }
-
 
 final class Tag {
   public function __construct(
