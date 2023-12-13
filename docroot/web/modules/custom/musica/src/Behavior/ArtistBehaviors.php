@@ -7,6 +7,7 @@ namespace Drupal\musica\Behavior;
 use CuyZ\Valinor\Mapper\Source\Source;
 use CuyZ\Valinor\MapperBuilder;
 use Drupal\musica\DTO\LFM\EntityList;
+use Drupal\musica\DTO\LFM\GenericCollection;
 use Drupal\musica\Spec\LastFM\ArtistEnum;
 use Drupal\musica\State\EntityState;
 
@@ -54,18 +55,6 @@ enum ArtisDTOShapesEnum: string {
   case getTopTracks = 'getTopTracks';
   case removeTag = 'removeTag';
   case search = 'search';
-}
-
-/**
- * @template T
- */
-final class GenericCollection {
-
-  public function __construct(
-      /** @var array<T> */
-      public readonly mixed $collection,
-  ) {}
-
 }
 
 /**
