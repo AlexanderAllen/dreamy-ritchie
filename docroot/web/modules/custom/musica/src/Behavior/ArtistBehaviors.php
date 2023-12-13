@@ -6,8 +6,6 @@ namespace Drupal\musica\Behavior;
 
 use CuyZ\Valinor\Mapper\Source\Source;
 use CuyZ\Valinor\MapperBuilder;
-use Drupal\musica\DTO\LFM\Artist as SimilarArtist;
-use Drupal\musica\DTO\LFM\Attribute as SimilarAttribute;
 use Drupal\musica\DTO\LFM\EntityList;
 use Drupal\musica\Spec\LastFM\ArtistEnum;
 use Drupal\musica\State\EntityState;
@@ -34,13 +32,15 @@ class ArtistBehaviors extends BaseBehaviors {
       ->mapper()
       ->map(self::$shapes[$dataKey], $sauce);
 
-    return $state::mergeStateSilo('dto', $state, $dto);
+    return $state::mergeStateSilo('dto', $state, ['getTopTags' => $dto]);
   }
 
 }
 
 /**
  * Provides DTO shapes for hydrating raw Artist data.
+ *
+ * @todo shapes enum can be merged with behaviors enum.
  */
 enum ArtisDTOShapesEnum: string {
 
@@ -50,10 +50,44 @@ enum ArtisDTOShapesEnum: string {
   case getSimilar = 'array{similarartists: array{artist: ' . EntityList::class . ', "@attr": ' . Attribute::class . '} }';
   case getTags = 'getTags';
   case getTopAlbums = 'array{topalbums: array{album: ' . EntityListAlbum::class . ', "@attr": ' . Attribute::class . '} }';
-  case getTopTags = 'getTopTags';
+  case getTopTags = GenericCollection::class . '<Drupal\musica\Behavior\TopTags>';
   case getTopTracks = 'getTopTracks';
   case removeTag = 'removeTag';
   case search = 'search';
+}
+
+/**
+ * @template T
+ */
+final class GenericCollection {
+
+  public function __construct(
+      /** @var array<T> */
+      public readonly mixed $collection,
+  ) {}
+
+}
+
+/**
+ * @phpstan-type tags array{'tag': list<Tag>, "@attr"?: Attribute}
+ */
+final class TopTags {
+
+  public function __construct(
+    /** @var tags $toptags */
+    public readonly mixed $toptags,
+  ) {}
+
+}
+
+final class Tag {
+
+  public function __construct(
+    public readonly int $count = 0,
+    public readonly string $name = '',
+    public readonly string $url = '',
+  ) {}
+
 }
 
 
