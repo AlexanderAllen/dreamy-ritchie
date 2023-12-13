@@ -33,7 +33,7 @@ class ArtistBehaviors extends BaseBehaviors {
       ->mapper()
       ->map(self::$shapes[$dataKey], $sauce);
 
-    return $state::mergeStateSilo('dto', $state, ['getTopTags' => $dto]);
+    return $state::mergeStateSilo('dto', $state, [$dataKey => $dto]);
   }
 
 }
