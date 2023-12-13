@@ -28,7 +28,7 @@ use PHPUnit\Framework\TestCase;
 class HydrateGenericsIITest extends TestCase {
 
   public function testSimilarArtistsWithoutAttr() {
-    $full = <<<JSON
+    $sauce = <<<JSON
     {
       "toptags": {
         "tag": [
@@ -45,24 +45,6 @@ class HydrateGenericsIITest extends TestCase {
     }
     JSON;
 
-
-    $sauce = <<<JSON
-    {
-      "toptags": {
-        "tag": [
-          {
-            "count": 100,
-            "name": "pop",
-            "url": "https://www.last.fm/tag/pop"
-          }
-        ],
-        "attr": {
-          "artist": "Cher"
-        }
-      }
-    }
-    JSON;
-
     $response = Source::json($sauce);
 
     try {
@@ -70,17 +52,16 @@ class HydrateGenericsIITest extends TestCase {
       $signature = GenericCollection::class . '<Drupal\Tests\musica\Unit\Baseline8a\TopTags>';
 
       $dto = (new MapperBuilder())
-        ->allowSuperfluousKeys()
-        ->allowPermissiveTypes()
-        ->enableFlexibleCasting()
+        // ->allowSuperfluousKeys()
+        // ->allowPermissiveTypes()
+        // ->enableFlexibleCasting()
         ->mapper()
         ->map($signature, $response);
 
       $this->assertSame(TRUE, TRUE);
     }
     catch (\CuyZ\Valinor\Mapper\MappingError $error) {
-      // Debugger::toCLI($error);
-      $this->markTestIncomplete('The mapper raised an exception!');
+      $this->markTestIncomplete($error->getMessage());
     }
 
   }
@@ -94,22 +75,22 @@ class HydrateGenericsIITest extends TestCase {
 final class GenericCollection
 {
     public function __construct(
-        /** @var array<T> */
-        private array $collection,
+        /** @var T */
+        public $collection,
     ) {
       $test = NULL;
     }
 }
 
+/**
+ * @phpstan-type tags array{'tag': list<Tag>, "@attr"?: Attribute}
+ */
 final class TopTags {
+
   public function __construct(
-    /** @var array<Tag> */
-    private array $tag,
-    private Attribute $attr,
-) {
-  // Tag has already been casted by the time we get here. And raw attr is not there.
-  $test = NULL;
-}
+    /** @var tags $toptags */
+    public $toptags,
+) {}
 }
 
 final class Tag {
@@ -121,17 +102,13 @@ final class Tag {
 }
 
 
-
-
 class Attribute {
 
   public function __construct(
-    /** @var non-empty-string */
-    public readonly string $artist,
+    public readonly string $artist = '',
     public readonly string $page = '',
     public readonly string $perPage = '',
     public readonly string $totalPages = '',
     public readonly string $total = '',
   ) {}
-
 }
