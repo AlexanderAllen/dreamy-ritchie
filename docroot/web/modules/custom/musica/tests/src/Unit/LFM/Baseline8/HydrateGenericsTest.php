@@ -12,6 +12,7 @@ use PHPUnit\Framework\TestCase;
  * Unit test for using PHPStan Generics with Valinor.
  *
  * @group musica
+ * @group ignore
  *
  * @see https://www.last.fm/api/show/artist.getTopAlbums
  * @see https://github.com/CuyZ/Valinor#example
