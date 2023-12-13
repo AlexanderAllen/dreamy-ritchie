@@ -55,7 +55,10 @@ class HydrateGenericsIITest extends TestCase {
             "name": "pop",
             "url": "https://www.last.fm/tag/pop"
           }
-        ]
+        ],
+        "attr": {
+          "artist": "Cher"
+        }
       }
     }
     JSON;
@@ -67,9 +70,9 @@ class HydrateGenericsIITest extends TestCase {
       $signature = GenericCollection::class . '<Drupal\Tests\musica\Unit\Baseline8a\TopTags>';
 
       $dto = (new MapperBuilder())
-        // ->allowSuperfluousKeys()
+        ->allowSuperfluousKeys()
         ->allowPermissiveTypes()
-        // ->enableFlexibleCasting()
+        ->enableFlexibleCasting()
         ->mapper()
         ->map($signature, $response);
 
@@ -93,14 +96,21 @@ final class GenericCollection
     public function __construct(
         /** @var array<T> */
         private array $collection,
-    ) {}
+    ) {
+      $test = NULL;
+    }
 }
 
-class TopTags {
+final class TopTags {
   public function __construct(
     /** @var array<Tag> */
     private array $tag,
-) {}
+    /** @var array */
+    private array $attr = [],
+) {
+  // Tag has already been casted by the time we get here. And raw attr is not there.
+  $test = NULL;
+}
 }
 
 final class Tag {
