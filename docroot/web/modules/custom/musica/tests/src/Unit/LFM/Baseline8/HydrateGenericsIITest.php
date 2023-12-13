@@ -29,37 +29,26 @@ class HydrateGenericsIITest extends TestCase {
   public function testSimilarArtistsWithoutAttr() {
     $json = <<<JSON
     {
-      "tag":
-        {
-          "count": 100,
-          "name": "pop",
-          "url": "https://www.last.fm/tag/pop"
+      "toptags": {
+        "tag": [
+          {
+            "count": 100,
+            "name": "pop",
+            "url": "https://www.last.fm/tag/pop"
+          }
+        ],
+        "@attr": {
+          "artist": "Cher"
         }
+      }
     }
     JSON;
-
     $response = Source::json($json);
 
     try {
 
-      $suffix = ', "@attr": ' . Attribute::class . '} }';
-      // $signature = 'array{topalbums: array{album: ' . EntityListAlbum::class . $suffix;
+      $signature = 'array{toptags: array{tag: ' . Tag::class . ', "@attr": ' . Attribute::class . '} }';
 
-      /**
-       * Notes, Usage, Description.
-       *
-       * For Valinor to work there needs to be a 1-to-1 source to target
-       * variable name correlation. The props in the source map to the ones in
-       * the class constructor.
-       *
-       * This introduces some amount of coupling in the generic wrapper.
-       *
-       * Update 5:19AM 12/4: FQ namespaces are found by the mapper.
-       * This opens the door to the signature to be decoupled.
-       *
-       * @todo However the generic wrapper prop names are still coupled to
-       * the source.
-       */
       $dto = (new MapperBuilder())
         // ->allowSuperfluousKeys()
         ->allowPermissiveTypes()
@@ -69,12 +58,12 @@ class HydrateGenericsIITest extends TestCase {
         // ->map(MyGenericWrapper::class . '<Drupal\Tests\musica\Unit\Baseline8\Tag>', $response);
 
         // somehoe working?
-        // ->map(SomeCollection::class . '<array>', $response);
+        ->map(SomeCollection::class . '<array>', $response);
 
         // THIS ITERATION WORKS 100%
         //->map(SomeCollection::class . '<Drupal\Tests\musica\Unit\Baseline8\Tag>', $response);
 
-        ->map(SomeCollection::class . '<Drupal\Tests\musica\Unit\Baseline8II\Tag>', $response);
+        // ->map($signature, $response);
 
 
 
@@ -95,24 +84,13 @@ class HydrateGenericsIITest extends TestCase {
  */
 
 /**
- * @template T of object
+ * @template T
  */
 final class SomeCollection
 {
     public function __construct(
         /** @var array<T> */
         private array $objects,
-    ) {}
-}
-
-/**
- * @template T of object
- */
-final class TopTags
-{
-    public function __construct(
-        /** @var array<T> */
-        private array $object,
     ) {}
 }
 
