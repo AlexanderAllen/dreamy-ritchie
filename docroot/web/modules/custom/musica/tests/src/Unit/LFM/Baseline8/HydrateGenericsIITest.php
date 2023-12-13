@@ -105,8 +105,7 @@ final class TopTags {
   public function __construct(
     /** @var array<Tag> */
     private array $tag,
-    /** @var array */
-    private array $attr = [],
+    private Attribute $attr,
 ) {
   // Tag has already been casted by the time we get here. And raw attr is not there.
   $test = NULL;
