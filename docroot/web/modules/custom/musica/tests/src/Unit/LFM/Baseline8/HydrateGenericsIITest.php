@@ -2,7 +2,7 @@
 
 // phpcs:disable
 
-namespace Drupal\Tests\musica\Unit\Baseline8II;
+namespace Drupal\Tests\musica\Unit\Baseline8a;
 
 use CuyZ\Valinor\MapperBuilder;
 use CuyZ\Valinor\Mapper\Source\Source;
@@ -27,7 +27,7 @@ use PHPUnit\Framework\TestCase;
 class HydrateGenericsIITest extends TestCase {
 
   public function testSimilarArtistsWithoutAttr() {
-    $json = <<<JSON
+    $full = <<<JSON
     {
       "toptags": {
         "tag": [
@@ -43,7 +43,16 @@ class HydrateGenericsIITest extends TestCase {
       }
     }
     JSON;
-    $response = Source::json($json);
+
+
+    $sauce = <<<JSON
+    {
+      "toptags": {
+      }
+    }
+    JSON;
+
+    $response = Source::json($sauce);
 
     try {
 
@@ -58,7 +67,7 @@ class HydrateGenericsIITest extends TestCase {
         // ->map(MyGenericWrapper::class . '<Drupal\Tests\musica\Unit\Baseline8\Tag>', $response);
 
         // somehoe working?
-        ->map(SomeCollection::class . '<array>', $response);
+        ->map(SomeCollection::class . '<Drupal\Tests\musica\Unit\Baseline8a\TopTags>', $response);
 
         // THIS ITERATION WORKS 100%
         //->map(SomeCollection::class . '<Drupal\Tests\musica\Unit\Baseline8\Tag>', $response);
@@ -82,6 +91,14 @@ class HydrateGenericsIITest extends TestCase {
  * @see https://github.com/CuyZ/Valinor/issues/8
  * @see https://github.com/CuyZ/Valinor/blob/396f64a5246ccfe3f6f6d3211bac7f542a9c7fc6/README.md#object
  */
+
+
+class TopTags {
+  public function __construct(
+    /** @var array */
+    private array $objects,
+) {}
+}
 
 /**
  * @template T
