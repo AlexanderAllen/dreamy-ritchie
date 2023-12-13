@@ -12,7 +12,6 @@ use PHPUnit\Framework\TestCase;
  * Unit test for using PHPStan Generics with Valinor.
  *
  * @group musica
- * @group ignore
  *
  * @see https://www.last.fm/api/show/artist.getTopAlbums
  * @see https://github.com/CuyZ/Valinor#example
@@ -28,35 +27,23 @@ use PHPUnit\Framework\TestCase;
 class HydrateGenericsIITest extends TestCase {
 
   public function testSimilarArtistsWithoutAttr() {
-    $file = 'getTopTags-trimmed.json';
-    $path = '/app/docroot/web/modules/custom/musica/tests/src/Unit/LFM/Baseline8/';
-    $sauce = Source::file(new \SplFileObject($path . $file));
-
     $json = <<<JSON
     {
-      "toptags": {
-        "tag": [
-          {
-            "count": 100,
-            "name": "pop",
-            "url": "https://www.last.fm/tag/pop"
-          }
-        ],
-      }
+      "tag":
+        {
+          "count": 100,
+          "name": "pop",
+          "url": "https://www.last.fm/tag/pop"
+        }
     }
     JSON;
 
     $response = Source::json($json);
-    /**
-     * @todo what about if we skim the root element name and replace it with
-     * a generic name? That way we can utilize the same generic class for
-     * everyone!? That wold require some JSON OPS.
-     */
 
     try {
 
       $suffix = ', "@attr": ' . Attribute::class . '} }';
-      $signature = 'array{topalbums: array{album: ' . EntityListAlbum::class . $suffix;
+      // $signature = 'array{topalbums: array{album: ' . EntityListAlbum::class . $suffix;
 
       /**
        * Notes, Usage, Description.
@@ -85,9 +72,9 @@ class HydrateGenericsIITest extends TestCase {
         // ->map(SomeCollection::class . '<array>', $response);
 
         // THIS ITERATION WORKS 100%
-        // ->map(SomeCollection::class . '<Drupal\Tests\musica\Unit\Baseline8\Tag>', $response);
+        //->map(SomeCollection::class . '<Drupal\Tests\musica\Unit\Baseline8\Tag>', $response);
 
-        ->map('array{topTags: array{' . SomeCollection::class . '<Drupal\Tests\musica\Unit\Baseline8\Tag>', $response);
+        ->map(SomeCollection::class . '<Drupal\Tests\musica\Unit\Baseline8II\Tag>', $response);
 
 
 
@@ -118,14 +105,15 @@ final class SomeCollection
     ) {}
 }
 
-
 /**
- * @template T
+ * @template T of object
  */
-class MyGenericWrapper
+final class TopTags
 {
-    /** @var T */
-    public $tag;
+    public function __construct(
+        /** @var array<T> */
+        private array $object,
+    ) {}
 }
 
 /**
@@ -146,20 +134,6 @@ class MyGenericWrapperOG
 }
 
 
-/**
- * @template T of Tag
- */
-final class GenericEntityList {
-
-  public function __construct(
-    /** @var T */
-    public $list,
-  ) {
-    $test = null;
-  }
-}
-
-
 final class Tag {
   public function __construct(
     public readonly int $count,
@@ -169,46 +143,6 @@ final class Tag {
 }
 
 
-class ImageProps {
-  public readonly string $text;
-  public readonly string $size;
-
-  public function __construct(...$args) {
-    [$this->text, $this->size] = $args;
-  }
-}
-
-
-final class EntityListAlbum {
-
-  public function __construct(
-    /** @var list<Album> */
-    public readonly array $album,
-  ) {}
-
-}
-
-/**
- * @phpstan-type ImageProps3 array{"#text": string, size: string}
- */
-final class Album {
-
-  public function __construct(
-    /** @var non-empty-string */
-    public readonly string $name,
-    /** @var non-negative-int */
-    public readonly int $playcount,
-    /** @var string */
-    public readonly string $url,
-    /** @var Artist */
-    public readonly Artist $artist,
-    /** @var list<ImageProps> */
-    public readonly array $image = [],
-    /** @var string */
-    public readonly string $mbid = '',
-  ) {}
-
-}
 
 
 class Attribute {
@@ -220,19 +154,6 @@ class Attribute {
     public readonly string $perPage = '',
     public readonly string $totalPages = '',
     public readonly string $total = '',
-  ) {}
-
-}
-
-final class Artist {
-
-  public function __construct(
-    /** @var non-empty-string */
-    public readonly string $name,
-    /** @var non-empty-string */
-    public readonly string $mbid,
-    /** @var non-empty-string */
-    public readonly string $url,
   ) {}
 
 }
