@@ -223,10 +223,11 @@ class Attribute {
 
 }
 
-
 /**
  * @phpstan-type taglist array{tag?: list<Tag>}
  * @phpstan-type getInfoSimilar array{artist?: list<Artist>}
+ *
+ * @todo bio could be further typed (it has nested links)
  */
 final class Artist {
 
@@ -240,12 +241,26 @@ final class Artist {
     public readonly int $ontour = 0,
     public readonly array $stats = [],
     public readonly array $bio = [],
-    /** @var list<ImageProps> */
-    public readonly array $image = [],
     /** @var taglist */
     public readonly array $tags = [],
     /** @var getInfoSimilar */
     public readonly array $similar = [],
+    public readonly Images $image = new Images(),
   ) {}
+
+}
+
+final class Images {
+  public array $index = [];
+
+  public function __construct(
+    /** @var list<ImageProps> */
+    public readonly array $images = [],
+  ) {
+    array_walk(
+      $images,
+      fn (ImageProps $image) => $this->index[empty($image->size) ? 'default' : $image->size] = $image->text
+    );
+  }
 
 }
