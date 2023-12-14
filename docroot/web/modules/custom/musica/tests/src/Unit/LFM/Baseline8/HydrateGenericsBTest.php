@@ -53,7 +53,7 @@ class HydrateGenericsBTest extends TestCase {
 
     try {
 
-      $signature = GenericCollection::class . '<Drupal\Tests\musica\Unit\Baseline8b\TopTags>';
+      $signature = GenericValueContainer::class . '<Drupal\Tests\musica\Unit\Baseline8b\InnerValueContainer>';
 
       $dto = (new MapperBuilder())
         // ->allowSuperfluousKeys()
@@ -76,18 +76,18 @@ class HydrateGenericsBTest extends TestCase {
 /**
  * @template T
  */
-final class GenericCollection
+final class GenericValueContainer
 {
   public function __construct(
       /** @var T */
-      public readonly mixed $collection,
+      public readonly mixed $container,
   ) {}
 }
 
 /**
  * @phpstan-type tags array{'tag': list<Tag>, "@attr"?: Attribute}
  */
-final class TopTags {
+final class InnerValueContainer {
 
   public function __construct(
     /** @var tags $toptags */
