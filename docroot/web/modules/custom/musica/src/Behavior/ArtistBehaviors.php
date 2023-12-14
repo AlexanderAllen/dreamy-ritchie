@@ -226,8 +226,6 @@ class Attribute {
 /**
  * @phpstan-type taglist array{tag?: list<Tag>}
  * @phpstan-type getInfoSimilar array{artist?: list<Artist>}
- *
- * @todo bio could be further typed (it has nested links)
  */
 final class Artist {
 
@@ -240,12 +238,27 @@ final class Artist {
     public readonly int $listeners = 0,
     public readonly int $ontour = 0,
     public readonly array $stats = [],
-    public readonly array $bio = [],
     /** @var taglist */
     public readonly array $tags = [],
     /** @var getInfoSimilar */
     public readonly array $similar = [],
     public readonly Images $image = new Images(),
+    public readonly Bio $bio = new Bio(),
+  ) {}
+
+}
+
+/**
+ * @phpstan-type linkList array{link?: array{"#text"?: string, rel?: string, href?: string}}
+ */
+final class Bio {
+
+  public function __construct(
+    public readonly string $content = '',
+    public readonly string $summary = '',
+    public readonly string $published = '',
+    /** @var linkList */
+    public readonly array $links = [],
   ) {}
 
 }

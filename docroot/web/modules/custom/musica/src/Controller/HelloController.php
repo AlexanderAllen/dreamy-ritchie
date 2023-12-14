@@ -98,8 +98,8 @@ class HelloController extends ControllerBase {
       '#theme' => 'artist',
       '#name' => $name,
       '#state' => [
-        'bio' => $data->artist->bio['content'],
-        'bio_short' => $data->artist->bio['summary'],
+        'bio' => $data->artist->bio->content,
+        'bio_short' => $data->artist->bio->summary,
       ],
     ];
 
