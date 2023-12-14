@@ -28,6 +28,39 @@
         "showReuseMessage": true,
         "clear": true
       }
-    }
+    },
+    {
+      "label": "Lando Start",
+      "detail": "Start Lando project",
+      "type": "shell",
+      "linux": {
+        "options": {
+          "cwd": "/home/wsl/WWW/sparkling-shirley/Boilerplates-for-Lando/drupal/d10-ee"
+        }
+      },
+      "command": "lando start",
+      "group": "none",
+      "isBackground": true,
+      "icon": {"id": "server-environment", "color": "terminal.ansiGreen"},
+      "presentation": {
+        "reveal": "silent",
+        "focus": false,
+        "panel": "shared",
+      }
+    },
+    {
+      "label": "Lando Stop",
+      "detail": "Stop Lando project",
+      "type": "shell",
+      "linux": {
+        "options": {
+          "cwd": "/home/wsl/WWW/sparkling-shirley/Boilerplates-for-Lando/drupal/d10-ee"
+        }
+      },
+      "command": "lando stop",
+      "group": "none",
+      "isBackground": true,
+      "icon": {"id": "server-environment", "color": "terminal.ansiRed"},
+    },
   ]
 }
