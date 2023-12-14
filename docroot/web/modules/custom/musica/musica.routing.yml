@@ -22,12 +22,11 @@ musica.auth_lastfm_form:
 #
 # @todo: It would be nice to have an endpoint for plain-text names, and another
 # one for mbid UUIDs.
-#
-# @todo: title callback
 musica.fusion_plain:
   path: '/fusion/artist/{name}'
   defaults:
     _controller: '\Drupal\musica\Controller\HelloController::artist'
     _title: Artist Fusion
+    _title_callback: '\Drupal\musica\Controller\HelloController::titleCallback'
   requirements:
     _permission: 'access content'

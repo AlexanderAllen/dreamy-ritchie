@@ -5,9 +5,10 @@
 namespace Drupal\musica\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\musica\Behavior\ArtistBehaviors;
 use Drupal\musica\Service\LastFM;
-use Drupal\musica\State\EntityState;;
+use Drupal\musica\State\EntityState;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 
@@ -76,34 +77,33 @@ class HelloController extends ControllerBase {
       '#markup' => "hello world sample page",
     ];
 
-    // $render_array[] = [
-    //   '#type' => 'markup',
-    //   '#markup' => "<p>Bio: {$state?->data['info']}</p>",
-    // ];
-
     return $render_array;
   }
 
+  /**
+   * Example controller callback for displaying information about an artist.
+   *
+   * @param string $name
+   * @return (string|EntityState)[][]
+   */
   public function artist(string $name = '') {
     $state = EntityContainer::createFromState(new ArtistBehaviors(), new EntityState($name))
       ->map('getInfo', $this->lastfm, ['limit' => 3])
       ->hydrate()
       ->getStateEntity();
 
-    $test = null;
-
     $render_array = [];
     $render_array[] = [
-      '#type' => 'markup',
-      '#markup' => "hello world sample page",
+      '#theme' => 'artist',
+      '#name' => $name,
+      '#state' => $state,
     ];
 
-    // $render_array[] = [
-    //   '#type' => 'markup',
-    //   '#markup' => "<p>Bio: {$state?->data['info']}</p>",
-    // ];
-
     return $render_array;
+  }
+
+  public function titleCallback(string $name = '') {
+    return new TranslatableMarkup('Artist: %name', ['%name'=> $name]);
   }
 
 }
