@@ -70,4 +70,8 @@ class EntityState {
     return $new_state;
   }
 
+  public function getSiloData(string $silo, string $path) {
+    return $this->data[$silo][$path]->collection;
+  }
+
 }

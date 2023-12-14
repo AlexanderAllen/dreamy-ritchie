@@ -5,7 +5,6 @@
 namespace Drupal\musica\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
-use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\musica\Behavior\ArtistBehaviors;
 use Drupal\musica\Service\LastFM;
 use Drupal\musica\State\EntityState;
@@ -92,18 +91,23 @@ class HelloController extends ControllerBase {
       ->hydrate()
       ->getStateEntity();
 
+    $data = $state->getSiloData('dto', 'getInfo');
+
     $render_array = [];
     $render_array[] = [
       '#theme' => 'artist',
       '#name' => $name,
-      '#state' => $state,
+      '#state' => [
+        'bio' => $data->artist->bio['content'],
+        'bio_short' => $data->artist->bio['summary'],
+      ],
     ];
 
     return $render_array;
   }
 
   public function titleCallback(string $name = '') {
-    return new TranslatableMarkup('Artist: %name', ['%name'=> $name]);
+    return $this->t('%name', ['%name'=> $name]);
   }
 
 }
