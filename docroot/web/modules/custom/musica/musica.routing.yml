@@ -7,14 +7,6 @@ musica.content:
   requirements:
     _permission: 'access content'
 
-musica.classroom:
-  path: '/classroom'
-  defaults:
-    _controller: '\Drupal\musica\Controller\Classroom::content'
-    _title: 'Classroom'
-  requirements:
-    _permission: 'access content'
-
 # LFM Auth form.
 musica.auth_lastfm_form:
  path: '/auth/lastfm'
