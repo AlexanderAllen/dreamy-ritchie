@@ -226,6 +226,7 @@ class Attribute {
 
 /**
  * @phpstan-type taglist array{tag?: list<Tag>}
+ * @phpstan-type getInfoSimilar array{artist?: list<Artist>}
  */
 final class Artist {
 
@@ -239,11 +240,12 @@ final class Artist {
     public readonly int $ontour = 0,
     public readonly array $stats = [],
     public readonly array $bio = [],
-    public readonly array $similar = [],
     /** @var list<ImageProps> */
     public readonly array $image = [],
     /** @var taglist */
     public readonly array $tags = [],
+    /** @var getInfoSimilar */
+    public readonly array $similar = [],
   ) {}
 
 }
