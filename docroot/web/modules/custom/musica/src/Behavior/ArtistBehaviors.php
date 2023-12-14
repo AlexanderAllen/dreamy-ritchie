@@ -54,15 +54,39 @@ enum ArtisDTOShapesEnum: string {
   case getTopTags = GenericCollection::class . '<Drupal\musica\Behavior\TopTags>';
   case getTopTracks = GenericCollection::class . '<Drupal\musica\Behavior\TopTracks>';
   case removeTag = 'removeTag';
-  case search = 'search';
+  case search = GenericCollection::class . '<Drupal\musica\Behavior\Search>';
+}
+
+/**
+ * Data transfer object for artist.search.
+ *
+ * @phpstan-type RootValue array{
+ *  artistmatches: array{artist: list<Artist>},
+ *  "opensearch:Query": array,
+ *  "opensearch:totalResults": int,
+ *  "opensearch:startIndex": int,
+ *  "opensearch:itemsPerPage": int,
+ *  "@attr"?: Attribute
+ * }
+ *
+ * @see https://www.last.fm/api/show/artist.search
+ */
+final class Search {
+
+  public function __construct(
+    /** @var RootValue $results */
+    public readonly mixed $results,
+  ) {}
+
 }
 
 /**
  * Data transfer object for artist.getTopTracks.
  *
- * @phpstan-type RootValue array{'track': list<Track>}
+ * @phpstan-type RootValue array{'track': list<Track>, "@attr"?: Attribute}
  *
  * @see https://www.last.fm/api/show/artist.getTopTracks
+ * @todo inner Track @attr (ranking) is lost because of Valinor limiations.
  */
 final class TopTracks {
 
@@ -132,9 +156,6 @@ final class EntityListAlbum {
 
 }
 
-/**
- * @phpstan-type ImageProps3 array{"#text": string, size: string}
- */
 final class Album {
 
   public function __construct(
@@ -158,28 +179,29 @@ final class Album {
 class Attribute {
 
   public function __construct(
-    /** @var non-empty-string */
-    public readonly string $artist,
+    public readonly string $artist = '',
     public readonly string $page = '',
     public readonly string $perPage = '',
     public readonly string $totalPages = '',
     public readonly string $total = '',
+    public readonly string $for = '',
   ) {}
 
 }
 
-/**
- * @see https://phpstan.org/writing-php-code/phpdoc-types#local-type-aliases
- */
+
 final class Artist {
 
   public function __construct(
-    /** @var non-empty-string */
-    public readonly string $name,
-    /** @var non-empty-string */
-    public readonly string $mbid,
-    /** @var non-empty-string */
-    public readonly string $url,
+    public readonly string $name = '',
+    public readonly string $mbid = '',
+    public readonly string $match = '',
+    public readonly string $url = '',
+    /** @var list<ImageProps> */
+    public readonly array $image = [],
+    /** @var string */
+    public readonly string $streamable = '',
+    public readonly int $listeners = 0,
   ) {}
 
 }

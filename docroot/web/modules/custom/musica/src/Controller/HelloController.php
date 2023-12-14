@@ -47,7 +47,8 @@ class HelloController extends ControllerBase {
     // ->map('getTags', $this->lastfm); // user not found
     // ->map('getTopAlbums', $this->lastfm, ['limit' => 10]) // OK 12/2
     // ->map('getTopTags', $this->lastfm, ['limit' => 10]); // OK 12/13
-    ->map('getTopTracks', $this->lastfm, ['limit' => 3]); // OK 12/13
+    ->map('getTopTracks', $this->lastfm, ['limit' => 2]) // OK 12/14
+    ->map('search', $this->lastfm, ['limit' => 3]); // OK 12/14
 
     // $container->dumpState();
     $container->hydrate();
@@ -58,11 +59,6 @@ class HelloController extends ControllerBase {
 
     // d($state->data['getTopAlbums']);
 
-    // $dto = ArtistBehaviors::hydrateState($state, 'getSimilar'); // tested OK 12/3
-
-    // $dto = ArtistBehaviors::hydrateState($state, 'getTopAlbums'); // tested OK 12/3
-
-
     // 4.2 iteration - populate/transform entity with information from VARIOUS api calls.
     // ...
     // 5th iteration - standarization - make one state entity to use across services, MUST USE INTERFACE
@@ -70,9 +66,6 @@ class HelloController extends ControllerBase {
     // 6th-8th iterations - pass and manipulate the entity between various containers.
     //
     // 10th iteration - implement default render array in behaviors.
-
-    // $dto = DTOMapper::map($state->data['getSimilar'], SimilarArtists:class);
-
 
 
 
