@@ -85,12 +85,26 @@ final class GenericValueContainer
 }
 
 /**
+ * Inner value container.
+ *
+ * The parameter/property names must match the source in order for Valinor
+ * to recognize the mapping: if you change the name of $toptags then Valinor
+ * breaks b.c. it' can't find a match in the incoming source.
+ *
+ * @todo Can we use variables here in the custom type definition?
+ * For example, replace 'tag' and list<Tag> ?
+ *
+ * Variadics don't really work well either (mapping is cancelled).
+ * Generics are not allowed in inner contexts either (see Valinor issue #8).
+ *
  * @phpstan-type tags array{'tag': list<Tag>, "@attr"?: Attribute}
+ *
+ * @template T
  */
 final class InnerValueContainer {
 
   public function __construct(
-    /** @var tags $toptags */
+    /** @var tags */
     public readonly mixed $toptags,
   ) {}
 }
