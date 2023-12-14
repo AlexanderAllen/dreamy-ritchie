@@ -60,8 +60,6 @@ class HelloController extends ControllerBase {
 
     // d($state->data['getTopAlbums']);
 
-    // 4.2 iteration - populate/transform entity with information from VARIOUS api calls.
-    // ...
     // 5th iteration - standarization - make one state entity to use across services, MUST USE INTERFACE
     // ...
     // 6th-8th iterations - pass and manipulate the entity between various containers.
