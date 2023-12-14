@@ -25,9 +25,9 @@ use PHPUnit\Framework\TestCase;
  * @see https://phpstan.org/blog/generics-in-php-using-phpdocs
  * @see https://phpstan.org/blog/generics-by-examples
  */
-class HydrateGenericsIITest extends TestCase {
+class HydrateGenericsTest extends TestCase {
 
-  public function testSimilarArtistsWithoutAttr() {
+  public function testSimilarArtistsWithAttr() {
     $sauce = <<<JSON
     {
       "toptags": {
