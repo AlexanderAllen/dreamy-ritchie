@@ -43,7 +43,8 @@ class HelloController extends ControllerBase {
   public function content() {
 
     $container = EntityContainer::createFromState(new ArtistBehaviors(), new EntityState('Cher'))
-    ->map('getSimilar', $this->lastfm, ['limit' => 3]); // OK 12/1, redone 12/4
+    ->map('getInfo', $this->lastfm, ['limit' => 3]);
+    // ->map('getSimilar', $this->lastfm, ['limit' => 3]); // OK 12/1, redone 12/4
     // ->map('getTags', $this->lastfm); // user not found
     // ->map('getTopAlbums', $this->lastfm, ['limit' => 10]); // OK 12/2, redone 12/4
     // ->map('getTopTags', $this->lastfm, ['limit' => 10]); // OK 12/13

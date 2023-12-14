@@ -47,7 +47,7 @@ enum ArtistDTOMap: string {
 
   case addTags = 'addTags';
   case getCorrection = 'getCorrection';
-  case getInfo = 'getInfo';
+  case getInfo = GenericCollection::class . '<Drupal\musica\Behavior\Info>';
   case getSimilar = GenericCollection::class . '<Drupal\musica\Behavior\SimilarArtists>';
   case getTags = 'getTags';
   case getTopAlbums = GenericCollection::class . '<Drupal\musica\Behavior\TopAlbums>';
@@ -55,6 +55,21 @@ enum ArtistDTOMap: string {
   case getTopTracks = GenericCollection::class . '<Drupal\musica\Behavior\TopTracks>';
   case removeTag = 'removeTag';
   case search = GenericCollection::class . '<Drupal\musica\Behavior\Search>';
+}
+
+/**
+ * Data transfer object for artist.getSimilar.
+ *
+ * @phpstan-type RootValue array{'artist': list<Artist>, "@attr"?: Attribute}
+ *
+ * @see https://www.last.fm/api/show/artist.getInfo
+ */
+final class Info {
+
+  public function __construct(
+    public readonly Artist $artist,
+  ) {}
+
 }
 
 /**
@@ -209,6 +224,9 @@ class Attribute {
 }
 
 
+/**
+ * @phpstan-type taglist array{tag?: list<Tag>}
+ */
 final class Artist {
 
   public function __construct(
@@ -216,11 +234,16 @@ final class Artist {
     public readonly string $mbid = '',
     public readonly string $match = '',
     public readonly string $url = '',
-    /** @var list<ImageProps> */
-    public readonly array $image = [],
-    /** @var string */
     public readonly string $streamable = '',
     public readonly int $listeners = 0,
+    public readonly int $ontour = 0,
+    public readonly array $stats = [],
+    public readonly array $bio = [],
+    public readonly array $similar = [],
+    /** @var list<ImageProps> */
+    public readonly array $image = [],
+    /** @var taglist */
+    public readonly array $tags = [],
   ) {}
 
 }
