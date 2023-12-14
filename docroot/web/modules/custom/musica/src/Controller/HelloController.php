@@ -46,7 +46,8 @@ class HelloController extends ControllerBase {
     // ->map('getSimilar', $this->lastfm, ['limit' => 10]) // OK 12/1
     // ->map('getTags', $this->lastfm); // user not found
     // ->map('getTopAlbums', $this->lastfm, ['limit' => 10]) // OK 12/2
-    ->map('getTopTags', $this->lastfm, ['limit' => 10]); // OK 12/13
+    // ->map('getTopTags', $this->lastfm, ['limit' => 10]); // OK 12/13
+    ->map('getTopTracks', $this->lastfm, ['limit' => 3]); // OK 12/13
 
     // $container->dumpState();
     $container->hydrate();

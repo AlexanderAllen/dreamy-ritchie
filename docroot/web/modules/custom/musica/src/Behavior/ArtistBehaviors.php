@@ -27,9 +27,9 @@ class ArtistBehaviors extends BaseBehaviors {
     $sauce = Source::json($state->data[$dataKey]);
     /** @var array */
     $dto = (new MapperBuilder())
-      // ->allowSuperfluousKeys()
+      ->allowSuperfluousKeys()
       ->allowPermissiveTypes()
-      // ->enableFlexibleCasting()
+      ->enableFlexibleCasting()
       ->mapper()
       ->map(self::$shapes[$dataKey], $sauce);
 
@@ -52,10 +52,42 @@ enum ArtisDTOShapesEnum: string {
   case getTags = 'getTags';
   case getTopAlbums = 'array{topalbums: array{album: ' . EntityListAlbum::class . ', "@attr": ' . Attribute::class . '} }';
   case getTopTags = GenericCollection::class . '<Drupal\musica\Behavior\TopTags>';
-  case getTopTracks = 'getTopTracks';
+  case getTopTracks = GenericCollection::class . '<Drupal\musica\Behavior\TopTracks>';
   case removeTag = 'removeTag';
   case search = 'search';
 }
+
+/**
+ * Data transfer object for artist.getTopTracks.
+ *
+ * @phpstan-type RootValue array{'track': list<Track>}
+ *
+ * @see https://www.last.fm/api/show/artist.getTopTracks
+ */
+final class TopTracks {
+
+  public function __construct(
+    /** @var RootValue $toptracks */
+    public readonly mixed $toptracks,
+  ) {}
+
+}
+
+final class Track {
+
+  public function __construct(
+    public readonly Artist $artist,
+    public readonly string $name = '',
+    public readonly string $mbid = '',
+    public readonly int $playcount = 0,
+    public readonly int $listeners = 0,
+    public readonly string $url = '',
+    /** @var list<ImageProps> */
+    public readonly array $image = [],
+  ) {}
+
+}
+
 
 /**
  * @phpstan-type tags array{'tag': list<Tag>, "@attr"?: Attribute}
