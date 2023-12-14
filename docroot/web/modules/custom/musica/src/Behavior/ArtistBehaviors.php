@@ -58,6 +58,22 @@ enum ArtistDTOMap: string {
 }
 
 /**
+ * Data transfer object for artist.getTopAlbums.
+ *
+ * @phpstan-type RootValue array{'album': list<Album>, "@attr"?: Attribute}
+ *
+ * @see https://www.last.fm/api/show/artist.getTopAlbums
+ */
+final class TopAlbums {
+
+  public function __construct(
+    /** @var RootValue $topalbums */
+    public readonly array $topalbums,
+  ) {}
+
+}
+
+/**
  * Data transfer object for artist.search.
  *
  * @phpstan-type RootValue array{
@@ -143,22 +159,6 @@ class ImageProps {
   public function __construct(...$args) {
     [$this->text, $this->size] = $args;
   }
-
-}
-
-/**
- * Data transfer object for artist.getTopAlbums.
- *
- * @phpstan-type RootValue array{'album': list<Album>, "@attr"?: Attribute}
- *
- * @see https://www.last.fm/api/show/artist.getTopAlbums
- */
-final class TopAlbums {
-
-  public function __construct(
-    /** @var RootValue $topalbums */
-    public readonly array $topalbums,
-  ) {}
 
 }
 
