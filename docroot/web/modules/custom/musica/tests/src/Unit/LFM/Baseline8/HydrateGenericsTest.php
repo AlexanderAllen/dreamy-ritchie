@@ -11,6 +11,13 @@ use PHPUnit\Framework\TestCase;
 /**
  * Unit test for using PHPStan Generics with Valinor.
  *
+ * Description: This test uses a generic type for the root of element of the
+ * API response, thus eliminating the need to create a separate root value
+ * object for every API response.
+ *
+ * The specificity comes in at the second level or element of the response,
+ * "TopTags" in this case, the top-level value object/container remains generic.
+ *
  * @group musica
  *
  * @see https://www.last.fm/api/show/artist.getTopAlbums
