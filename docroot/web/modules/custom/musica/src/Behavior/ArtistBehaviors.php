@@ -6,7 +6,6 @@ namespace Drupal\musica\Behavior;
 
 use CuyZ\Valinor\Mapper\Source\Source;
 use CuyZ\Valinor\MapperBuilder;
-use Drupal\musica\DTO\LFM\EntityList;
 use Drupal\musica\DTO\LFM\GenericCollection;
 use Drupal\musica\Spec\LastFM\ArtistEnum;
 use Drupal\musica\State\EntityState;
@@ -42,19 +41,36 @@ class ArtistBehaviors extends BaseBehaviors {
  * Provides DTO map for hydrating incoming Artist data.
  *
  * @todo shapes enum can be merged with behaviors enum.
+ * @todo ONLY implementing GET methods ATM, and not any POST/AUTH methods.
  */
 enum ArtistDTOMap: string {
 
   case addTags = 'addTags';
   case getCorrection = 'getCorrection';
   case getInfo = 'getInfo';
-  case getSimilar = 'array{similarartists: array{artist: ' . EntityList::class . ', "@attr": ' . Attribute::class . '} }';
+  case getSimilar = GenericCollection::class . '<Drupal\musica\Behavior\SimilarArtists>';
   case getTags = 'getTags';
   case getTopAlbums = GenericCollection::class . '<Drupal\musica\Behavior\TopAlbums>';
   case getTopTags = GenericCollection::class . '<Drupal\musica\Behavior\TopTags>';
   case getTopTracks = GenericCollection::class . '<Drupal\musica\Behavior\TopTracks>';
   case removeTag = 'removeTag';
   case search = GenericCollection::class . '<Drupal\musica\Behavior\Search>';
+}
+
+/**
+ * Data transfer object for artist.getSimilar.
+ *
+ * @phpstan-type RootValue array{'artist': list<Artist>, "@attr"?: Attribute}
+ *
+ * @see https://www.last.fm/api/show/artist.getSimilar
+ */
+final class SimilarArtists {
+
+  public function __construct(
+    /** @var RootValue $similarartists */
+    public readonly array $similarartists,
+  ) {}
+
 }
 
 /**
