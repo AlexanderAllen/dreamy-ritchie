@@ -15,3 +15,19 @@ musica.auth_lastfm_form:
    _form: '\Drupal\musica\Form\AuthLastFMForm'
  requirements:
    _permission: 'access content'
+
+# Taken from the techno-military term "sensor-fusion", the goal is to fuse
+# informtion from multiple sources about a single entity. This point is focused
+# on an "artist" entity for starters.
+#
+# @todo: It would be nice to have an endpoint for plain-text names, and another
+# one for mbid UUIDs.
+#
+# @todo: title callback
+musica.fusion_plain:
+  path: '/fusion/artist/{name}'
+  defaults:
+    _controller: '\Drupal\musica\Controller\HelloController::artist'
+    _title: Artist Fusion
+  requirements:
+    _permission: 'access content'

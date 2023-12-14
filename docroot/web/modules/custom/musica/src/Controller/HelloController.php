@@ -84,4 +84,26 @@ class HelloController extends ControllerBase {
     return $render_array;
   }
 
+  public function artist(string $name = '') {
+    $state = EntityContainer::createFromState(new ArtistBehaviors(), new EntityState($name))
+      ->map('getInfo', $this->lastfm, ['limit' => 3])
+      ->hydrate()
+      ->getStateEntity();
+
+    $test = null;
+
+    $render_array = [];
+    $render_array[] = [
+      '#type' => 'markup',
+      '#markup' => "hello world sample page",
+    ];
+
+    // $render_array[] = [
+    //   '#type' => 'markup',
+    //   '#markup' => "<p>Bio: {$state?->data['info']}</p>",
+    // ];
+
+    return $render_array;
+  }
+
 }
