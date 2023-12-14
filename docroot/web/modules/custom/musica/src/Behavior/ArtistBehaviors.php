@@ -17,7 +17,7 @@ use Drupal\musica\State\EntityState;
 class ArtistBehaviors extends BaseBehaviors {
 
   public function __construct() {
-    parent::__construct('artist', ArtistEnum::class, ArtisDTOShapesEnum::class);
+    parent::__construct('artist', ArtistEnum::class, ArtistDTOMap::class);
   }
 
   /**
@@ -39,18 +39,18 @@ class ArtistBehaviors extends BaseBehaviors {
 }
 
 /**
- * Provides DTO shapes for hydrating raw Artist data.
+ * Provides DTO map for hydrating incoming Artist data.
  *
  * @todo shapes enum can be merged with behaviors enum.
  */
-enum ArtisDTOShapesEnum: string {
+enum ArtistDTOMap: string {
 
   case addTags = 'addTags';
   case getCorrection = 'getCorrection';
   case getInfo = 'getInfo';
   case getSimilar = 'array{similarartists: array{artist: ' . EntityList::class . ', "@attr": ' . Attribute::class . '} }';
   case getTags = 'getTags';
-  case getTopAlbums = 'array{topalbums: array{album: ' . EntityListAlbum::class . ', "@attr": ' . Attribute::class . '} }';
+  case getTopAlbums = GenericCollection::class . '<Drupal\musica\Behavior\TopAlbums>';
   case getTopTags = GenericCollection::class . '<Drupal\musica\Behavior\TopTags>';
   case getTopTracks = GenericCollection::class . '<Drupal\musica\Behavior\TopTracks>';
   case removeTag = 'removeTag';
@@ -146,12 +146,18 @@ class ImageProps {
 
 }
 
-
-final class EntityListAlbum {
+/**
+ * Data transfer object for artist.getTopAlbums.
+ *
+ * @phpstan-type RootValue array{'album': list<Album>, "@attr"?: Attribute}
+ *
+ * @see https://www.last.fm/api/show/artist.getTopAlbums
+ */
+final class TopAlbums {
 
   public function __construct(
-    /** @var list<Album> */
-    public readonly array $album,
+    /** @var RootValue $topalbums */
+    public readonly array $topalbums,
   ) {}
 
 }
@@ -163,13 +169,10 @@ final class Album {
     public readonly string $name,
     /** @var non-negative-int */
     public readonly int $playcount,
-    /** @var string */
     public readonly string $url,
-    /** @var Artist */
     public readonly Artist $artist,
     /** @var list<ImageProps> */
     public readonly array $image = [],
-    /** @var string */
     public readonly string $mbid = '',
   ) {}
 
