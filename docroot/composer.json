@@ -29,6 +29,7 @@
         "drupal/search_api_spellcheck": "^4.0",
         "drush/drush": "^12.4",
         "guzzlehttp/guzzle": "^7.7",
+        "kerox/oauth2-spotify": "^2.0",
         "martin1982/oauth2-soundcloud": "^2.0"
     },
     "conflict": {
