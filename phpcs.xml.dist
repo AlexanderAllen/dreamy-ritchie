@@ -249,6 +249,8 @@
      <!-- Silence method name underscore warning which is covered already in
        Drupal.Classes.PropertyDeclaration. -->
     <exclude name="PSR2.Classes.PropertyDeclaration.Underscore"/>
+    <!-- rallen: Silence unused because it doesn't correctly detect used interfaces -->
+    <exclude name="Drupal.Classes.UnusedUseStatement.UnusedUse" />
   </rule>
   <rule ref="PSR2.Namespaces.NamespaceDeclaration"/>
   <rule ref="PSR2.Namespaces.UseDeclaration"/>

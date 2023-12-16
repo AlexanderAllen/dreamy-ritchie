@@ -66,6 +66,12 @@ class HelloController extends ControllerBase {
     //
     // 10th iteration - implement default render array in behaviors.
 
+    // @todo Spotify service, maybe sub-module.
+    $provider = new Kerox\OAuth2\Client\Provider\Spotify([
+      'clientId'     => '{spotify-client-id}',
+      'clientSecret' => '{spotify-client-secret}',
+      'redirectUri'  => 'https://example.com/callback-url',
+    ]);
 
 
     $render_array = [];
