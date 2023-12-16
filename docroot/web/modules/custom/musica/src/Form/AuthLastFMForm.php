@@ -116,8 +116,8 @@ class AuthLastFMForm extends FormBase {
    * Step two form.
    */
   public function authorizePageTwo(array &$form, FormStateInterface $form_state) {
-    $api_key = $form_state->get('api_key', '');
-    $request_token = $form_state->get('req_token', '');
+    $api_key = $form_state->get('api_key');
+    $request_token = $form_state->get('req_token');
 
     // // Step 3 - request user authorization (only once)
     $redirect = "http://www.last.fm/api/auth/?api_key={$api_key}&token={$request_token}";
@@ -156,7 +156,7 @@ class AuthLastFMForm extends FormBase {
    */
   public function authorizePageTwoSubmit(array &$form, FormStateInterface $form_state) {
 
-    $request_token = $form_state->get('req_token', '');
+    $request_token = $form_state->get('req_token');
     $session_key = $this->lfm->fetchSessionKey($request_token);
     $this->state->set('lfm_session_key', $session_key);
   }
