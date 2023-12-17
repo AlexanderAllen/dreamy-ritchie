@@ -64,6 +64,13 @@ final class Spotify {
     }
   }
 
+  /**
+   * Determines response expiration by inspecting the responses' cache headers.
+   *
+   * @return int
+   *   Defaults to zero (no cache). Otherwise returns expiration in seconds as
+   *   found in the cache header.
+   */
   private function expires(Response $response): int {
     $expires = 0;
     if ($response->hasHeader('cache-control')) {
