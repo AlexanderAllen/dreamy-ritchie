@@ -116,6 +116,7 @@
         }
     },
     "require-dev": {
+        "api-platform/schema-generator": "^5.2",
         "behat/mink": "^1.10",
         "behat/mink-browserkit-driver": "^2.1",
         "brainmaestro/composer-git-hooks": "^3.0@alpha",
