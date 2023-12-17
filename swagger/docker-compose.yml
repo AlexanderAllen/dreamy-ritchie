@@ -17,4 +17,8 @@ services:
       FILTER: true
       DOC_EXPANSION: none
       OAUTH2_REDIRECT_URL: ""
-      URLS: "[{url: 'https://raw.githubusercontent.com/sonallux/spotify-web-api/main/fixed-spotify-open-api.yml', name: 'Spotify: Sonallux'}]"
+      CONFIG_URL: ./swagger-config.json
+    volumes:
+      # Spotify schema gives CORS issues, must copy manually.
+      - ./spotify-open-api-schema.yaml:/usr/share/nginx/html/spotify-open-api-schema.yaml
+      - ./swagger-config.json:/usr/share/nginx/html/swagger-config.json
