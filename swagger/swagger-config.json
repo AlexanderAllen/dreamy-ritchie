@@ -1,12 +1,13 @@
 {
   "urls": [
     {
-      "url": "./spotify-open-api-schema.yaml",
-      "name": "Spotify Web API: Official"
+      "url": "./sonallux-spotify-open-api.yml",
+      "name": "Spotify Web API: Sonnalux"
     },
     {
-      "url": "https://raw.githubusercontent.com/sonallux/spotify-web-api/main/fixed-spotify-open-api.yml",
-      "name": "Spotify Web API: Sonnalux"
+      "url": "./spotify-open-api-schema.yaml",
+      "name": "Spotify Web API: Official"
     }
-  ]
+  ],
+  "oauth2RedirectUrl": "http://localhost:8080"
 }
