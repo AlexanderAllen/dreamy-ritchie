@@ -47,10 +47,11 @@ class HelloController extends ControllerBase {
   public function content() {
 
     $this->spotify->authorize();
+    $content = $this->spotify->getResource();
 
 
-    $container = EntityContainer::createFromState(new ArtistBehaviors(), new EntityState('Cher'))
-    ->map('getInfo', $this->lastfm, ['limit' => 3]);
+    // $container = EntityContainer::createFromState(new ArtistBehaviors(), new EntityState('Cher'))
+    // ->map('getInfo', $this->lastfm, ['limit' => 3]);
     // ->map('getSimilar', $this->lastfm, ['limit' => 3]); // OK 12/1, redone 12/4
     // ->map('getTags', $this->lastfm); // user not found
     // ->map('getTopAlbums', $this->lastfm, ['limit' => 10]); // OK 12/2, redone 12/4
@@ -59,11 +60,11 @@ class HelloController extends ControllerBase {
     // ->map('search', $this->lastfm, ['limit' => 3]); // OK 12/14
 
     // $container->dumpState();
-    $container->hydrate();
+    // $container->hydrate();
 
 
-    $behavior = $container->getBehaviorEntity();
-    $state = $container->getStateEntity();
+    // $behavior = $container->getBehaviorEntity();
+    // $state = $container->getStateEntity();
 
     // d($state->data['getTopAlbums']);
 
