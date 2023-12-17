@@ -4,6 +4,8 @@ services:
   swagger:
     image: swaggerapi/swagger-ui
     restart: always
+    env_file:
+      - secrets.env
     ports:
       - 8080:8080
     environment:
@@ -19,8 +21,8 @@ services:
       OAUTH2_REDIRECT_URL: ""
       CONFIG_URL: ./swagger-config.json
       # See https://swagger.io/docs/open-source-tools/swagger-ui/usage/oauth2/
-      OAUTH_CLIENT_ID: xzy
-      OAUTH_CLIENT_SECRET: xzy
+      OAUTH_CLIENT_ID: ${OAUTH_CLIENT_ID}
+      OAUTH_CLIENT_SECRET: ${OAUTH_CLIENT_SECRET}
       OAUTH_APP_NAME: Bakari Desktop Non-Commercial
       OAUTH_SCOPE_SEPARATOR: " "
       # OAUTH_SCOPES: "['user-read-playback-state', 'user-modify-playback-state', 'user-read-currently-playing', 'app-remote-control', 'streaming', 'playlist-read-private', 'playlist-read-collaborative', 'playlist-modify-private', 'playlist-modify-public', 'user-read-playback-position', 'user-top-read', 'user-read-recently-played', 'user-library-modify', 'user-library-read']"
