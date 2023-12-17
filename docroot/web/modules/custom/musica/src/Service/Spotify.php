@@ -77,7 +77,7 @@ final class Spotify {
 
   public function getResource($resource = 'artists/4Z8W4fKeB5YxbusRsdQVPb'): string {
     if ($this->cache->get($resource) !== FALSE) {
-      return $this->cache->get($resource);
+      return $this->cache->get($resource)->data;
     }
 
     $content = '';
@@ -99,7 +99,7 @@ final class Spotify {
         $this->cache->set(
           $resource,
           $content,
-          $this->expires($response),
+          $expires + microtime(TRUE),
           ['musica', 'musica:artist']
         );
       }
