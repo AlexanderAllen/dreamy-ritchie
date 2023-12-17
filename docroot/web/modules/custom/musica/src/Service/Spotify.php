@@ -4,6 +4,7 @@ namespace Drupal\musica\Service;
 
 use Drupal\Core\Cache\DatabaseBackend as Cache;
 use Drupal\Core\Cache\Context\UserCacheContext;
+use Drupal\Core\Config\ConfigFactory;
 use Kerox\OAuth2\Client\Provider\Spotify as SpotifyClient;
 use Kerox\OAuth2\Client\Provider\SpotifyScope;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
@@ -20,31 +21,30 @@ use GuzzleHttp\Psr7\Response;
  */
 final class Spotify {
 
-
   private string $endpoint;
-  private string $apiKey;
-  private string $apiSecret;
+  private array $cacheLabels;
   private Cache $cache;
   private LoggerChannel $logger;
   private SpotifyClient $provider;
-  private array $cacheLabels;
 
   /**
-   * Class constructor.
+   * Spotify Service constructor.
    */
-  public function __construct(Cache $cache, UserCacheContext $context, LoggerChannel $logger) {
+  public function __construct(
+    Cache $cache,
+    UserCacheContext $context,
+    LoggerChannel $logger,
+    ConfigFactory $configFactory
+    ) {
     $this->cache = $cache;
     $this->logger = $logger;
 
-    // @todo move secrets to config form / drupal db?
-    $this->apiKey = getenv('LASTFM_API_KEY') ?? '';
-    $this->apiSecret = getenv('LASTFM_API_SECRET') ?? '';
-
-    // @TODO all of this needs to go into configs.
-    $this->endpoint = 'https://api.spotify.com/v1/';
+    $settings = $configFactory->get('musica.settings');
+    $this->endpoint = $settings->get('spotify_api_endpoint');
     $this->provider = new SpotifyClient([
-
-      'redirectUri'  => 'https://d10ee.lndo.site/hello',
+      'redirectUri'  => $settings->get('spotify_redirect_url'),
+      'clientId'     => $settings->get('spotify_client_id'),
+      'clientSecret' => $settings->get('spotify_client_secret'),
     ]);
 
     $this->cacheLabels = [$context->getLabel() . ':' . $context->getContext()];
@@ -75,6 +75,11 @@ final class Spotify {
     return $expires;
   }
 
+  /**
+   * Requests, caches and returns the specified API resource.
+   *
+   * @TODO: looking for more efficient OPENAPI/hydration methods.
+   */
   public function getResource($resource = 'artists/4Z8W4fKeB5YxbusRsdQVPb'): string {
     if ($this->cache->get($resource) !== FALSE) {
       return $this->cache->get($resource)->data;
