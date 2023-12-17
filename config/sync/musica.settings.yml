@@ -1,0 +1,6 @@
+_core:
+  default_config_hash: 4x9Ua6-VvSIUalohgvIYbRT4w0m5HBYdeO1G2mff3bE
+spotify_api_endpoint: 'https://api.spotify.com/v1/'
+spotify_redirect_url: null
+spotify_client_id: null
+spotify_client_secret: null
