@@ -5,4 +5,9 @@ services:
 
   musica.spotify:
     class: Drupal\musica\Service\Spotify
-    arguments: ['@cache.default', '@cache_context.user', '@logger.channel.default']
+    arguments: [
+      '@cache.default',
+      '@cache_context.user',
+      '@logger.channel.default',
+      '@config.factory'
+      ]
