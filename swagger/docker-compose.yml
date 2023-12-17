@@ -18,7 +18,17 @@ services:
       DOC_EXPANSION: none
       OAUTH2_REDIRECT_URL: ""
       CONFIG_URL: ./swagger-config.json
+      # See https://swagger.io/docs/open-source-tools/swagger-ui/usage/oauth2/
+      OAUTH_CLIENT_ID: xzy
+      OAUTH_CLIENT_SECRET: xzy
+      OAUTH_APP_NAME: Bakari Desktop Non-Commercial
+      OAUTH_SCOPE_SEPARATOR: " "
+      # OAUTH_SCOPES: "['user-read-playback-state', 'user-modify-playback-state', 'user-read-currently-playing', 'app-remote-control', 'streaming', 'playlist-read-private', 'playlist-read-collaborative', 'playlist-modify-private', 'playlist-modify-public', 'user-read-playback-position', 'user-top-read', 'user-read-recently-played', 'user-library-modify', 'user-library-read']"
+      # OAUTH_USE_PKCE: true
     volumes:
       # Spotify schema gives CORS issues, must copy manually.
       - ./spotify-open-api-schema.yaml:/usr/share/nginx/html/spotify-open-api-schema.yaml
+      # Downloaded to local for oauth modifications
+      # https://raw.githubusercontent.com/sonallux/spotify-web-api/main/fixed-spotify-open-api.yml
+      - ./sonallux-spotify-open-api.yml:/usr/share/nginx/html/sonallux-spotify-open-api.yml
       - ./swagger-config.json:/usr/share/nginx/html/swagger-config.json
