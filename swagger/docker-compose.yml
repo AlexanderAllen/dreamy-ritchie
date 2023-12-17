@@ -1,0 +1,20 @@
+version: '3.9'
+
+services:
+  swagger:
+    image: swaggerapi/swagger-ui
+    restart: always
+    ports:
+      - 8080:8080
+    environment:
+      # https://github.com/swagger-api/swagger-ui/blob/master/docs/usage/configuration.md#docker
+      SUPPORTED_SUBMIT_METHODS: "['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace']"
+      DISPLAY_OPERATION_ID: true
+      DEEP_LINKING: true
+      TRY_IT_OUT_ENABLED: true
+      PERSIST_AUTHORIZATION: true
+      SHOW_EXTENSIONS: true
+      FILTER: true
+      DOC_EXPANSION: none
+      OAUTH2_REDIRECT_URL: ""
+      URLS: "[{url: 'https://raw.githubusercontent.com/sonallux/spotify-web-api/main/fixed-spotify-open-api.yml', name: 'Spotify: Sonallux'}]"
