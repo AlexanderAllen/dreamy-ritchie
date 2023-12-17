@@ -7,6 +7,7 @@ namespace Drupal\musica\Controller;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\musica\Behavior\ArtistBehaviors;
 use Drupal\musica\Service\LastFM;
+use Drupal\musica\Service\Spotify;
 use Drupal\musica\State\EntityState;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -25,12 +26,15 @@ class HelloController extends ControllerBase {
    */
   protected LastFM $lastfm;
 
+  protected Spotify $spotify;
+
   /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
     $instance = parent::create($container);
     $instance->lastfm = $container->get('musica.lastfm');
+    $instance->spotify = $container->get('musica.spotify');
     return $instance;
   }
 
@@ -41,6 +45,9 @@ class HelloController extends ControllerBase {
    *   Render array.
    */
   public function content() {
+
+    $this->spotify->authorize();
+
 
     $container = EntityContainer::createFromState(new ArtistBehaviors(), new EntityState('Cher'))
     ->map('getInfo', $this->lastfm, ['limit' => 3]);
@@ -65,14 +72,6 @@ class HelloController extends ControllerBase {
     // 6th-8th iterations - pass and manipulate the entity between various containers.
     //
     // 10th iteration - implement default render array in behaviors.
-
-    // @todo Spotify service, maybe sub-module.
-    $provider = new Kerox\OAuth2\Client\Provider\Spotify([
-      'clientId'     => '{spotify-client-id}',
-      'clientSecret' => '{spotify-client-secret}',
-      'redirectUri'  => 'https://example.com/callback-url',
-    ]);
-
 
     $render_array = [];
     $render_array[] = [

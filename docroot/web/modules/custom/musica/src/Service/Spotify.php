@@ -2,149 +2,97 @@
 
 namespace Drupal\musica\Service;
 
-use Drupal\Core\Messenger\Messenger;
-use Drupal\musica\Service\ServiceInterface;
-use Drupal\musica\Spec\YamlParametersTrait;
-use GuzzleHttp\Client as GuzzleHttpClient;
-use Psr\Http\Message\ResponseInterface;
+use Drupal\Core\Cache\DatabaseBackend as Cache;
+use Drupal\Core\Cache\Context\UserCacheContext;
+use Kerox\OAuth2\Client\Provider\Spotify as SpotifyClient;
+use Kerox\OAuth2\Client\Provider\SpotifyScope;
+use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
+use Drupal\Core\Logger\LoggerChannel;
+use Drupal\Core\Utility\Error;
 
 /**
  * Service for Spotify API.
  *
  * Provides OAuth authentication.
  */
-class Spotify implements ServiceInterface {
-  use YamlParametersTrait;
+final class Spotify {
 
-  /**
-   * Guzzle HTTP Client.
-   */
-  protected GuzzleHttpClient $client;
 
-  /**
-   * LastFM API key.
-   */
-  public string $apiKey;
-
-  /**
-   * Name of service in the API parameters specifications.
-   */
-  public readonly string $specName;
-
-  /**
-   * LastFM private key.
-   */
-  protected string $apiSecret;
-
-  protected Messenger $messenger;
+  private string $apiKey;
+  private string $apiSecret;
+  private Cache $cache;
+  private UserCacheContext $cacheContext;
+  private LoggerChannel $logger;
 
   /**
    * Class constructor.
    */
-  public function __construct(Messenger $messenger) {
-    $this->messenger = $messenger;
-    $this->client = new GuzzleHttpClient(['base_uri' => 'https://ws.audioscrobbler.com/2.0']);
-    $this->specName = 'LastFM';
+  public function __construct(Cache $cache, UserCacheContext $context, LoggerChannel $logger) {
+    $this->cache = $cache;
+    $this->cacheContext = $context;
+    $this->logger = $logger;
+
+    // @todo move secrets to config form / drupal db?
     $this->apiKey = getenv('LASTFM_API_KEY') ?? '';
     $this->apiSecret = getenv('LASTFM_API_SECRET') ?? '';
   }
 
-  /**
-   * Step 2 - Fetch request token.
-   *
-   * @return string
-   *   Request token.
-   */
-  public function fetchRequestToken() {
+  public function authorize() {
+    if ($this->cache->get('musicaSpotifyAuthToken') !== FALSE) {
+      return;
+    }
 
-    $params = [
-      'api_key' => $this->apiKey,
-      'method' => 'auth.gettoken',
-    ];
-    $o = $this->sendRequest($params);
-    $token = json_decode($o->getBody()->getContents());
-    return $token->token;
-  }
+    $provider = new SpotifyClient([
 
-  /**
-   * Step 4- Fetch  web service session key.
-   */
-  public function fetchSessionKey(string $request_token) {
-    $session_request = [
-      'api_key' => $this->apiKey,
-      'method' => 'auth.getSession',
-      'token' => $request_token,
-    ];
-    $o = $this->sendRequest($session_request);
-    $session_response = json_decode($o->getBody()->getContents());
-    return $session_response?->session?->key;
-  }
+      'redirectUri'  => 'https://d10ee.lndo.site/hello',
+    ]);
 
-  /**
-   * {@inheritdoc}
-   */
-  public function request(string $namespace, string $call, array $request) {
-    // Append API key to request.
-    // @todo throw exception if API key is not present.
-    $request = [...$request, 'api_key' => $this->apiKey];
+    if (!isset($_GET['code'])) {
+      // If we don't have an authorization code then get one.
+      $authUrl = $provider->getAuthorizationUrl([
+        'scope' => [
+          SpotifyScope::USER_READ_EMAIL->value,
+          SpotifyScope::USER_TOP_READ->value,
+          SpotifyScope::USER_READ_PLAYBACK_STATE->value,
+          SpotifyScope::USER_MODIFY_PLAYBACK_STATE->value,
+          SpotifyScope::USER_READ_CURRENTLY_PLAYING->value,
+          SpotifyScope::USER_READ_PLAYBACK_POSITION->value,
+          SpotifyScope::USER_READ_RECENTLY_PLAYED->value,
+          SpotifyScope::STREAMING->value,
+          SpotifyScope::PLAYLIST_READ_PRIVATE->value,
+          SpotifyScope::USER_LIBRARY_MODIFY->value,
+          SpotifyScope::USER_LIBRARY_READ->value,
+        ],
+      ]);
+      $provider_state = $provider->getState();
+      $this->cache->set('musicaSpotifyAuthState', $provider_state);
 
-    // Fetch the request specifications for the call.
-    $spec = $this->serviceNsRequestParameters($this->specName, $namespace, $call);
+      header('Location: ' . $authUrl);
+      exit;
+    }
 
-    // Merge the spec with the user request and drop any empty parameters.
-    $merged_request = array_filter([...$spec, ...$request], fn ($value) => $value !== '');
-
-    // // @todo can the response be mapped to a typed native object instead of stdClass?
+    // Request an access token using the authorization code grant.
     try {
-      $res = $this->sendRequest($merged_request);
-      if ($res->getStatusCode() === 200) {
-        return $res->getBody()->getContents();
-      }
+      $code = $_GET['code'];
+      $token = $provider->getAccessToken('authorization_code', ['code' => $code]);
+
+      $this->cache->set(
+        'musicaSpotifyAuthToken',
+        [
+          'access' => $token->getToken(),
+          'refresh' => $token->getRefreshToken(),
+          'scope' => $token->getValues()['scope'],
+        ],
+        $token->getExpires(),
+        [$this->cacheContext->getLabel() . ':' . $this->cacheContext->getContext()]
+      );
     }
-    catch (\Throwable $th) {
-      $this->messenger->addError($th->getMessage());
-    }
-    return '';
-  }
-
-  /**
-   * Uses Guzzle to send and receive signed reqeust.
-   *
-   * @param array $parameters
-   *   Parameters argument.
-   */
-  public function sendRequest(array $parameters = []): ResponseInterface {
-    $parameters['api_sig'] = $this->sign($parameters);
-    $parameters['format'] = 'json';
-
-    // Fetch a request token.
-    // See https://www.last.fm/api/desktopauth.
-    $options = ['query' => $parameters];
-    return $this->client->request('GET', '', $options);
-  }
-
-  /**
-   * Sign and return request parameters usign secret key.
-   *
-   * See https://www.last.fm/api/authspec#_8-signing-calls.
-   *
-   * @param array $parameters
-   *   Associative array of request parameters.
-   *
-   * @return string
-   *   Signature string.
-   */
-  protected function sign(array $parameters = []) {
-    $sig = '';
-    ksort($parameters, SORT_STRING);
-
-    foreach ($parameters as $key => $value) {
-      $sig .= "{$key}{$value}";
+    catch (IdentityProviderException $e) {
+      Error::logException($this->logger, $e, 'Spotify authentication failed: @error', [
+        '@error' => $e->getMessage(),
+      ]);
     }
 
-    // Append secret to signature string.
-    $sig .= $this->apiSecret;
-    return md5($sig);
   }
 
 }
