@@ -30,3 +30,11 @@ musica.fusion_plain:
     _title_callback: '\Drupal\musica\Controller\HelloController::titleCallback'
   requirements:
     _permission: 'access content'
+
+# Route for serving access token to other apps (such as Swagger).
+musica.spotify_auth_serve_token:
+  path: '/musica/auth/spotify/getToken'
+  defaults:
+    _controller: '\Drupal\musica\Controller\HelloController::serveToken'
+  requirements:
+    _permission: 'access content'

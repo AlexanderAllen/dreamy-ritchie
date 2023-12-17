@@ -10,6 +10,7 @@ use Drupal\musica\Service\LastFM;
 use Drupal\musica\Service\Spotify;
 use Drupal\musica\State\EntityState;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 
 /**
@@ -36,6 +37,18 @@ class HelloController extends ControllerBase {
     $instance->lastfm = $container->get('musica.lastfm');
     $instance->spotify = $container->get('musica.spotify');
     return $instance;
+  }
+
+  /**
+   * Serves Spotify's access token for external apps.
+   */
+  public function serveToken() {
+    $token = $this->spotify->getToken();
+    if ($token !== FALSE) {
+      return new Response($token, 200, []);
+    } else {
+      return new Response('Resource not available', 400, []);
+    }
   }
 
   /**

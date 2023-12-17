@@ -123,7 +123,7 @@ final class Spotify {
     return $content;
   }
 
-  private function getToken() {
+  public function getToken() {
     $token = $this->cache->get('musicaSpotifyAuthToken');
     if ($token !== FALSE) {
       return $token->data['access'];
