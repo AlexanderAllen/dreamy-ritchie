@@ -138,12 +138,12 @@ class Artist {
   /**
    * Known external URLs for this artist.
    */
-  public string $external_urls = '';
+  public array $external_urls = [];
 
   /**
    * Information about the followers of the artist.
    */
-  public string $followers = '';
+  public array $followers = [];
 
   public array $genres = [];
 
