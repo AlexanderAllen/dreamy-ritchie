@@ -1,3 +1,14 @@
+# Schema generator instructions
+#
+# Execute with:
+#
+# vendor/bin/schema generate \
+# web/modules/custom/musica/src/API/Spotify \
+# web/modules/custom/musica/src/API/config/spotify-schema.yaml --verbose --no-interaction
+#
+# Then to get a clean bill of health from PHPCS, run:
+# vendor/bin/php-cs-fixer fix web/modules/custom/musica/src/API/Spotify
+#
 
 # api/config/schema.yaml
 # See https://api-platform.com/docs/schema-generator/getting-started/
@@ -75,12 +86,6 @@ header: |
   * @file
   * Data Transfer Object for Spotify Web API.
   *
-  * @phpcs:disable Drupal.Classes.FullyQualifiedNamespace.UseStatementMissing
-  * @phpcs:disable Drupal.WhiteSpace.ScopeIndent.IncorrectExact
-  * @phpcs:disable Drupal.Classes.ClassDeclaration.BraceOnNewLine
-  * @phpcs:disable Generic.PHP.UpperCaseConstant.Found
-  *
-  * @package musica
-  * @subpackage DTO
   * @see https://api-platform.com/docs/schema-generator/
+  * @phpcs:disable Drupal.Classes.FullyQualifiedNamespace.UseStatementMissing,Drupal.Commenting.DataTypeNamespace.DataTypeNamespace,Drupal.Commenting.DocComment.ShortSingleLine
   */
