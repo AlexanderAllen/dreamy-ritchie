@@ -92,8 +92,7 @@ class HydrateSpotifyTest extends TestCase {
 
     try {
 
-      // $signature = GenericValueContainer::class . '<Drupal\Tests\musica\Unit\ValinorA\Artist>';
-      $signature = Artist::class;
+      $signature = GenericValueContainer::class . '<Drupal\Tests\musica\Unit\ValinorC\Artist>';
 
       $dto = (new MapperBuilder())
         ->allowSuperfluousKeys()
