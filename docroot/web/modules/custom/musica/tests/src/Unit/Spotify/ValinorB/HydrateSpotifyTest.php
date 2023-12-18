@@ -50,37 +50,6 @@ class HydrateSpotifyTest extends TestCase {
 
     $sauce = <<<JSON
     {
-      "external_urls": {
-        "spotify": "https://open.spotify.com/artist/0TnOYISbd1XYRBk9myaseg"
-      },
-      "followers": {
-        "href": null,
-        "total": 10340479
-      },
-      "genres": [
-        "dance pop",
-        "miami hip hop",
-        "pop"
-      ],
-      "href": "https://api.spotify.com/v1/artists/0TnOYISbd1XYRBk9myaseg",
-      "id": "0TnOYISbd1XYRBk9myaseg",
-      "images": [
-        {
-          "height": 640,
-          "url": "https://i.scdn.co/image/ab6761610000e5ebee07b5820dd91d15d397e29c",
-          "width": 640
-        },
-        {
-          "height": 320,
-          "url": "https://i.scdn.co/image/ab67616100005174ee07b5820dd91d15d397e29c",
-          "width": 320
-        },
-        {
-          "height": 160,
-          "url": "https://i.scdn.co/image/ab6761610000f178ee07b5820dd91d15d397e29c",
-          "width": 160
-        }
-      ],
       "name": "Pitbull",
       "popularity": 80,
       "type": "artist",
@@ -134,31 +103,6 @@ final class Tag {
 
 
 class Artist {
-
-  /**
-   * Known external URLs for this artist.
-   */
-  public string $external_urls = '';
-
-  /**
-   * Information about the followers of the artist.
-   */
-  public string $followers = '';
-
-  public array $genres = [];
-
-  /**
-   * A link to the Web API endpoint providing full details of the artist.
-   */
-  public string $href = '';
-
-
-  public ?int $id = NULL;
-
-  /**
-   * @var array images of the artist in various sizes, widest first
-   */
-  public array $images = [];
 
   /**
    * The name of the artist.
