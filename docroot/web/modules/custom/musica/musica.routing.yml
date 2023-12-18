@@ -35,6 +35,13 @@ musica.fusion_plain:
 musica.spotify_auth_serve_token:
   path: '/musica/auth/spotify/getToken'
   defaults:
-    _controller: '\Drupal\musica\Controller\HelloController::serveToken'
+    _controller: '\Drupal\musica\Controller\Spotify::serveToken'
+  requirements:
+    _permission: 'access content'
+
+musica.spotify_auth_authorize:
+  path: '/musica/auth/spotify/authorize'
+  defaults:
+    _controller: '\Drupal\musica\Controller\Spotify::authorize'
   requirements:
     _permission: 'access content'

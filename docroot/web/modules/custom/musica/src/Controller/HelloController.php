@@ -40,18 +40,6 @@ class HelloController extends ControllerBase {
   }
 
   /**
-   * Serves Spotify's access token for external apps.
-   */
-  public function serveToken() {
-    $token = $this->spotify->getToken();
-    if ($token !== FALSE) {
-      return new Response($token, 200, []);
-    } else {
-      return new Response('Resource not available', 400, []);
-    }
-  }
-
-  /**
    * Display the markup.
    *
    * @return array
