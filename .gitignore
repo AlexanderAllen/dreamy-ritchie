@@ -22,3 +22,6 @@ docroot/web/sites/default/files
 
 # Unit testing
 docroot/web/sites/simpletest
+
+# PHPCS Fixer cacher
+.php-cs-fixer.cache
