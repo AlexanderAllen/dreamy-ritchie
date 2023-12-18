@@ -133,7 +133,13 @@ final class Spotify {
     }
   }
 
-  public function authorize() {
+  /**
+   * Retrieves authorization token from Spotify API.
+   *
+   * If token has expired a new one is created, otherwise it is served from
+   * cache.
+   */
+  public function authorize(): void {
     if ($this->cache->get('musicaSpotifyAuthToken') !== FALSE) {
       return;
     }
