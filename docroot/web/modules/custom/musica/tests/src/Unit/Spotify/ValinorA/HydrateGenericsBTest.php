@@ -2,7 +2,7 @@
 
 // phpcs:disable
 
-namespace Drupal\Tests\musica\Unit\Baseline8b;
+namespace Drupal\Tests\musica\Unit\ValinorA;
 
 use CuyZ\Valinor\MapperBuilder;
 use CuyZ\Valinor\Mapper\Source\Source;
@@ -32,20 +32,50 @@ use PHPUnit\Framework\TestCase;
 class HydrateGenericsBTest extends TestCase {
 
   public function testSimilarArtistsWithAttr() {
+
+    // From OpenAPI/Swagger:
+    //  curl -X 'GET' \
+    //  'https://api.spotify.com/v1/artists/0TnOYISbd1XYRBk9myaseg' \
+    //  -H 'accept: application/json' \
+    //  -H 'Authorization: Bearer XZYabc123
+
     $sauce = <<<JSON
     {
-      "toptags": {
-        "tag": [
-          {
-            "count": 100,
-            "name": "pop",
-            "url": "https://www.last.fm/tag/pop"
-          }
-        ],
-        "@attr": {
-          "artist": "Cher"
+      "external_urls": {
+        "spotify": "https://open.spotify.com/artist/0TnOYISbd1XYRBk9myaseg"
+      },
+      "followers": {
+        "href": null,
+        "total": 10340479
+      },
+      "genres": [
+        "dance pop",
+        "miami hip hop",
+        "pop"
+      ],
+      "href": "https://api.spotify.com/v1/artists/0TnOYISbd1XYRBk9myaseg",
+      "id": "0TnOYISbd1XYRBk9myaseg",
+      "images": [
+        {
+          "height": 640,
+          "url": "https://i.scdn.co/image/ab6761610000e5ebee07b5820dd91d15d397e29c",
+          "width": 640
+        },
+        {
+          "height": 320,
+          "url": "https://i.scdn.co/image/ab67616100005174ee07b5820dd91d15d397e29c",
+          "width": 320
+        },
+        {
+          "height": 160,
+          "url": "https://i.scdn.co/image/ab6761610000f178ee07b5820dd91d15d397e29c",
+          "width": 160
         }
-      }
+      ],
+      "name": "Pitbull",
+      "popularity": 80,
+      "type": "artist",
+      "uri": "spotify:artist:0TnOYISbd1XYRBk9myaseg"
     }
     JSON;
 
@@ -56,9 +86,9 @@ class HydrateGenericsBTest extends TestCase {
       $signature = GenericValueContainer::class . '<Drupal\Tests\musica\Unit\Baseline8b\InnerValueContainer>';
 
       $dto = (new MapperBuilder())
-        // ->allowSuperfluousKeys()
-        // ->allowPermissiveTypes()
-        // ->enableFlexibleCasting()
+        ->allowSuperfluousKeys()
+        ->allowPermissiveTypes()
+        ->enableFlexibleCasting()
         ->mapper()
         ->map($signature, $response);
 
