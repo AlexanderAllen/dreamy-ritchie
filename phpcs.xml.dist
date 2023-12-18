@@ -44,6 +44,8 @@
   <rule ref="Drupal.Classes.UseLeadingBackslash"/>
   <rule ref="Drupal.Commenting.ClassComment">
     <exclude name="Drupal.Commenting.ClassComment.Missing"/>
+    <!-- rallen: Allow file comments in DTOs -->
+    <exclude name="Drupal.Commenting.FileComment.NamespaceNoFileDoc"/>
   </rule>
   <rule ref="Drupal.Commenting.DataTypeNamespace"/>
   <rule ref="Drupal.Commenting.Deprecated"/>
