@@ -29,7 +29,7 @@ use PHPUnit\Framework\TestCase;
  * @see https://phpstan.org/blog/generics-in-php-using-phpdocs
  * @see https://phpstan.org/blog/generics-by-examples
  */
-class HydrateGenericsBTest extends TestCase {
+class HydrateSpotifyTest extends TestCase {
 
   public function testSimilarArtistsWithAttr() {
 
