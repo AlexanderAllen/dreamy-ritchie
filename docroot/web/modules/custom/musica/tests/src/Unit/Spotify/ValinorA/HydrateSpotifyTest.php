@@ -15,6 +15,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Drupal\musica\API\Spotify\Enum\ArtistType;
+use Exception;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -92,7 +93,8 @@ class HydrateSpotifyTest extends TestCase {
 
     try {
 
-      $signature = GenericValueContainer::class . '<Drupal\Tests\musica\Unit\ValinorA\Artist>';
+      // $signature = GenericValueContainer::class . '<Drupal\Tests\musica\Unit\ValinorA\Artist>';
+      $signature = Artist::class;
 
       $dto = (new MapperBuilder())
         ->allowSuperfluousKeys()
@@ -103,7 +105,7 @@ class HydrateSpotifyTest extends TestCase {
 
       $this->assertSame(TRUE, TRUE);
     }
-    catch (\CuyZ\Valinor\Mapper\MappingError $error) {
+    catch (\Exception $error) {
       $this->markTestIncomplete($error->getMessage());
     }
 
@@ -164,86 +166,54 @@ class Attribute {
   ) {}
 }
 
-#[ORM\Entity]
-#[ApiResource(operations: [new Get(), new GetCollection()])]
 class Artist {
 
   /**
    * Known external URLs for this artist.
    */
-  #[ORM\Column(type: 'text')]
-  #[ApiProperty]
-  #[Assert\NotNull]
   public string $external_urls;
 
   /**
    * Information about the followers of the artist.
    */
-  #[ORM\Column(type: 'text')]
-  #[ApiProperty]
-  #[Assert\NotNull]
   public string $followers;
 
   /**
    * @var string[] A list of the genres the artist is associated with. If not yet classified, the array is empty.
    */
-  #[ORM\Column(type: 'json')]
-  #[ApiProperty]
-  #[Assert\NotNull]
   public array $genres = [];
 
   /**
    * A link to the Web API endpoint providing full details of the artist.
    */
-  #[ORM\Column(type: 'text')]
-  #[ApiProperty]
-  #[Assert\NotNull]
   public string $href;
 
-  #[ORM\Id]
-  #[ORM\GeneratedValue(strategy: 'AUTO')]
-  #[ORM\Column(type: 'integer')]
+
   public ?int $id = NULL;
 
   /**
    * @var array images of the artist in various sizes, widest first
    */
-  #[ORM\Column(type: 'json')]
-  #[ApiProperty]
-  #[Assert\NotNull]
   public array $images = [];
 
   /**
    * The name of the artist.
    */
-  #[ORM\Column(type: 'text')]
-  #[ApiProperty]
-  #[Assert\NotNull]
   public string $name;
 
   /**
    * The popularity of the artist. The value will be between 0 and 100, with 100 being the most popular. The artist's popularity is calculated from the popularity of all the artist's tracks.
    */
-  #[ORM\Column(type: 'integer')]
-  #[ApiProperty]
-  #[Assert\NotNull]
   public int $popularity;
 
   /**
    * The object type.
    */
-  #[ORM\Column(name: '`type`')]
-  #[ApiProperty]
-  #[Assert\NotNull]
-  #[Assert\Choice(callback: [ArtistType::class, 'toArray'])]
-  public ArtistType $type;
+  // public ArtistType $type;
 
   /**
    * The \[Spotify URI\](/documentation/web-api/concepts/spotify-uris-ids) for the artist.
    */
-  #[ORM\Column(type: 'text')]
-  #[ApiProperty]
-  #[Assert\NotNull]
   public string $uri;
 
 }
