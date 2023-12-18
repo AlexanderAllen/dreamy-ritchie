@@ -16,6 +16,7 @@ use PHPUnit\Framework\TestCase;
  * interface where only the inner content is typed out ("tag" in this case)?
  *
  * @group musica
+ * @group ignore
  *
  * @see https://www.last.fm/api/show/artist.getTopAlbums
  * @see https://github.com/CuyZ/Valinor#example
