@@ -10,7 +10,6 @@ use Drupal\musica\Service\LastFM;
 use Drupal\musica\Service\Spotify;
 use Drupal\musica\State\EntityState;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\Response;
 
 
 /**

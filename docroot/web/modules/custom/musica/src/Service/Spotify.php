@@ -10,6 +10,7 @@ use Kerox\OAuth2\Client\Provider\SpotifyScope;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use Drupal\Core\Logger\LoggerChannel;
 use Drupal\Core\Utility\Error;
+use Exception;
 use GuzzleHttp\Client as GuzzleHttpClient;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Response;
@@ -83,11 +84,16 @@ final class Spotify {
   }
 
   /**
+   * Returns aa fully typed and populated resource.
+   */
+  public function getResourceObject() {}
+
+  /**
    * Requests, caches and returns the specified API resource.
    *
    * @TODO: looking for more efficient OPENAPI/hydration methods.
    */
-  public function getResource($resource = 'artists/4Z8W4fKeB5YxbusRsdQVPb'): string {
+  public function getResource(string $resource = 'artists/4Z8W4fKeB5YxbusRsdQVPb'): string {
     if ($this->cache->get($resource) !== FALSE) {
       return $this->cache->get($resource)->data;
     }
@@ -124,9 +130,9 @@ final class Spotify {
   }
 
   public function getToken() {
-    $token = $this->cache->get('musicaSpotifyAuthToken');
+    $token = $this->cache->get('musica:spotify:access_token');
     if ($token !== FALSE) {
-      return $token->data['access'];
+      return $token->data;
     }
     else {
       return FALSE;
@@ -140,8 +146,15 @@ final class Spotify {
    * cache.
    */
   public function authorize(): void {
-    if ($this->cache->get('musicaSpotifyAuthToken') !== FALSE) {
+    if ($this->cache->get('musica:spotify:access_token') !== FALSE) {
       return;
+    }
+
+    // Re-authorize application if a refresh token is available.
+    if ($this->cache->get('musica:spotify:refresh_token') !== FALSE) {
+      $this->getAccessToken('refresh_token', [
+        'refresh_token' => $this->cache->get('musica:spotify:refresh_token')->data,
+      ]);
     }
 
     if (!isset($_GET['code'])) {
@@ -161,25 +174,35 @@ final class Spotify {
           SpotifyScope::USER_LIBRARY_READ->value,
         ],
       ]);
-      $this->cache->set('musicaSpotifyAuthState', $this->provider->getState(), Cache::CACHE_PERMANENT, $this->cacheLabels);
+      // $this->cache->set('musicaSpotifyAuthState', $this->provider->getState(), Cache::CACHE_PERMANENT, $this->cacheLabels);
 
       header('Location: ' . $authUrl);
       exit;
     }
 
     // Request an access token using the authorization code grant.
+    $code = $_GET['code'];
+    $this->getAccessToken('authorization_code', ['code' => $code]);
+  }
+
+  /**
+   * Request an access token using the authorization code grant.
+   */
+  private function getAccessToken(string $grant, array $options = []): void {
     try {
-      $code = $_GET['code'];
-      $token = $this->provider->getAccessToken('authorization_code', ['code' => $code]);
+      $token = $this->provider->getAccessToken($grant, $options);
 
       $this->cache->set(
-        'musicaSpotifyAuthToken',
-        [
-          'access' => $token->getToken(),
-          'refresh' => $token->getRefreshToken(),
-          'scope' => $token->getValues()['scope'],
-        ],
+        'musica:spotify:access_token',
+        $token->getToken(),
         $token->getExpires(),
+        $this->cacheLabels
+      );
+
+      $this->cache->set(
+        'musica:spotify:refresh_token',
+        $token->getRefreshToken(),
+        Cache::CACHE_PERMANENT,
         $this->cacheLabels
       );
     }
@@ -188,7 +211,6 @@ final class Spotify {
         '@error' => $e->getMessage(),
       ]);
     }
-
   }
 
 }
