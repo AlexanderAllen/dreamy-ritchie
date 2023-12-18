@@ -10,7 +10,6 @@ use Kerox\OAuth2\Client\Provider\SpotifyScope;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use Drupal\Core\Logger\LoggerChannel;
 use Drupal\Core\Utility\Error;
-use Exception;
 use GuzzleHttp\Client as GuzzleHttpClient;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Response;
@@ -140,12 +139,15 @@ final class Spotify {
   }
 
   /**
-   * Retrieves authorization token from Spotify API.
+   * Authorizes the application to use the Spotify API.
    *
-   * If token has expired a new one is created, otherwise it is served from
-   * cache.
+   * If no token exists on cache, a new one is requested and stored in cache.
+   *
+   * If the previous access token token expired, a refresh token is used to
+   * create a new access token.
    */
   public function authorize(): void {
+    // Application is already authorized with a non-expired token.
     if ($this->cache->get('musica:spotify:access_token') !== FALSE) {
       return;
     }
