@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9c9b00f771b75a04009f0115885871b8",
+    "content-hash": "9acfd84a140e4d128646bd252903d27f",
     "packages": [
         {
             "name": "api-platform/metadata",
@@ -9545,6 +9545,123 @@
             "support": {
                 "source": "https://git.drupalcode.org/project/twig_xdebug"
             }
+        },
+        {
+            "name": "drupol/phpcsfixer-configs-drupal",
+            "version": "2.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/drupol/phpcsfixer-configs-drupal.git",
+                "reference": "f6f1c577cceb82015ca32424102ad5a895c607ae"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/drupol/phpcsfixer-configs-drupal/zipball/f6f1c577cceb82015ca32424102ad5a895c607ae",
+                "reference": "f6f1c577cceb82015ca32424102ad5a895c607ae",
+                "shasum": ""
+            },
+            "require": {
+                "drupol/phpcsfixer-configs-php": "^2.0",
+                "ext-mbstring": "*",
+                "ext-tokenizer": "*",
+                "friendsofphp/php-cs-fixer": "^3.35",
+                "php": ">= 7.1.3"
+            },
+            "require-dev": {
+                "ergebnis/composer-normalize": "^2.31.0",
+                "maglnet/composer-require-checker": "^4.4.0",
+                "php-cs-fixer/phpunit-constraint-isidenticalstring": "^1.3",
+                "php-parallel-lint/php-parallel-lint": "^1.3",
+                "phpro/grumphp": "^1.0 || ^2.0",
+                "phpunit/phpunit": "^9.6.13 || ^10"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "drupol\\PhpCsFixerConfigsDrupal\\": "./src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Pol Dellaiera",
+                    "email": "pol.dellaiera@protonmail.com"
+                }
+            ],
+            "description": "Base PHP CS Fixer configurations for Drupal 7 and 8.",
+            "support": {
+                "issues": "https://github.com/drupol/phpcsfixer-configs-drupal/issues",
+                "source": "https://github.com/drupol/phpcsfixer-configs-drupal/tree/2.1.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/drupol",
+                    "type": "github"
+                },
+                {
+                    "url": "https://www.paypal.me/drupol",
+                    "type": "paypal"
+                }
+            ],
+            "time": "2023-10-23T07:51:04+00:00"
+        },
+        {
+            "name": "drupol/phpcsfixer-configs-php",
+            "version": "2.0.20",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/drupol/phpcsfixer-configs-php.git",
+                "reference": "56ed577b999a6ad50da4e8f5d0a7f95e6c8c3596"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/drupol/phpcsfixer-configs-php/zipball/56ed577b999a6ad50da4e8f5d0a7f95e6c8c3596",
+                "reference": "56ed577b999a6ad50da4e8f5d0a7f95e6c8c3596",
+                "shasum": ""
+            },
+            "require": {
+                "friendsofphp/php-cs-fixer": "^3.35.1",
+                "php": ">= 7.4",
+                "symfony/yaml": "^3 || ^4 || ^5 || ^6"
+            },
+            "require-dev": {
+                "ext-pcov": "*",
+                "friends-of-phpspec/phpspec-code-coverage": "^6",
+                "php-parallel-lint/php-parallel-lint": "^1.3",
+                "phpro/grumphp": "1.1.* || 1.3.* || 1.4.* || 1.13.*",
+                "phpspec/phpspec": "^7"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "drupol\\PhpCsFixerConfigsPhp\\": "./src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Pol Dellaiera",
+                    "email": "pol.dellaiera@protonmail.com"
+                }
+            ],
+            "description": "Base PHP CS Fixer configurations.",
+            "support": {
+                "issues": "https://github.com/drupol/phpcsfixer-configs-php/issues",
+                "source": "https://github.com/drupol/phpcsfixer-configs-php/tree/2.0.20"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/drupol",
+                    "type": "github"
+                }
+            ],
+            "time": "2023-10-21T15:33:32+00:00"
         },
         {
             "name": "friendsofphp/php-cs-fixer",
