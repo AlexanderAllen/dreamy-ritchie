@@ -145,6 +145,12 @@ class Artist {
    */
   public array $followers = [];
 
+  /**
+   * @var string[] A list of the genres the artist is associated with. If not yet classified, the array is empty.
+   */
+  #[ORM\Column(type: 'json')]
+  #[ApiProperty]
+  #[Assert\NotNull]
   public array $genres = [];
 
   /**
