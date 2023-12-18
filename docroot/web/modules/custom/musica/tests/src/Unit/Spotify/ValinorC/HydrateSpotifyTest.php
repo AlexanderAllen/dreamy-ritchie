@@ -175,7 +175,7 @@ class Artist {
   /**
    * The object type.
    */
-  public ArtistType $type;
+  public \Drupal\musica\API\Spotify\Enum\ArtistType $type;
 
   /**
    * The \[Spotify URI\](/documentation/web-api/concepts/spotify-uris-ids) for the artist.
