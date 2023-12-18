@@ -2,7 +2,7 @@
 
 // phpcs:disable
 
-namespace Drupal\Tests\musica\Unit\ValinorA;
+namespace Drupal\Tests\musica\Unit\ValinorB;
 
 use CuyZ\Valinor\MapperBuilder;
 use CuyZ\Valinor\Mapper\Source\Source;
@@ -25,7 +25,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  * interface where only the inner content is typed out ("tag" in this case)?
  *
  * @group musica
- * @group ignore
  *
  * @see https://www.last.fm/api/show/artist.getTopAlbums
  * @see https://github.com/CuyZ/Valinor#example
@@ -125,27 +124,6 @@ final class GenericValueContainer
   ) {}
 }
 
-/**
- * Inner value container.
- *
- * The parameter/property names must match the source in order for Valinor
- * to recognize the mapping: if you change the name of $toptags then Valinor
- * breaks b.c. it' can't find a match in the incoming source.
- *
- * Generics are not allowed in inner contexts either (see Valinor issue #8).
- *
- * @phpstan-type tags array{'tag': list<Tag>, "@attr"?: Attribute}
- *
- * @template T
- */
-final class InnerValueContainer {
-
-  public function __construct(
-    /** @var tags */
-    public readonly mixed $toptags,
-  ) {}
-}
-
 final class Tag {
   public function __construct(
     public readonly int $count = 0,
@@ -154,17 +132,6 @@ final class Tag {
   ) {}
 }
 
-
-class Attribute {
-
-  public function __construct(
-    public readonly string $artist = '',
-    public readonly string $page = '',
-    public readonly string $perPage = '',
-    public readonly string $totalPages = '',
-    public readonly string $total = '',
-  ) {}
-}
 
 class Artist {
 
