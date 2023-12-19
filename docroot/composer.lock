@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "11a3a38eea44343c0b84c8dd2d038db2",
+    "content-hash": "13d494c3c4bc34875180eabc3d9aca26",
     "packages": [
         {
             "name": "api-platform/metadata",
@@ -2594,6 +2594,16 @@
                 "issues": "https://www.drupal.org/project/issues/facets",
                 "irc": "irc://irc.freenode.org/drupal-search-api"
             }
+        },
+        {
+            "name": "drupal/musica",
+            "version": "1.1.0",
+            "source": {
+                "type": "git",
+                "url": "git@git.drupal.org:project/musica.git",
+                "reference": "1.1.x"
+            },
+            "type": "drupal-module"
         },
         {
             "name": "drupal/search_api",
@@ -14810,7 +14820,7 @@
         }
     ],
     "aliases": [],
-    "minimum-stability": "alpha",
+    "minimum-stability": "dev",
     "stability-flags": {
         "brainmaestro/composer-git-hooks": 15,
         "roave/security-advisories": 20

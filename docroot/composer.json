@@ -10,6 +10,20 @@
     },
     "repositories": [
         {
+            "type": "package",
+            "package": {
+                "type": "drupal-module",
+                "name": "drupal/musica",
+                "version": "1.1.0",
+                "source": {
+                    "url": "git@git.drupal.org:project/musica.git",
+                    "type": "git",
+                    "reference": "1.1.x"
+                }
+            }
+        },
+
+        {
             "type": "composer",
             "url": "https://packages.drupal.org/8"
         }
@@ -24,6 +38,7 @@
         "drupal/core-recommended": "^10.1",
         "drupal/devel": "^5.1",
         "drupal/facets": "^2.0",
+        "drupal/musica": "1.1.0",
         "drupal/search_api": "^1.30",
         "drupal/search_api_autocomplete": "^1.8",
         "drupal/search_api_solr": "^4.3",
