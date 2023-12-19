@@ -18,7 +18,6 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Drupal\musica\API\Spotify\Enum\ArtistType;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity]
@@ -88,6 +87,9 @@ class Artist {
 
   /**
    * The object type.
+   *
+   * @TODO Using external Enum Throws LogicException:
+   * "/app/docroot/vendor/cuyz/valinor/src/Type/Types/UnresolvableType.php"
    */
   #[ORM\Column(name: '`type`')]
   #[ApiProperty]
@@ -103,4 +105,13 @@ class Artist {
   #[Assert\NotNull]
   public string $uri;
 
+}
+
+/**
+ * Using MyCLabs\Enum\Enum throws unresolved type.
+ * Native Enums are supported, though.
+ * @see https://valinor.cuyz.io/1.7/usage/type-reference/#enums
+ */
+enum ArtistType: string {
+  case ARTIST = 'artist';
 }
