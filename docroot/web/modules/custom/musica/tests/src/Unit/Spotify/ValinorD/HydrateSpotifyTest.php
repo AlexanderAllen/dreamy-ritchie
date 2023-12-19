@@ -17,7 +17,7 @@ use PHPUnit\Framework\TestCase;
  */
 class HydrateSpotifyTest extends TestCase {
 
-  public function testSpotifyHydrate() {
+  public function testHydrateSchemaGeneratorDto() {
 
     // From OpenAPI/Swagger:
     //  curl -X 'GET' \
