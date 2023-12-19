@@ -31,7 +31,7 @@ class Artist {
   #[ORM\Column(type: 'text')]
   #[ApiProperty]
   #[Assert\NotNull]
-  public string $external_urls;
+  public array $external_urls;
 
   /**
    * Information about the followers of the artist.
@@ -39,7 +39,7 @@ class Artist {
   #[ORM\Column(type: 'text')]
   #[ApiProperty]
   #[Assert\NotNull]
-  public string $followers;
+  public array $followers;
 
   /**
    * @var string[] A list of the genres the artist is associated with. If not yet classified, the array is empty.
