@@ -60,7 +60,7 @@ class Artist {
   #[ORM\Id]
   #[ORM\GeneratedValue(strategy: 'AUTO')]
   #[ORM\Column(type: 'integer')]
-  public ?int $id = NULL;
+  public ?string $id = NULL;
 
   /**
    * @var array images of the artist in various sizes, widest first
