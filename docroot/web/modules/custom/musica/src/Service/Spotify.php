@@ -145,6 +145,8 @@ final class Spotify {
    *
    * If the previous access token token expired, a refresh token is used to
    * create a new access token.
+   *
+   * @see https://developer.spotify.com/documentation/web-api/tutorials/refreshing-tokens
    */
   public function authorize(): void {
     // Application is already authorized with a non-expired token.
@@ -153,10 +155,12 @@ final class Spotify {
     }
 
     // Re-authorize application if a refresh token is available.
-    if ($this->cache->get('musica:spotify:refresh_token') !== FALSE) {
+    $refresh = $this->cache->get('musica:spotify:refresh_token');
+    if ($refresh !== FALSE && $refresh->data !== NULL) {
       $this->getAccessToken('refresh_token', [
-        'refresh_token' => $this->cache->get('musica:spotify:refresh_token')->data,
+        'refresh_token' => $refresh->data,
       ]);
+      return;
     }
 
     if (!isset($_GET['code'])) {
