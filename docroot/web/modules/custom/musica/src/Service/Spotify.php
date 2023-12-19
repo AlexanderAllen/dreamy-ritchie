@@ -10,9 +10,14 @@ use Kerox\OAuth2\Client\Provider\SpotifyScope;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use Drupal\Core\Logger\LoggerChannel;
 use Drupal\Core\Utility\Error;
+use Drupal\musica\API\Spotify\Entity\Artist;
 use GuzzleHttp\Client as GuzzleHttpClient;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Response;
+
+use CuyZ\Valinor\Mapper\Source\Source;
+use CuyZ\Valinor\MapperBuilder;
+use Drupal\musica\DTO\LFM\GenericCollection;
 
 /**
  * Service for Spotify API.
@@ -84,13 +89,35 @@ final class Spotify {
 
   /**
    * Returns aa fully typed and populated resource.
+   *
+   * @TODO: looking for more efficient OPENAPI/hydration methods.
    */
-  public function getResourceObject() {}
+  public function getResourceObject(string $resource = 'artists/0TnOYISbd1XYRBk9myaseg') {
+
+    // $entity = new Artist();
+
+    $data = $this->getResource($resource);
+
+    try {
+      $sauce = Source::json($data);
+      /** @var array */
+      $dto = (new MapperBuilder())
+        ->allowSuperfluousKeys()
+        ->allowPermissiveTypes()
+        ->enableFlexibleCasting()
+        ->mapper()
+        ->map(Artist::class, $sauce);
+      $test = null;
+    }
+    catch (\Throwable $th) {
+      $test = null;
+    }
+
+    // return $state::mergeStateSilo('dto', $state, [$dataKey => $dto]);
+  }
 
   /**
    * Requests, caches and returns the specified API resource.
-   *
-   * @TODO: looking for more efficient OPENAPI/hydration methods.
    */
   public function getResource(string $resource = 'artists/4Z8W4fKeB5YxbusRsdQVPb'): string {
     if ($this->cache->get($resource) !== FALSE) {

@@ -47,7 +47,7 @@ class HelloController extends ControllerBase {
   public function content() {
 
     $this->spotify->authorize();
-    $content = $this->spotify->getResource();
+    $content = $this->spotify->getResourceObject();
 
 
     // $container = EntityContainer::createFromState(new ArtistBehaviors(), new EntityState('Cher'))
