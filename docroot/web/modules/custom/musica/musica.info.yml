@@ -1,6 +1,0 @@
-name: Musica
-description: Provides an API for various music streaming services.
-package: Custom
-
-type: module
-core_version_requirement: 10.x
