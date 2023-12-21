@@ -1,0 +1,9 @@
+name: Musica Views
+description: Provides Views for Musica API data
+package: Musica
+
+type: module
+core_version_requirement: 10.x
+dependencies:
+  - core:views
+  - contrib:musica

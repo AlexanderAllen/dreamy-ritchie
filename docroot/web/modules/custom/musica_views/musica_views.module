@@ -1,0 +1,54 @@
+<?php
+
+/**
+ * @file
+ * The module file.
+ */
+
+/**
+ * Implements hook_views_data().
+ *
+ * Gets called when going to admin/structure/views/add.
+ */
+function musica_views_views_data() {
+  $data['views']['table']['group'] = t('Musica');
+  $data['views']['table']['join'] = [
+    // #global is a special flag which allows a table to appear all the time.
+    '#global' => [],
+  ];
+
+  // @todo should be broken into multiple fields: name, bio, picture, etc.
+  $data['views']['artist_views_field'] = [
+    'title' => t('Artist field'),
+    'help' => t('Development field showing artist information.'),
+    'field' => [
+      'id' => 'artist_views_field',
+    ],
+  ];
+
+  $data['fitbit_profile']['table']['group'] = t('Fitbit profile');
+  $data['fitbit_profile']['table']['base'] = [
+    'title' => t('Fitbit profile'),
+    'help' => t('Fitbit profile data provided by the Fitbit API\'s User Profile endpoint.'),
+    'query_id' => 'fitbit',
+  ];
+
+  return $data;
+}
+
+function musica_views_views_data_alter(array &$data) {
+  $data['views']['table']['group'] = t('Musica');
+  $data['views']['table']['join'] = [
+    // #global is a special flag which allows a table to appear all the time.
+    '#global' => [],
+  ];
+
+  $data['views']['artist_views_field'] = [
+    'title' => t('Phase'),
+    'help' => t('The Phase which the current project is in.'),
+    'field' => [
+      'id' => 'artist_views_field',
+    ],
+  ];
+  return $data;
+}
