@@ -44,6 +44,7 @@
         "drupal/search_api_solr": "^4.3",
         "drupal/search_api_solr_nlp": "^1.1",
         "drupal/search_api_spellcheck": "^4.0",
+        "drupal/views_remote_data": "^1.0",
         "drush/drush": "^12.4",
         "guzzlehttp/guzzle": "^7.7",
         "kerox/oauth2-spotify": "^2.0",
