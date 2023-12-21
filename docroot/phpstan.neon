@@ -5,18 +5,20 @@
 
 includes:
   - phar://phpstan.phar/conf/bleedingEdge.neon
+  - vendor/mglaman/phpstan-drupal/extension.neon
 
 parameters:
 
   level: 2
 
-  cognitive_complexity:
-    class: 50
-    function: 4
+#  cognitive_complexity:
+#    class: 50
+#    function: 4
 
   # https://phpstan.org/config-reference#analysed-files
   paths:
     - web/modules/custom
+    - web/modules/contrib
 
   excludePaths:
     # Skip sites directory.
