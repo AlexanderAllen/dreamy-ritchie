@@ -40,7 +40,7 @@ final class MyRemoteDataSubscriber implements EventSubscriberInterface {
    */
   public function onQuery(RemoteDataQueryEvent $event): void {
 
-    $supported_bases = ['views_remote_data_query'];
+    $supported_bases = ['musica_views_remote_data'];
     $base_tables = array_keys($event->getView()->getBaseTables());
     if (count(array_intersect($supported_bases, $base_tables)) > 0) {
 
