@@ -49,7 +49,8 @@
         "guzzlehttp/guzzle": "^7.7",
         "kerox/oauth2-spotify": "^2.0",
         "martin1982/oauth2-soundcloud": "^2.0",
-        "myclabs/php-enum": "^1.8"
+        "myclabs/php-enum": "^1.8",
+        "wikimedia/composer-merge-plugin": "dev-master"
     },
     "conflict": {
         "drupal/drupal": "*"
@@ -62,7 +63,8 @@
             "drupal/core-composer-scaffold": true,
             "drupal/core-project-message": true,
             "phpstan/extension-installer": true,
-            "dealerdirect/phpcodesniffer-composer-installer": true
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "wikimedia/composer-merge-plugin": true
         },
         "sort-packages": true
     },
