@@ -1,0 +1,20 @@
+{
+    "name": "drupal/musica_views",
+    "description": "Views implementation for Musica API module.",
+    "type": "drupal-module",
+    "license": "GPL-2.0-or-later",
+    "autoload": {
+        "psr-4": {
+            "Drupal\\musica_views\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Richard Allen",
+            "email": "alexanderallen@351784.no-reply.drupal.org"
+        }
+    ],
+    "require": {
+        "drupal/views_remote_data": "^1.0"
+    }
+}
