@@ -30,9 +30,9 @@
     ],
     "require": {
         "composer/installers": "^2.0",
-        "drupal/core-composer-scaffold": "^10.1",
-        "drupal/core-project-message": "^10.1",
-        "drupal/core-recommended": "^10.1",
+        "drupal/core-composer-scaffold": "10.2.0",
+        "drupal/core-project-message": "10.2.0",
+        "drupal/core-recommended": "10.2.0",
         "drupal/devel": "^5.1",
         "drupal/facets": "^2.0",
         "drupal/musica": "1.1.0",
