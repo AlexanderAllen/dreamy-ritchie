@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "18e905efaa82d994af06bdd8ec3d053a",
+    "content-hash": "a746987b3ebd1a4355352b01e76ddda1",
     "packages": [
         {
             "name": "api-platform/metadata",
-            "version": "v3.2.7",
+            "version": "v3.2.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/api-platform/metadata.git",
-                "reference": "3dd91973c1ba1b0c639e1425044962f55b062bd0"
+                "reference": "da77a04b8b3b028ac4ab2c6a1450d6061ccf66a3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/api-platform/metadata/zipball/3dd91973c1ba1b0c639e1425044962f55b062bd0",
-                "reference": "3dd91973c1ba1b0c639e1425044962f55b062bd0",
+                "url": "https://api.github.com/repos/api-platform/metadata/zipball/da77a04b8b3b028ac4ab2c6a1450d6061ccf66a3",
+                "reference": "da77a04b8b3b028ac4ab2c6a1450d6061ccf66a3",
                 "shasum": ""
             },
             "require": {
@@ -34,6 +34,7 @@
                 "api-platform/state": "*@dev || ^3.1",
                 "phpspec/prophecy-phpunit": "^2.0",
                 "phpstan/phpdoc-parser": "^1.16",
+                "sebastian/comparator": "<5.0",
                 "symfony/config": "^6.1",
                 "symfony/phpunit-bridge": "^6.1",
                 "symfony/routing": "^6.1",
@@ -92,9 +93,9 @@
                 "swagger"
             ],
             "support": {
-                "source": "https://github.com/api-platform/metadata/tree/v3.2.7"
+                "source": "https://github.com/api-platform/metadata/tree/v3.2.10"
             },
-            "time": "2023-11-30T10:10:09+00:00"
+            "time": "2023-12-19T08:16:24+00:00"
         },
         {
             "name": "asm89/stack-cors",
@@ -956,16 +957,16 @@
         },
         {
             "name": "cuyz/valinor",
-            "version": "1.7.0",
+            "version": "1.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/CuyZ/Valinor.git",
-                "reference": "e384ad6d6801c3d4a03b444d267dbfec91ee23da"
+                "reference": "ec70c89f1736e6366268eb6c3ff95dbcbc39d922"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/CuyZ/Valinor/zipball/e384ad6d6801c3d4a03b444d267dbfec91ee23da",
-                "reference": "e384ad6d6801c3d4a03b444d267dbfec91ee23da",
+                "url": "https://api.github.com/repos/CuyZ/Valinor/zipball/ec70c89f1736e6366268eb6c3ff95dbcbc39d922",
+                "reference": "ec70c89f1736e6366268eb6c3ff95dbcbc39d922",
                 "shasum": ""
             },
             "require": {
@@ -1017,7 +1018,7 @@
             ],
             "support": {
                 "issues": "https://github.com/CuyZ/Valinor/issues",
-                "source": "https://github.com/CuyZ/Valinor/tree/1.7.0"
+                "source": "https://github.com/CuyZ/Valinor/tree/1.8.0"
             },
             "funding": [
                 {
@@ -1025,7 +1026,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-10-23T11:05:23+00:00"
+            "time": "2023-12-26T14:52:11+00:00"
         },
         {
             "name": "dflydev/dot-access-data",
@@ -1940,16 +1941,16 @@
         },
         {
             "name": "doctrine/orm",
-            "version": "2.17.1",
+            "version": "2.17.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/orm.git",
-                "reference": "1a4fe6e0bb67762370937a7e6cee3da40a9122d1"
+                "reference": "393679a4795e49b0b3ac317dce84d0f8888f2b77"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/orm/zipball/1a4fe6e0bb67762370937a7e6cee3da40a9122d1",
-                "reference": "1a4fe6e0bb67762370937a7e6cee3da40a9122d1",
+                "url": "https://api.github.com/repos/doctrine/orm/zipball/393679a4795e49b0b3ac317dce84d0f8888f2b77",
+                "reference": "393679a4795e49b0b3ac317dce84d0f8888f2b77",
                 "shasum": ""
             },
             "require": {
@@ -1982,10 +1983,10 @@
                 "phpunit/phpunit": "^7.5 || ^8.5 || ^9.6",
                 "psr/log": "^1 || ^2 || ^3",
                 "squizlabs/php_codesniffer": "3.7.2",
-                "symfony/cache": "^4.4 || ^5.4 || ^6.0",
-                "symfony/var-exporter": "^4.4 || ^5.4 || ^6.2",
-                "symfony/yaml": "^3.4 || ^4.0 || ^5.0 || ^6.0",
-                "vimeo/psalm": "4.30.0 || 5.15.0"
+                "symfony/cache": "^4.4 || ^5.4 || ^6.4 || ^7.0",
+                "symfony/var-exporter": "^4.4 || ^5.4 || ^6.2 || ^7.0",
+                "symfony/yaml": "^3.4 || ^4.0 || ^5.0 || ^6.0 || ^7.0",
+                "vimeo/psalm": "4.30.0 || 5.16.0"
             },
             "suggest": {
                 "ext-dom": "Provides support for XSD validation for XML mapping files",
@@ -2035,9 +2036,9 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/orm/issues",
-                "source": "https://github.com/doctrine/orm/tree/2.17.1"
+                "source": "https://github.com/doctrine/orm/tree/2.17.2"
             },
-            "time": "2023-11-17T06:25:40+00:00"
+            "time": "2023-12-20T21:47:52+00:00"
         },
         {
             "name": "doctrine/persistence",
@@ -2793,13 +2794,50 @@
         },
         {
             "name": "drupal/musica",
-            "version": "1.1.0",
+            "version": "dev-1.1.x",
             "source": {
                 "type": "git",
-                "url": "git@git.drupal.org:project/musica.git",
+                "url": "https://git.drupalcode.org/project/musica.git",
                 "reference": "1.1.x"
             },
-            "type": "drupal-module"
+            "require": {
+                "drupal/core": "10.x"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "branch-alias": {
+                    "dev-1.1.x": "1.1.x-dev"
+                },
+                "drupal": {
+                    "version": "1.1.x-dev",
+                    "datestamp": "1703713750",
+                    "security-coverage": {
+                        "status": "not-covered",
+                        "message": "Project has not opted into security advisory coverage!"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Drupal\\Musica\\": "src/"
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Richard Allen",
+                    "homepage": "https://www.drupal.org/user/351784",
+                    "email": "alexanderallen@351784.no-reply.drupal.org"
+                }
+            ],
+            "description": "Musica API module",
+            "homepage": "https://www.drupal.org/project/musica",
+            "support": {
+                "source": "https://git.drupalcode.org/project/musica"
+            }
         },
         {
             "name": "drupal/search_api",
@@ -15116,6 +15154,7 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
+        "drupal/musica": 20,
         "wikimedia/composer-merge-plugin": 20,
         "brainmaestro/composer-git-hooks": 15,
         "roave/security-advisories": 20
