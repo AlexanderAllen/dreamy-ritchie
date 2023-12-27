@@ -273,6 +273,7 @@
        </property>
     </properties>
   </rule>
+  <rule ref="SlevomatCodingStandard.TypeHints.DeclareStrictTypes"/>
 
   <!-- Squiz sniffs -->
   <rule ref="Squiz.Arrays.ArrayBracketSpacing"/>
