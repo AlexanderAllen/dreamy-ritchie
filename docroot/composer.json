@@ -43,7 +43,6 @@
         "drupal/search_api_spellcheck": "^4.0",
         "drupal/views_remote_data": "^1.0",
         "drush/drush": "^12.4",
-        "myclabs/php-enum": "^1.8",
         "wikimedia/composer-merge-plugin": "dev-master"
     },
     "conflict": {
