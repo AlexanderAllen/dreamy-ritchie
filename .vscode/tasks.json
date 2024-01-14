@@ -62,5 +62,20 @@
       "isBackground": true,
       "icon": {"id": "server-environment", "color": "terminal.ansiRed"},
     },
+    {
+      "label": "OAS: Generate",
+      "detail": "Run OAS generator",
+      "type": "shell",
+      "linux": {
+        "options": {
+          "cwd": "/home/wsl/dreamy-ritchie/docroot/web/modules/contrib/musica/scripts"
+        }
+      },
+      "problemMatcher": "$eslint-compact",
+      "command": "./generate",
+      "group": "none",
+      "isBackground": false,
+      "icon": {"id": "gear", "color": "terminal.ansiGreen"},
+    },
   ]
 }
