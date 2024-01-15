@@ -75,7 +75,7 @@
       "command": "./generate",
       "group": "none",
       "isBackground": false,
-      "icon": {"id": "gear", "color": "terminal.ansiGreen"},
+      "icon": {"id": "server-process", "color": "terminal.ansiGreen"},
     },
   ]
 }
