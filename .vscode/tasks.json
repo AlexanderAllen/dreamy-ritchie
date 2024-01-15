@@ -68,7 +68,7 @@
       "type": "shell",
       "linux": {
         "options": {
-          "cwd": "/home/wsl/dreamy-ritchie/docroot/web/modules/contrib/musica/scripts"
+          "cwd": "/home/wsl/dreamy-ritchie/docroot/web/modules/contrib/musica/tools/schema-generator"
         }
       },
       "problemMatcher": "$eslint-compact",
