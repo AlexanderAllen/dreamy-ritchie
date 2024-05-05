@@ -131,11 +131,8 @@
         }
     },
     "require-dev": {
-        "behat/mink": "^1.10",
-        "behat/mink-browserkit-driver": "^2.1",
         "brainmaestro/composer-git-hooks": "^3.0@alpha",
         "dmore/chrome-mink-driver": "^2.9",
-        "drupal/core-dev": "^10.1",
         "drupal/twig_xdebug": "^1.3",
         "drupol/phpcsfixer-configs-drupal": "*",
         "friendsofphp/php-cs-fixer": "^3.39",
