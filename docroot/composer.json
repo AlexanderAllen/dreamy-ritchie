@@ -52,7 +52,7 @@
     "extra": {
         "merge-plugin": {
             "include": [
-                "web/modules/contrib/musica/composer.local.json"
+                "web/modules/contrib/musica/composer.json"
             ],
             "recurse": true,
             "replace": false,
