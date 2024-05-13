@@ -130,12 +130,5 @@
                 "./lando phpunit web/modules/custom"
             ]
         }
-    },
-    "require-dev": {
-        "drupal/twig_xdebug": "^1.3",
-        "kint-php/kint": "^5.1",
-        "kint-php/kint-helpers": "^5.0",
-        "kint-php/kint-twig": "^5.0",
-        "phpstan/extension-installer": "^1.3"
     }
 }
