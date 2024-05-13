@@ -32,6 +32,7 @@
     ],
     "require": {
         "composer/installers": "^2.2",
+        "cweagans/composer-patches": "dev-main",
         "drupal/core-composer-scaffold": "11.x-dev@dev",
         "drupal/core-project-message": "11.x-dev@dev",
         "drupal/core-recommended": "11.x-dev@dev",
@@ -61,10 +62,10 @@
             "replace": false,
             "ignore-duplicates": false,
             "merge-dev": true,
-            "merge-extra": false,
-            "merge-extra-deep": false,
-            "merge-replace": true,
-            "merge-scripts": false
+            "merge-extra": true,
+            "merge-extra-deep": true,
+            "merge-replace": false,
+            "merge-scripts": true
         },
         "drupal-scaffold": {
             "locations": {
