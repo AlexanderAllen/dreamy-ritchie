@@ -12,6 +12,22 @@
         {
             "type": "composer",
             "url": "https://packages.drupal.org/8"
+        },
+        {
+            "type": "package",
+            "package": {
+                "conflict": {
+                    "drupal/musica": "*"
+                },
+                "type": "drupal-module",
+                "name": "contrib/musica",
+                "version": "dev-main",
+                "source": {
+                    "url": "git@git.drupal.org:issue/musica-3416852.git",
+                    "type": "git",
+                    "reference": "main"
+                }
+            }
         }
     ],
     "require": {
