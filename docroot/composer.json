@@ -10,17 +10,10 @@
     },
     "repositories": [
         {
-            "type": "composer",
-            "url": "https://packages.drupal.org/8"
-        },
-        {
             "type": "package",
             "package": {
-                "conflict": {
-                    "drupal/musica": "*"
-                },
                 "type": "drupal-module",
-                "name": "contrib/musica",
+                "name": "drupal/musica",
                 "version": "dev-main",
                 "source": {
                     "url": "git@git.drupal.org:issue/musica-3416852.git",
@@ -28,15 +21,19 @@
                     "reference": "main"
                 }
             }
+        },
+        {
+            "type": "composer",
+            "url": "https://packages.drupal.org/8"
         }
     ],
     "require": {
         "composer/installers": "^2.2",
-        "contrib/musica": "dev-main",
         "cweagans/composer-patches": "dev-main",
         "drupal/core-composer-scaffold": "11.x-dev@dev",
         "drupal/core-project-message": "11.x-dev@dev",
         "drupal/core-recommended": "11.x-dev@dev",
+        "drupal/musica": "dev-main",
         "wikimedia/composer-merge-plugin": "dev-master"
     },
     "conflict": {
@@ -58,6 +55,14 @@
         "sort-packages": true
     },
     "extra": {
+        "patches": {
+            "drupal/core": {
+                "Allow alternate location for PHPUnit installs": "https://git.drupalcode.org/issue/musica-3416852/-/raw/1.1.x/patches/boostrap.php.patch"
+            }
+        },
+        "include": [
+            "web/modules/contrib/musica/composer.json"
+        ],
         "merge-plugin": {
             "recurse": true,
             "replace": false,

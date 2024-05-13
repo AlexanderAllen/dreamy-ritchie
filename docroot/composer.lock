@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "48c609276d7d90982d5e21f387febb06",
+    "content-hash": "2f33a6a42fd1b350e1c0c78f9d2daa6d",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -287,19 +287,6 @@
                 }
             ],
             "time": "2023-08-31T09:50:34+00:00"
-        },
-        {
-            "name": "contrib/musica",
-            "version": "dev-main",
-            "source": {
-                "type": "git",
-                "url": "git@git.drupal.org:issue/musica-3416852.git",
-                "reference": "main"
-            },
-            "conflict": {
-                "drupal/musica": "*"
-            },
-            "type": "drupal-module"
         },
         {
             "name": "cweagans/composer-configurable-plugin",
@@ -632,12 +619,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/drupal/core.git",
-                "reference": "ba4f54798ac042e2f01ab132e62e41cb63066583"
+                "reference": "e4ec357a2d2261e799467cfb6806f3f5ea08ca89"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/drupal/core/zipball/ba4f54798ac042e2f01ab132e62e41cb63066583",
-                "reference": "ba4f54798ac042e2f01ab132e62e41cb63066583",
+                "url": "https://api.github.com/repos/drupal/core/zipball/e4ec357a2d2261e799467cfb6806f3f5ea08ca89",
+                "reference": "e4ec357a2d2261e799467cfb6806f3f5ea08ca89",
                 "shasum": ""
             },
             "require": {
@@ -789,7 +776,7 @@
             "support": {
                 "source": "https://github.com/drupal/core/tree/11.x"
             },
-            "time": "2024-05-12T06:59:43+00:00"
+            "time": "2024-05-13T13:28:46+00:00"
         },
         {
             "name": "drupal/core-composer-scaffold",
@@ -967,6 +954,16 @@
                 "source": "https://github.com/drupal/core-recommended/tree/11.x"
             },
             "time": "2024-05-08T19:57:23+00:00"
+        },
+        {
+            "name": "drupal/musica",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "git@git.drupal.org:issue/musica-3416852.git",
+                "reference": "main"
+            },
+            "type": "drupal-module"
         },
         {
             "name": "egulias/email-validator",
@@ -4874,11 +4871,11 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "contrib/musica": 20,
         "cweagans/composer-patches": 20,
         "drupal/core-composer-scaffold": 20,
         "drupal/core-project-message": 20,
         "drupal/core-recommended": 20,
+        "drupal/musica": 20,
         "wikimedia/composer-merge-plugin": 20
     },
     "prefer-stable": true,

@@ -1,0 +1,17 @@
+{
+    "_hash": "32894b424d6bf140969408364a66f26722f24b89bbec8c39b5b6b7f86dc5998a",
+    "patches": {
+        "drupal/core": [
+            {
+                "package": "drupal/core",
+                "description": "Allow alternate location for PHPUnit installs",
+                "url": "https://git.drupalcode.org/issue/musica-3416852/-/raw/1.1.x/patches/boostrap.php.patch",
+                "sha256": "368e08720ce315ebd55348b25ce2c8bc3752d32dd8aa35525b91a157b3cea9a8",
+                "depth": 2,
+                "extra": {
+                    "provenance": "root"
+                }
+            }
+        ]
+    }
+}
