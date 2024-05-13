@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "93f5c1f39a955546e5382fe6635c1dfb",
+    "content-hash": "48c609276d7d90982d5e21f387febb06",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -287,6 +287,19 @@
                 }
             ],
             "time": "2023-08-31T09:50:34+00:00"
+        },
+        {
+            "name": "contrib/musica",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "git@git.drupal.org:issue/musica-3416852.git",
+                "reference": "main"
+            },
+            "conflict": {
+                "drupal/musica": "*"
+            },
+            "type": "drupal-module"
         },
         {
             "name": "cweagans/composer-configurable-plugin",
@@ -4861,6 +4874,7 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
+        "contrib/musica": 20,
         "cweagans/composer-patches": 20,
         "drupal/core-composer-scaffold": 20,
         "drupal/core-project-message": 20,

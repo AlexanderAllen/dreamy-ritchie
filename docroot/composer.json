@@ -32,6 +32,7 @@
     ],
     "require": {
         "composer/installers": "^2.2",
+        "contrib/musica": "dev-main",
         "cweagans/composer-patches": "dev-main",
         "drupal/core-composer-scaffold": "11.x-dev@dev",
         "drupal/core-project-message": "11.x-dev@dev",
