@@ -1,8 +1,0 @@
-services:
-  # Event Subscriber class needs to be registered and tagged as a subscriber in
-  # order for the Symfony events component to be aware of it.
-  musica_views.MyRemoteDataSubscriber:
-    class: Drupal\musica_views\EventSubscriber\MyRemoteDataSubscriber
-    arguments: ['@musica.spotify']
-    tags:
-      - { name: 'event_subscriber' }
