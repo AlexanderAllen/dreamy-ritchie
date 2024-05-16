@@ -43,11 +43,6 @@
         "sort-packages": true
     },
     "extra": {
-        "patches": {
-            "drupal/core": {
-                "Issue #3445847: PHPUnit 10 behaves differently when invoked outside web root": "https://git.drupalcode.org/project/drupal/-/merge_requests/7952.patch"
-            }
-        },
         "drupal-scaffold": {
             "locations": {
                 "web-root": "web/"
