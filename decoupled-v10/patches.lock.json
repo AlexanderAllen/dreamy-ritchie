@@ -1,0 +1,17 @@
+{
+    "_hash": "48992895e403180a01aea8071e0f3fafa455a02213247b8e99ab4f38f6178193",
+    "patches": {
+        "drupal/core": [
+            {
+                "package": "drupal/core",
+                "description": "PHPUnit 10 behaves differently when invoked outside web root",
+                "url": "https://git.drupalcode.org/project/drupal/-/merge_requests/7952.patch",
+                "sha256": "fe658efcd605e40d8919bc4c0c2255f7d7b34916b74ab9945bccc0c1554bb595",
+                "depth": 2,
+                "extra": {
+                    "provenance": "root"
+                }
+            }
+        ]
+    }
+}

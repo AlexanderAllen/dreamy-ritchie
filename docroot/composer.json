@@ -20,7 +20,8 @@
         "drupal/core-composer-scaffold": "^11.0",
         "drupal/core-project-message": "^11.0",
         "drupal/core-recommended": "^11.0",
-        "drupal/musica": "^1.1@dev"
+        "drupal/musica": "^1.1@dev",
+        "wikimedia/composer-merge-plugin": "dev-master"
     },
     "require-dev": {
         "drupal/core-dev": "^11.0"
@@ -38,11 +39,17 @@
             "phpstan/extension-installer": true,
             "dealerdirect/phpcodesniffer-composer-installer": true,
             "php-http/discovery": true,
+            "wikimedia/composer-merge-plugin": true,
             "cweagans/composer-patches": true
         },
         "sort-packages": true
     },
     "extra": {
+        "patches": {
+            "drupal/core": {
+                "PHPUnit 10 behaves differently when invoked outside web root": "https://git.drupalcode.org/project/drupal/-/merge_requests/7952.patch"
+            }
+        },
         "drupal-scaffold": {
             "locations": {
                 "web-root": "web/"

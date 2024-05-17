@@ -1,0 +1,88 @@
+#!/usr/bin/env bash
+
+# ========= DECOUPLED CHALLENGE EDITION =========
+# TEST RUNNER FOR PHPUNIT VERSION 10.x
+# ========= DECOUPLED CHALLENGE EDITION =========
+#
+# Can you put the drupal-dev dependencies somewhere other than drupal core?
+# Can PHPUnit be loaded from somewhere else?
+# PHPUnit still needs to hook up with Drupal core's autoloader, regardless.
+#
+#
+# The package drupal/core-dev MUST BE PRESENT in Drupal core's composer file.
+#
+# This script must be invoked from app/docroot, or whatever the location is
+# that contains: composer.json, phpunit.xml, and vendor.
+#
+# Tested with modified copy of core's phpunit.xml in app/docroot, and the same
+# config inside the contrib project's location.
+#
+# Tested to run from within Lando as
+#   cd web/docroot
+#   web/modules/contrib/musica/tools/phpunit/local-v9/lando
+# or, using Lando tooling
+#   ./lando test
+#
+# For Kernel and higher-stack integration tests to work, the simpletest
+# must be available. Drupal will fire separate requests to execute these tests,
+# and if the database is not available they will fail with a generic message.
+#
+
+echo "Your current work directory is $PWD"
+
+SITES_PATH=web/sites
+DRUPAL_CORE_PATH=$PWD/web/core
+TESTS=$PWD/web/modules/contrib/musica/tests
+PHPUNIT_LOCATION=$PWD/web/modules/contrib/musica/tools/phpunit/decoupled-v10
+
+# See docroot/web/core/tests/bootstrap.php
+# Default is __DIR__ . '/../../autoload.php'
+export PHPUNIT_COMPOSER_INSTALL="vendor/autoload.php"
+
+# Enable debugging.
+export XDEBUG_MODE="debug"
+export XDEBUG_CONFIG="idekey=VSCODE"
+
+if [ ! -f $BOOTSTRAP ]; then
+    echo "Could not locate Drupal Core bootstrap file for PHPUnit in $BOOTSTRAP"
+    exit 1;
+fi
+
+if [ ! -f $PHPUNIT_COMPOSER_INSTALL ]; then
+    echo "Where is your autoload? It ain't on $PHPUNIT_COMPOSER_INSTALL"
+    exit 1;
+fi
+
+# Variables by integration tests.
+export SIMPLETEST_BASE_URL="https://d10ee.lndo.site"
+export SIMPLETEST_DB="mysql://drupalX:drupalX@database:3306/drupal10_simpletest"
+export BROWSERTEST_OUTPUT_DIRECTORY="$SITES_PATH/simpletest/browser_output"
+export BROWSERTEST_OUTPUT_BASE_URL=""
+
+# See https://docs.phpunit.de/en/9.6/textui.html#command-line-options
+# Bootstrap and configs are requiring absolute paths inside Docker/Lando.
+
+# 5:15 5/11 Confirmed outside binary fully runs kernel test (inside docker).
+# php vendor/bin/phpunit \
+php $PHPUNIT_LOCATION/vendor/bin/phpunit \
+  --bootstrap $DRUPAL_CORE_PATH/tests/bootstrap-mod-v10.php \
+  --configuration $PHPUNIT_LOCATION/lando.xml \
+  --exclude-group ignore \
+  --group phpunit-9.5 \
+  --testdox \
+  --coverage-text \
+  --coverage-filter src \
+  $TESTS
+
+# From my gitlab.
+#   sudo -u www-data -E ./phpunit \
+#     --no-progress \
+#     --testdox \
+#     --coverage-text \
+#     --coverage-filter src \
+#     --bootstrap $PWD/$_WEB_ROOT/core/tests/bootstrap.php \
+#     --configuration "$PWD/${MUSICA_PHPUNIT_CONFIG}" \
+#     --coverage-cobertura $PWD/coverage.cobertura.xml \
+#     --log-junit $PWD/junit.xml \
+#     --exclude-group $MUSICA_PHPUNIT_EXCLUDE \
+#     $PWD/tests
