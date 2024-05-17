@@ -10,6 +10,19 @@
     },
     "repositories": [
         {
+            "type": "package",
+            "package": {
+                "type": "drupal-module",
+                "name": "drupal/musica",
+                "version": "dev-main",
+                "source": {
+                    "url": "git@git.drupal.org:issue/musica-3416852.git",
+                    "type": "git",
+                    "reference": "main"
+                }
+            }
+        },
+        {
             "type": "composer",
             "url": "https://packages.drupal.org/8"
         }

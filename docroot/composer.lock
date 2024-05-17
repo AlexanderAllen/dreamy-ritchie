@@ -10463,7 +10463,8 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "cweagans/composer-patches": 20
+        "cweagans/composer-patches": 20,
+        "drupal/musica": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
