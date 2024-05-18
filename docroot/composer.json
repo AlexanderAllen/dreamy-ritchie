@@ -18,7 +18,7 @@
                 "source": {
                     "url": "git@git.drupal.org:issue/musica-3416852.git",
                     "type": "git",
-                    "reference": "main"
+                    "reference": "3b1510fe6b0cfd14a4456d37232c19620e5bff79"
                 }
             }
         },
@@ -33,7 +33,12 @@
         "drupal/core-composer-scaffold": "^11.0",
         "drupal/core-project-message": "^11.0",
         "drupal/core-recommended": "^11.0",
-        "drupal/musica": "^1.1@dev"
+        "drupal/musica": "dev-main@dev",
+        "cuyz/valinor": "^1.7",
+        "guzzlehttp/guzzle": "^7.7",
+        "kerox/oauth2-spotify": "^2.0",
+        "martin1982/oauth2-soundcloud": "^2.0",
+        "hexlet/phpstan-fp": "dev-main"
     },
     "require-dev": {
         "drupal/core-dev": "^11.0"
