@@ -18,7 +18,7 @@ docroot/web/web.config
 .htaccess
 
 # Sites directories
-docroot/web/sites/default/files
+docroot/web/sites
 
 # Unit testing
 docroot/web/sites/simpletest
