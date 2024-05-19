@@ -26,8 +26,7 @@ $settings['config_sync_directory'] = '/app/config/sync';
 $settings['trusted_host_patterns'] = [
   '^localhost$',
   "^${LANDO_APP_NAME}\.lndo\.site$",
-  // "^app\.${LANDO_APP_NAME}\.lndo\.site$",
-  "^d10$",
+  "^d10ee\.lndo\.site",
 ];
 
 $settings['file_public_path'] = $WEB_ROOT . '/sites/default/files';
