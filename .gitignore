@@ -25,3 +25,7 @@ docroot/web/sites/simpletest
 
 # PHPCS Fixer cacher
 .php-cs-fixer.cache
+
+# Drupal 11 structure changes
+# Out of the box files are placed outside of webroot.
+docroot/sites
