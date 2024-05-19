@@ -60,6 +60,15 @@
         },
         "sort-packages": true
     },
+    "scripts": {
+        "post-install-cmd": [
+            "@setup"
+        ],
+        "setup": [
+            "rm -rf web/sites",
+            "cp -rf ../scaffold/sites web"
+        ]
+    },
     "extra": {
         "drupal-scaffold": {
             "locations": {
