@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+
+# ========= WSL TEST RUNNER =========
+# TEST RUNNER FOR PHPUNIT VERSION 10.x
+# ========= WSL TEST RUNNER =========
+#
+# Rules:
+# - Invoked from docroot, or from web root.
+# - Expects core vendor to be installed
+# - Expects drupal/core-dev to be present, which includes PHPUnit in core vendor.
+# - Kernel and integration dependencies (env vars, services, etc) shall be
+#   available, as usual, when running those kind of tests.
+#
+
+echo "Your current work directory is $PWD"
+
+SITES_PATH=web/sites
+
+# Enable debugging.
+export XDEBUG_MODE="debug"
+export XDEBUG_CONFIG="idekey=VSCODE"
+# export XDEBUG_MODE=coverage
+
+
+# Variables by integration tests.
+export SIMPLETEST_BASE_URL="https://d10ee.lndo.site"
+export SIMPLETEST_DB="mysql://drupalX:drupalX@127.0.0.1:53846/drupal10_simpletest"
+export BROWSERTEST_OUTPUT_DIRECTORY="$SITES_PATH/simpletest/browser_output"
+export BROWSERTEST_OUTPUT_BASE_URL=""
+
+# https://www.drupal.org/project/dbal/issues/3246773
+export SIMPLETEST_DB="sqlite://localhost/:memory:"
+export SYMFONY_DEPRECATIONS_HELPER="disabled"
+
+
+# See https://docs.phpunit.de/en/9.6/textui.html#command-line-options
+# Bootstrap and configs are requiring absolute paths inside Docker/Lando.
+
+# 5:15 5/11 Confirmed outside binary fully runs kernel test (inside docker).
+# php vendor/bin/phpunit \
+vendor/bin/phpunit \
+  --testdox \
+  --bootstrap web/core/tests/bootstrap.php \
+  --configuration web/core/phpunit.xml.dist \
+  --display-errors \
+  --do-not-cache-result \
+  --exclude-group ignore \
+  --no-coverage \
+  web/modules/contrib/musica/tests
