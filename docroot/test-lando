@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+
+# ========= LANDO TEST RUNNER =========
+# TEST RUNNER FOR PHPUNIT VERSION 10.x
+# ========= LANDO TEST RUNNER =========
+#
+
+echo "Your current work directory is $PWD"
+
+mkdir -p web/sites/simpletest/browser_output
+
+# Enable debugging.
+export XDEBUG_MODE="debug,coverage"
+# export XDEBUG_CONFIG="idekey=VSCODE"
+
+
+# Variables by integration tests.
+export SIMPLETEST_BASE_URL="http://d10ee.lndo.site"
+export SIMPLETEST_DB="mysql://drupalX:drupalX@database/drupal10_simpletest"
+export BROWSERTEST_OUTPUT_DIRECTORY="web/sites/simpletest/browser_output"
+export BROWSERTEST_OUTPUT_BASE_URL="http://d10ee.lndo.site"
+
+# https://www.drupal.org/project/dbal/issues/3246773
+# export SIMPLETEST_DB="sqlite://localhost/:memory:"
+export SYMFONY_DEPRECATIONS_HELPER="disabled"
+
+# Sauce environment variables for application.
+source ./musica.env
+echo $soundcloud_client_id
+echo $soundcloud_client_secret
+
+# https://www.drupal.org/docs/develop/automated-testing/phpunit-in-drupal/running-phpunit-javascript-tests
+# MINK_DRIVER_ARGS configuration is used for functional tests.
+# MINK_DRIVER_ARGS_WEBDRIVER is used for functional JavaScript tests.
+
+# The "chromeOptions" array key is deprecated in drupal:10.3.0 and is removed from drupal:11.0.0.
+# Use "goog:chromeOptions instead. See https://www.drupal.org/node/3422624
+export MINK_DRIVER_ARGS_WEBDRIVER='["chrome", {"browserName": "chrome", "goog:chromeOptions": {"args": ["--disable-gpu","--headless", "--no-sandbox", "--disable-dev-shm-usage"]}}, "http://chrome:9515"]'
+
+# Coverage is going to hang the second you bring kernel and higher tests, so avoid it.
+# For more info on this, see
+# - https://gitlab.com/weitzman/drupal-test-traits/-/merge_requests/146 (2024)
+# - https://drupal.slack.com/archives/C223PR743/p1700011769323389 (2024)
+
+php -d session.cookie_domain="http://d10ee.lndo.site" vendor/bin/phpunit \
+  --bootstrap web/core/tests/bootstrap.php \
+  --configuration web/core/phpunit.xml.dist \
+  --exclude-group ignore \
+  --group javascript \
+  --stop-on-defect \
+  --do-not-cache-result \
+  --no-coverage \
+  --display-errors \
+  --testdox \
+  web/modules/contrib/musica/tests
+
+#   --debug \
+#   --log-events-verbose-text log.txt \
+# curl -o phpunit https://phar.phpunit.de/phpunit-10.5.20.phar
