@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "cedf09ff55c268c9422294c9731fc055",
+    "content-hash": "d5934e85d2efa373456353bb3a4b78be",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -1032,7 +1032,7 @@
             "source": {
                 "type": "git",
                 "url": "git@git.drupal.org:issue/musica-3416852.git",
-                "reference": "3b1510fe6b0cfd14a4456d37232c19620e5bff79"
+                "reference": "main"
             },
             "type": "drupal-module"
         },

@@ -18,7 +18,7 @@
                 "source": {
                     "url": "git@git.drupal.org:issue/musica-3416852.git",
                     "type": "git",
-                    "reference": "3b1510fe6b0cfd14a4456d37232c19620e5bff79"
+                    "reference": "main"
                 }
             }
         },
@@ -35,7 +35,6 @@
         "drupal/core-project-message": "^11.0",
         "drupal/core-recommended": "^11.0",
         "drupal/musica": "dev-main@dev",
-        "guzzlehttp/guzzle": "^7.7",
         "hexlet/phpstan-fp": "dev-main",
         "kerox/oauth2-spotify": "^2.0",
         "martin1982/oauth2-soundcloud": "^2.0",
