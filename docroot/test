@@ -31,7 +31,8 @@ source ./musica.env
 echo $soundcloud_client_id
 echo $soundcloud_client_secret
 
-export XDEBUG_MODE="coverage"
+# https://xdebug.org/docs/code_coverage#mode
+# export XDEBUG_MODE="coverage,develop"
 
 # Tailing logs show execution completed but not for reports, they just hang.
 # tail -F log.txt

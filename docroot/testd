@@ -15,9 +15,7 @@
 
 
 # Enable debugging.
-export XDEBUG_MODE="debug,coverage"
+export XDEBUG_MODE="debug,develop,coverage"
 export XDEBUG_CONFIG="idekey=VSCODE"
-# export XDEBUG_MODE=coverage
-
 
 source ./test
