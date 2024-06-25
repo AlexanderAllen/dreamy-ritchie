@@ -16,7 +16,7 @@ echo "Your current work directory is $PWD"
 
 # Variables by integration tests.
 export SIMPLETEST_BASE_URL="https://d10ee.lndo.site"
-export SIMPLETEST_DB="mysql://drupalX:drupalX@127.0.0.1:53846/drupal10_simpletest"
+# export SIMPLETEST_DB="mysql://drupalX:drupalX@127.0.0.1:53846/drupal10_simpletest"
 export BROWSERTEST_OUTPUT_DIRECTORY="web/sites/simpletest/browser_output"
 export BROWSERTEST_OUTPUT_BASE_URL=""
 
@@ -26,47 +26,42 @@ mkdir -p $BROWSERTEST_OUTPUT_DIRECTORY
 export SIMPLETEST_DB="sqlite://localhost/:memory:"
 export SYMFONY_DEPRECATIONS_HELPER="disabled"
 
-
-# See https://docs.phpunit.de/en/9.6/textui.html#command-line-options
-# Bootstrap and configs are requiring absolute paths inside Docker/Lando.
-
-# 5:15 5/11 Confirmed outside binary fully runs kernel test (inside docker).
-# php vendor/bin/phpunit \
-
 # Sauce environment variables for application.
 source ./musica.env
 echo $soundcloud_client_id
 echo $soundcloud_client_secret
 
-
-# PHPUnit requires the "ctype", "dom", "json", "libxml", "mbstring", "tokenizer", "xml", "xmlwriter" extensions, but the "ctype" extension is not available.
-
-# php vendor/bin/phpunit \
-
-# kernel+ tests causing coverage to hang.
-
-truncate -s 0 log.txt
+export XDEBUG_MODE="coverage"
 
 # Tailing logs show execution completed but not for reports, they just hang.
 # tail -F log.txt
+truncate -s 0 log.txt
 
-#   -d pcov.enabled=1 -d pcov.directory=web/modules/contrib/musica/src -d pcov.exclude="~vendor~" \
+# COVERAGE HANG 6/25/2024
+# Including web/core/phpunit.xml.dist hangs coverage, core bootstrap is fine.
+# Unit can be done without core config in order to have coverage.
 
-php ./phpunit \
+php vendor/bin/phpunit \
   --bootstrap web/core/tests/bootstrap.php \
-  --configuration web/core/phpunit.xml.dist \
-  --exclude-group ignore \
-  --group target3 \
-  --stop-on-defect \
-  --cache-result \
-  --display-errors \
-  --no-coverage \
   --testdox \
-  --log-events-verbose-text log.txt \
+  --exclude-group ignore \
+  --group group10 \
+  --stop-on-defect \
+  --display-errors \
+  --cache-result \
+  \
+  --coverage-text \
+  --coverage-cobertura web/modules/contrib/musica/coverage.cobertura.xml \
+  --log-junit $PWD/junit.xml \
+  --coverage-filter web/modules/contrib/musica/src \
+  \
   web/modules/contrib/musica/tests
 
+#   --log-events-verbose-text log.txt \
+# --bootstrap web/core/tests/bootstrap.php \
+#   --configuration web/core/phpunit.xml.dist \
+# --debug
 # --do-not-cache-result \
 # --coverage-cobertura $PWD/coverage.cobertura.xml \
 # --no-coverage \
-# https://dev.to/swashata/setup-php-pcov-for-5-times-faster-phpunit-code-coverage-3d9c
 # curl -o phpunit https://phar.phpunit.de/phpunit-10.5.20.phar

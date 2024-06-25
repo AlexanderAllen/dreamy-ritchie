@@ -46,7 +46,7 @@ php -d session.cookie_domain="http://d10ee.lndo.site" vendor/bin/phpunit \
   --bootstrap web/core/tests/bootstrap.php \
   --configuration web/core/phpunit.xml.dist \
   --exclude-group ignore \
-  --group javascript \
+  --group group10 \
   --stop-on-defect \
   --do-not-cache-result \
   --no-coverage \
@@ -54,6 +54,9 @@ php -d session.cookie_domain="http://d10ee.lndo.site" vendor/bin/phpunit \
   --testdox \
   web/modules/contrib/musica/tests
 
+# --no-coverage \
+#   --coverage-text \
+# --coverage-clover
 #   --debug \
 #   --log-events-verbose-text log.txt \
 # curl -o phpunit https://phar.phpunit.de/phpunit-10.5.20.phar
